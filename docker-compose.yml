@@ -1,0 +1,10 @@
+version: '3'
+services:
+  nano-explorer:
+    build: ./nanobrowse
+    ports:
+      - "5000:5000"
+    environment:
+      RPC_URL : ${RPC_URL}
+      AUTH_USERNAME : ${AUTH_USERNAME}
+      AUTH_PASSWORD : ${AUTH_PASSWORD}

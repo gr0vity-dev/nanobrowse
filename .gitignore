@@ -1,0 +1,4 @@
+debug.py
+.env
+.vscode
+**__pycache__**

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>nanoBrowse Account Viewer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+</head>
+<body class="bg-gray-100 p-10">
+
+    <div class="container mx-auto">
+        <!-- <h1 class="text-2xl font-bold mb-8 text-center">{{account_data['account']}}</h1> -->
+        <div class="mb-8">
+            {% if account_data['show_weight'] %}
+                <span class="bg-pink-500 text-white text-sm px-2 py-1 rounded"><i class="fa-solid fa-wallet"></i> {{account_data['account']}}</span>
+                {% if account_data['is_pr'] %}                
+                <span class="bg-pink-500 text-white text-xs px-2 py-1 rounded">Principal Representative</span>               
+                {% endif %}            
+            {% else %}
+                <span class="bg-blue-500 text-white text-sm px-2 py-1 rounded"><i class="fa-solid fa-wallet"></i> {{account_data['account']}}</span>
+            {% endif %}
+        </div>
+       
+
+
+        <!-- Account Info -->
+        <!-- Account Details Table -->
+        <table class="w-full divide-y divide-transparent">
+            <tbody>     
+                <!-- Balance -->
+                <tr>
+                    <td class="py-1">
+                        <span class="bg-blue-500 text-white text-xs px-2 py-1 rounded flex items-center justify-center w-32 h-6">Balance</span>
+                    </td>
+                    <td class=" py-1">
+                        <b>{{account_data['confirmed_balance'] }} Ӿ</b>
+                    </td>
+                </tr>
+
+                {% if account_data['show_weight'] %}
+                <!-- Weight -->
+                <tr>
+                    <td class="py-1">
+                        <span class="bg-pink-500 text-white text-xs px-2 py-1 rounded flex items-center justify-center w-32 h-6">Weight</span>
+                    </td>
+                    <td class=" py-1">
+                        <b>{{account_data['weight_formatted'] }}</b>
+                    </td>
+                </tr>
+                {% endif %}
+
+                <!-- Representative -->
+                <tr>
+                    <td class="py-1">
+                        <span class="bg-pink-500 text-white text-xs px-2 py-1 rounded flex items-center justify-center w-32 h-6">Representative</span>
+                    </td>
+                    <td class=" py-1 text-xs">
+                        <a href="account/{{account_data['representative'] }}">{{account_data['representative'] }}</a>
+                    </td>
+                </tr>
+
+                <!-- Last Block -->
+                <tr>
+                    <td class="py-1">
+                        <span class="bg-indigo-500 text-white text-xs px-2 py-1 rounded flex items-center justify-center w-32 h-6"><b>Last Block</b></span>
+                    </td>
+                    <td class="py-1 text-xs">
+                        <a href="{{ request.url_root }}/block/{{account_data['frontier'] }}">{{account_data['frontier'] }}</a>
+                    </td>
+                </tr>
+
+                <!-- Open Block -->
+                <tr>
+                    <td class="py-1">
+                        <span class="bg-indigo-400 text-white text-xs px-2 py-1 rounded flex items-center justify-center w-32 h-6"><b>Open Block</b></span>
+                    </td>
+                    <td class="py-1 text-xs">
+                        <a href="{{ request.url_root }}/block/{{account_data['open_block'] }}">{{account_data['open_block'] }}</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+
+        <!-- Transactions Table -->
+        <table class="w-full mt-6">
+            <tbody >
+                {% for entry in account_data['history'] %}
+                <tr class="bg-gray-100 divide-y divide-gray-400">
+                    <!-- Time Ago -->
+                    <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500">
+                        {{ entry['time_ago'] }}
+                    </td>
+
+                    <!-- Type Label (Send/Receive) -->
+                    <td class="px-2 py-2 whitespace-nowrap text-sm">
+                        <span class="flex items-center justify-center w-20 h-6 text-xs rounded {% if entry['type'] == 'send' %} bg-blue-500 text-white {% else %} bg-green-500 text-white {% endif %}">
+                            {{ entry['type'] }}
+                        </span>
+                    </td>
+
+                    <!-- Amount -->
+                    <td class="px-4 py-4 whitespace-nowrap text-sm {% if entry['type'] == 'send' %} text-blue-500 {% else %} text-green-500{% endif %}">
+                        {{ entry['amount'] }} Ӿ
+                    </td>
+
+                    <!-- Account & Hash -->
+                    <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500">
+                        <a href="{{ request.url_root }}/account/{{ entry['account'] }}">{{ entry['account'] }}</a><br>
+                        <a href="{{ request.url_root }}/block/{{ entry['hash'] }}"><b>{{ entry['hash'] }}</b></a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</body>
+
+
+
+
+</html>
