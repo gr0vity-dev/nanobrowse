@@ -51,7 +51,7 @@
                 <tr>
                     <td class="py-1 flex ">
                         <span class="bg-pink-500 text-white text-xs px-2 py-1 rounded flex items-center justify-center w-32 h-6">Representative</span>
-                        <span class="px-2 text-xs"><a href="account/{{account_data['representative'] }}">{{account_data['representative'] }}</a></span>
+                        <span class="px-2 text-xs"><a href="{{ request.url_root }}account/{{account_data['representative'] }}">{{account_data['representative'] }}</a></span>
                     </td>
                 </tr>
 
@@ -59,7 +59,7 @@
                 <tr>
                     <td class="py-1 flex">
                         <span class="bg-indigo-500 text-white text-xs px-2 py-1 rounded flex items-center justify-center w-32 h-6"><b>Last Block</b></span>
-                        <span class="px-2" ><a href="{{ request.url_root }}block/{{account_data['frontier'] }}">{{account_data['frontier'] }}</a></span>
+                        <span class="px-2 text-xs" ><a href="{{ request.url_root }}block/{{account_data['frontier'] }}">{{account_data['frontier'] }}</a></span>
                     </td>
                 </tr>
 
