@@ -6,6 +6,7 @@
     <title>nanoBrowse Block Viewer</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/darkmode.css') }}">
 
 </head>
 <body class="bg-gray-100">
@@ -38,7 +39,7 @@
                 
                 <p class="text-2xl font-bold text-center mb-6">{{ block_data.send_block.amount }} Ӿ</p>
                 <span class="absolute bottom-2 left-2 bg-blue-500 text-white text-xs px-2 py-1 rounded">{{ 'Confirmed' if block_data.send_block.is_confirmed else 'Unconfirmed' }}</span>
-                <span class="absolute bottom-2 left-20 text-gray-500 text-xs px-2 py-1">{{ block_data.send_block.time_ago }}</span>
+                <span class="absolute bottom-2 left-20 text-black text-xs px-2 py-1">{{ block_data.send_block.time_ago }}</span>
                 <span class="absolute bottom-2 right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded">send block</span>
             </div>
 
@@ -71,7 +72,7 @@
                     <span class="text-xs"><a href="{{ request.url_root }}block/{{ block_data.receive_block.hash }}">{{ block_data.receive_block.hash }}</a></span>
                     <p class="text-2xl font-bold text-center mb-6">{{ block_data.receive_block.amount }} Ӿ</p>
                     <span class="absolute bottom-2 left-2 bg-green-500 text-white text-xs px-2 py-1 rounded">{{ 'Confirmed' if block_data.receive_block.is_confirmed else 'Unconfirmed' }}</span>
-                    <span class="absolute bottom-2 left-20 text-gray-500 text-xs px-2 py-1">{{ block_data.receive_block.time_ago }}</span>
+                    <span class="absolute bottom-2 left-20 text-black text-xs px-2 py-1">{{ block_data.receive_block.time_ago }}</span>
                     <span class="absolute bottom-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded">receive block</span>            
                 </div>
 

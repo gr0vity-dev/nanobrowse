@@ -6,6 +6,7 @@
     <title>nanoBrowse Account Viewer</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/darkmode.css') }}">
 
 </head>
 <body class="bg-gray-100 mx-4 my-6">
@@ -78,7 +79,7 @@
         <table class="w-full mt-6">
             <tbody >
                 {% for entry in account_data['history'] %}
-                <tr class="bg-gray-100 divide-y divide-gray-400">
+                <tr class="divide-y divide-gray-400">
                     <!-- Time Ago -->
                     <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500">
                         {{ entry['time_ago'] }}
