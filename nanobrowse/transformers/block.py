@@ -45,6 +45,7 @@ async def fetch_blocks_info(data, hash):
     receive_hash = None
     send_hash = None
     change_hash = None
+    other_hash = None
     # Extract the hashes
     if safe_get(data, "subtype") == "send":
         receive_hash = safe_get(data, "receive_hash")
@@ -53,12 +54,14 @@ async def fetch_blocks_info(data, hash):
     elif safe_get(data, "subtype") == "receive":
         receive_hash = hash
         send_hash = safe_get(data, "contents", "link")
-
+    elif safe_get(data, "subtype") == "change":
+        raise ValueError("Change blocks not yet supported")
+        change_hash = hash
     else:
-        change_hash = safe_get(data, "contents", "link")
+        other_hash = hash
 
     valid_hashes = [h for h in [send_hash,
-                                receive_hash, change_hash] if validate_hash(h)]
+                                receive_hash, change_hash, other_hash] if validate_hash(h)]
 
     return await fetch_block_info(valid_hashes), send_hash, receive_hash, change_hash
 
@@ -106,6 +109,7 @@ async def transform_block_data(data, hash):
 
     blocks_info, send_hash, receive_hash, change_hash = await fetch_blocks_info(data, hash)
 
+    logging.info(f"change_hash: {change_hash}")
     # Process block data
     send_block_data = {}
     receive_block_data = {}
@@ -118,14 +122,12 @@ async def transform_block_data(data, hash):
 
     # If there's a receive block, process its data
     if receive_hash:
-        receive_block_data = process_block_data(
-            blocks_info, receive_hash)
+        receive_block_data = process_block_data(blocks_info, receive_hash)
     else:
         receive_block_data = process_block_data(blocks_info, "0"*64)
 
     if change_hash:
-        change_block_data = process_block_data(
-            blocks_info, change_hash)
+        change_block_data = process_block_data(blocks_info, change_hash)
     else:
         change_block_data = process_block_data(blocks_info, "0"*64)
 
