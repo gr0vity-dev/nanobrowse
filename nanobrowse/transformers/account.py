@@ -44,7 +44,7 @@ def transform_account_data(data):
             "time_ago": time_ago
         })
 
-    formatted_weight, weight_percent = format_weight(
+    formatted_weight, weight_percent, show_weight = format_weight(
         account_info.get("weight"))
     response = {
         "account": data.get("account"),
@@ -67,7 +67,7 @@ def transform_account_data(data):
         response["receivable"]) > 0 else False
     response["show_unconfirmed_count"] = True if int(
         response["unconfirmed_blocks"]) > 0 else False
-    response["show_weight"] = True if response["weight"] != "0" else False
+    response["show_weight"] = show_weight
     response["is_pr"] = True if response["show_weight"] and weight_percent > 0.1 else False
 
     return response

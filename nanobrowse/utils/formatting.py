@@ -33,18 +33,20 @@ def get_time_ago(timestamp):
 
 def format_weight(value):
     ignore_weight_below = 0.01  # percent
+    show_weight = False
     try:
         weight = int(value) / 10 ** 30
         weight_formatted = "{:.0f} Ӿ".format(weight)
         weight_percent = (int(value) / NANO_SUPPLY) * 100
         weight_percent_formatted = "{:.2f}".format(weight_percent)
         if weight_percent > ignore_weight_below:
-            return f"{weight_percent_formatted}% ({weight_formatted})", weight_percent
+            show_weight = True
+            return f"{weight_percent_formatted}% ({weight_formatted})", weight_percent, show_weight
         else:
-            return "0", 0
+            return "0", 0, show_weight
 
     except (ValueError, TypeError):
-        return "0"
+        return "0", 0, show_weight
 
 
 def format_balance(value, subtype="", default="0"):
