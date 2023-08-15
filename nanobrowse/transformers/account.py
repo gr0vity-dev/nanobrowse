@@ -19,7 +19,7 @@ async def get_account_history(account):
 async def fetch_account_history(account):
 
     response = await nanorpc.account_history(account, count="25") or {}
-    response["account_info"] = await nanorpc.account_info(account, include_confirmed="true", representative="true", pending="true", weight="true")
+    response["account_info"] = await nanorpc.account_info(account, include_confirmed="true", representative="true", receivable="true", weight="true")
 
     if "error" in response:
         raise ValueError("Invalid hash")
