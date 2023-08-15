@@ -59,7 +59,7 @@
                 <tr>
                     <td class="py-1 flex">
                         <span class="bg-indigo-500 text-white text-xs px-2 py-1 rounded flex items-center justify-center w-32 h-6"><b>Last Block</b></span>
-                        <span class="px-2" ><a href="{{ request.url_root }}/block/{{account_data['frontier'] }}">{{account_data['frontier'] }}</a></span>
+                        <span class="px-2" ><a href="{{ request.url_root }}block/{{account_data['frontier'] }}">{{account_data['frontier'] }}</a></span>
                     </td>
                 </tr>
 
@@ -67,7 +67,7 @@
                 <tr>
                     <td class="py-1 flex">
                         <span class="bg-indigo-400 text-white text-xs px-2 py-1 rounded flex items-center justify-center w-32 h-6"><b>Open Block</b></span>
-                        <span class="px-2 text-xs"><a href="{{ request.url_root }}/block/{{account_data['open_block'] }}">{{account_data['open_block'] }}</a></span>
+                        <span class="px-2 text-xs"><a href="{{ request.url_root }}block/{{account_data['open_block'] }}">{{account_data['open_block'] }}</a></span>
                     </td>
                 </tr>
             </tbody>
@@ -98,8 +98,8 @@
 
                     <!-- Account & Hash -->
                     <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500">
-                        <a href="{{ request.url_root }}/account/{{ entry['account'] }}">{{ entry['account'] }}</a><br>
-                        <a href="{{ request.url_root }}/block/{{ entry['hash'] }}"><b>{{ entry['hash'] }}</b></a>
+                        <a href="{{ request.url_root }}account/{{ entry['account'] }}">{{ entry['account'] }}</a><br>
+                        <a href="{{ request.url_root }}block/{{ entry['hash'] }}"><b>{{ entry['hash'] }}</b></a>
                     </td>
                 </tr>
                 {% endfor %}
