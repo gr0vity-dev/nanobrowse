@@ -13,7 +13,7 @@
         
         <!-- Sender Address -->
         <div class="text-center mb-2">            
-            <span class="bg-gray-500 text-white text-xs px-2 py-1 rounded"><a href="{{ request.url_root }}/account/{{ block_data.sender_account }}">{{ block_data.sender_account }}</a></span>   
+            <span class="bg-blue-500 text-white text-sm px-2 py-1 rounded"><a href="{{ request.url_root }}/account/{{ block_data.sender_account }}">{{ block_data.sender_account }}</a></span>   
             <p class="text-2xl font-bold text-center">Sender</p>            
         </div>
         
@@ -29,9 +29,10 @@
         <div class="border-2 border-blue-500 bg-blue-100 w-128 rounded p-2 text-blue-500 mb-20 relative">
             <span class="text-xs"><a href="{{ request.url_root }}/block/{{ block_data.send_block.hash }}">{{ block_data.send_block.hash }}</a></span>            
             
-            <p class="text-2xl font-bold text-center mb-4">{{ block_data.send_block.amount }} Ӿ</p>
-            <p class="absolute bottom-2 right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded">{{ 'Confirmed' if block_data.send_block.is_confirmed else 'Unconfirmed' }}</p>
-            <span class="absolute bottom-2 left-2 bg-blue-500 text-white text-xs px-2 py-1 rounded">send block</span>
+            <p class="text-2xl font-bold text-center mb-6">{{ block_data.send_block.amount }} Ӿ</p>
+            <span class="absolute bottom-2 left-2 bg-blue-500 text-white text-xs px-2 py-1 rounded">{{ 'Confirmed' if block_data.send_block.is_confirmed else 'Unconfirmed' }}</span>
+            <span class="absolute bottom-2 left-20 text-gray-500 text-xs px-2 py-1">{{ block_data.send_block.time_ago }}</span>
+            <span class="absolute bottom-2 right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded">send block</span>
         </div>
 
         <!-- Duration between Send & Receive
@@ -48,8 +49,8 @@
             <div class="border-2 border-gray-400 bg-gray-200 w-128 rounded p-2 text-gray-500 relative">
                 <span class="text-xs">{{ '0' * 64 }}</span>
                 <p class="text-2xl font-bold text-center mb-6">Waiting for receiver</p>
-                <p class="absolute bottom-2 right-2 bg-gray-400 text-white text-xs px-2 py-1 rounded">Unconfirmed</p>
-                <span class="absolute bottom-2 left-2 bg-gray-400 text-white text-xs px-2 py-1 rounded">receive block</span>            
+                <span class="absolute bottom-2 left-2 bg-gray-400 text-white text-xs px-2 py-1 rounded">Unconfirmed</span>
+                <span class="absolute bottom-2 right-2 bg-gray-400 text-white text-xs px-2 py-1 rounded">receive block</span>            
             </div>
 
             <!-- Receiver Circle gray -->
@@ -62,9 +63,10 @@
             <!-- Receive Block -->
             <div class="border-2 border-green-500 bg-green-100 w-128 rounded p-2 text-green-500 relative">
                 <span class="text-xs"><a href="{{ request.url_root }}/block/{{ block_data.receive_block.hash }}">{{ block_data.receive_block.hash }}</a></span>
-                <p class="text-2xl font-bold text-center mb-4">{{ block_data.receive_block.amount }} Ӿ</p>
-                <p class="absolute bottom-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded">{{ 'Confirmed' if block_data.receive_block.is_confirmed else 'Unconfirmed' }}</p>
-                <span class="absolute bottom-2 left-2 bg-green-500 text-white text-xs px-2 py-1 rounded">receive block</span>            
+                <p class="text-2xl font-bold text-center mb-6">{{ block_data.receive_block.amount }} Ӿ</p>
+                <span class="absolute bottom-2 left-2 bg-green-500 text-white text-xs px-2 py-1 rounded">{{ 'Confirmed' if block_data.receive_block.is_confirmed else 'Unconfirmed' }}</span>
+                <span class="absolute bottom-2 left-20 text-gray-500 text-xs px-2 py-1">{{ block_data.receive_block.time_ago }}</span>
+                <span class="absolute bottom-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded">receive block</span>            
             </div>
 
             <!-- Receiver Circle green -->
@@ -79,7 +81,7 @@
         <!-- Receiver Address -->
         <div class="text-center">
             <p class="text-2xl font-bold text-center">Receiver</p>
-            <span class="bg-gray-500 text-white text-xs px-2 py-1 rounded"><a href="{{ request.url_root }}/account/{{ block_data.receiver_account }}">{{ block_data.receiver_account }}</a></span> 
+            <span class="bg-green-500 text-white text-sm px-2 py-1 rounded"><a href="{{ request.url_root }}/account/{{ block_data.receiver_account }}">{{ block_data.receiver_account }}</a></span> 
         </div>
     </div>
 </body>

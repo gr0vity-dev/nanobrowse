@@ -1,5 +1,6 @@
 from quart import Blueprint, jsonify, abort, make_response, jsonify
 from deps.rpc_client import nanorpc
+from utils.formatting import format_balance, get_time_ago
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -27,13 +28,6 @@ async def fetch_block_info(hashes):
     return response.get("blocks", {})
 
 
-def format_balance(value, default="0"):
-    try:
-        return "{:.8f}".format(int(value) / 10 ** 30)
-    except (ValueError, TypeError):
-        return default
-
-
 def safe_get(dictionary, *keys, default=None):
     for key in keys:
         try:
@@ -48,17 +42,25 @@ async def fetch_blocks_info(data, hash):
         # Assuming valid hashes are not empty and don't consist of only one repeated character
         return hash_value and not all(c == hash_value[0] for c in hash_value)
 
+    receive_hash = None
+    send_hash = None
+    change_hash = None
     # Extract the hashes
-    receive_hash = safe_get(data, "receive_hash") if safe_get(
-        data, "subtype") == "send" else hash
-    # previous_hash = safe_get(data, "contents", "previous")
-    send_hash = safe_get(data, "contents", "link") if safe_get(
-        data, "subtype") == "receive" else hash
-    # next_hash = safe_get(data, "successor")
+    if safe_get(data, "subtype") == "send":
+        receive_hash = safe_get(data, "receive_hash")
+        send_hash = hash
 
-    valid_hashes = [h for h in [send_hash, receive_hash] if validate_hash(h)]
+    elif safe_get(data, "subtype") == "receive":
+        receive_hash = hash
+        send_hash = safe_get(data, "contents", "link")
 
-    return await fetch_block_info(valid_hashes), send_hash, receive_hash
+    else:
+        change_hash = safe_get(data, "contents", "link")
+
+    valid_hashes = [h for h in [send_hash,
+                                receive_hash, change_hash] if validate_hash(h)]
+
+    return await fetch_block_info(valid_hashes), send_hash, receive_hash, change_hash
 
 
 def process_block_data(block_data, key):
@@ -67,13 +69,16 @@ def process_block_data(block_data, key):
     amount = format_balance(safe_get(block, "amount"))
     is_confirmed = safe_get(block, "confirmed") == "true"
     local_timestamp = safe_get(block, "local_timestamp", default="")
+    time_ago = get_time_ago(local_timestamp)
     block_type = safe_get(block, "subtype", default="")
+    representative = safe_get(block, "contents", "representative", default="")
     hash = key
 
     if block_type == "send":
         account = safe_get(block, "contents", "account", default="")
         sender = safe_get(block, "contents", "account",  default="")
         receiver = safe_get(block, "contents", "link_as_account", default="")
+
     elif block_type == "receive":
         account = safe_get(block, "contents", "account", default="")
         sender = safe_get(block, "source_account", default="")
@@ -87,17 +92,19 @@ def process_block_data(block_data, key):
         "account": account,
         "sender": sender,
         "receiver": receiver,
+        "representative": representative,
         "balance": balance,
         "amount": amount,
         "hash": hash,
         "is_confirmed": is_confirmed,
-        "local_timestamp": local_timestamp
+        "local_timestamp": local_timestamp,
+        "time_ago": time_ago
     }
 
 
 async def transform_block_data(data, hash):
 
-    blocks_info, send_hash, receive_hash = await fetch_blocks_info(data, hash)
+    blocks_info, send_hash, receive_hash, change_hash = await fetch_blocks_info(data, hash)
 
     # Process block data
     send_block_data = {}
@@ -115,6 +122,12 @@ async def transform_block_data(data, hash):
             blocks_info, receive_hash)
     else:
         receive_block_data = process_block_data(blocks_info, "0"*64)
+
+    if change_hash:
+        change_block_data = process_block_data(
+            blocks_info, change_hash)
+    else:
+        change_block_data = process_block_data(blocks_info, "0"*64)
 
     # Calculate duration
     try:
@@ -137,7 +150,9 @@ async def transform_block_data(data, hash):
         "duration_formatted": duration_formatted,
         "receive_block": receive_block_data,
         "receiver_account": receiver_account,
-        "receiver_balance": receive_block_data.get("balance", "")
+        "receiver_balance": receive_block_data.get("balance", ""),
+        "is_change": True if change_hash else False,
+        "change_block": change_block_data
     }
 
     return result

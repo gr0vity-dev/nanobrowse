@@ -8,11 +8,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
 </head>
-<body class="bg-gray-100 p-10">
+<body class="bg-gray-100 mx-4 my-6">
 
     <div class="container mx-auto">
         <!-- <h1 class="text-2xl font-bold mb-8 text-center">{{account_data['account']}}</h1> -->
-        <div class="mb-8">
+        <div class="mb-8 flex flex-col items-center">
             {% if account_data['show_weight'] %}
                 <span class="bg-pink-500 text-white text-sm px-2 py-1 rounded"><i class="fa-solid fa-wallet"></i> {{account_data['account']}}</span>
                 {% if account_data['is_pr'] %}                
@@ -31,53 +31,43 @@
             <tbody>     
                 <!-- Balance -->
                 <tr>
-                    <td class="py-1">
+                    <td class="py-1 flex">
                         <span class="bg-blue-500 text-white text-xs px-2 py-1 rounded flex items-center justify-center w-32 h-6">Balance</span>
-                    </td>
-                    <td class=" py-1">
-                        <b>{{account_data['confirmed_balance'] }} Ӿ</b>
+                        <span class="px-2"><b>{{account_data['confirmed_balance'] }} Ӿ</b></span>
                     </td>
                 </tr>
 
                 {% if account_data['show_weight'] %}
                 <!-- Weight -->
                 <tr>
-                    <td class="py-1">
+                    <td class="py-1 flex">
                         <span class="bg-pink-500 text-white text-xs px-2 py-1 rounded flex items-center justify-center w-32 h-6">Weight</span>
-                    </td>
-                    <td class=" py-1">
-                        <b>{{account_data['weight_formatted'] }}</b>
-                    </td>
+                        <span class="px-2"><b> {{account_data['weight_formatted'] }}</b></span>
+                    </td>                   
                 </tr>
                 {% endif %}
 
                 <!-- Representative -->
                 <tr>
-                    <td class="py-1">
+                    <td class="py-1 flex ">
                         <span class="bg-pink-500 text-white text-xs px-2 py-1 rounded flex items-center justify-center w-32 h-6">Representative</span>
-                    </td>
-                    <td class=" py-1 text-xs">
-                        <a href="account/{{account_data['representative'] }}">{{account_data['representative'] }}</a>
+                        <span class="px-2 text-xs"><a href="account/{{account_data['representative'] }}">{{account_data['representative'] }}</a></span>
                     </td>
                 </tr>
 
                 <!-- Last Block -->
                 <tr>
-                    <td class="py-1">
+                    <td class="py-1 flex">
                         <span class="bg-indigo-500 text-white text-xs px-2 py-1 rounded flex items-center justify-center w-32 h-6"><b>Last Block</b></span>
-                    </td>
-                    <td class="py-1 text-xs">
-                        <a href="{{ request.url_root }}/block/{{account_data['frontier'] }}">{{account_data['frontier'] }}</a>
+                        <span class="px-2" ><a href="{{ request.url_root }}/block/{{account_data['frontier'] }}">{{account_data['frontier'] }}</a></span>
                     </td>
                 </tr>
 
                 <!-- Open Block -->
                 <tr>
-                    <td class="py-1">
+                    <td class="py-1 flex">
                         <span class="bg-indigo-400 text-white text-xs px-2 py-1 rounded flex items-center justify-center w-32 h-6"><b>Open Block</b></span>
-                    </td>
-                    <td class="py-1 text-xs">
-                        <a href="{{ request.url_root }}/block/{{account_data['open_block'] }}">{{account_data['open_block'] }}</a>
+                        <span class="px-2 text-xs"><a href="{{ request.url_root }}/block/{{account_data['open_block'] }}">{{account_data['open_block'] }}</a></span>
                     </td>
                 </tr>
             </tbody>
