@@ -85,8 +85,16 @@ def process_block_data(block_data, key):
     time_ago = get_time_ago(local_timestamp)
     block_type = safe_get(block, "subtype", default="")
     representative = safe_get(block, "contents", "representative", default="")
+    previous = safe_get(block, "contents", "previous", default="")
+    successor = safe_get(block, "successor", default="")
     hash = key
     hash_exists = True if hash and hash != "0" * 64 else False
+    is_receive = True if block_type == "receive" else False
+    is_send = True if block_type == "send" else False
+    is_open = True if is_receive and previous == "0" * 64 else False
+    is_receive = True if is_receive and not is_open else False
+    is_change = True if block_type == "change" else False
+    is_epoch = True if block_type == "epoch" else False
 
     if block_type == "send":
         account = safe_get(block, "contents", "account", default="")
@@ -115,12 +123,19 @@ def process_block_data(block_data, key):
         "amount": amount,
         "hash": hash,
         "hash_formatted": format_hash(hash),
+        "previous_hash": previous,
+        "next_hash": successor,
         "hash_exists": hash_exists,
         "is_confirmed": is_confirmed,
         "local_timestamp": local_timestamp,
         "time_ago": time_ago,
+        "is_receive": is_receive,
+        "is_open": is_open,
+        "is_send": is_send,
         "status": status,
-        "left_align": left_align
+        "left_align": left_align,
+        "block_type": "send block" if is_send else "receive block" if is_receive else "open block" if is_open else "change block" if is_change else "epoch block" if is_epoch else ""
+
     }
 
 
@@ -175,7 +190,6 @@ async def transform_block_data(data, hash):
         "receiver_account": receiver_account,
         "receiver_account_formatted": receiver_account_formatted,
         "receiver_balance": receive_block_data.get("balance", ""),
-        "is_change": True if change_hash else False,
         "change_block": change_block_data
     }
 

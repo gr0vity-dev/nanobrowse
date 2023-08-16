@@ -11,20 +11,18 @@
   </head>
   <body class="bg-gray-100 mx-4 my-6 w-400">
     <div class="container mx-auto">
-      <!-- <h1 class="text-2xl font-bold mb-8 text-center">{{account_data['account']}}</h1> -->
-      <div class="mb-8 flex flex-col items-center break-all">
-        {% if account_data['show_weight'] %}
-        <span class="bg-pink-500 text-white text-sm px-2 py-1 rounded">
-          {{account_data['account_formatted']}}
-          <i class="copy_btn" data-value="{{account_data['account']}}"></i>
+      <!-- Account address -->
+      <div class="text-center mb-2">
+        <span
+          class="bg-{% if account_data['show_weight'] %}pink{% else %}blue{% endif %}-500 text-white text-sm px-2 py-1 rounded break-all"
+        >
+          <i class="copy_btn" data-value="{{ account_data.account }}"></i>
+          <a href="{{ request.url_root }}account/{{ account_data.account }}">{{ account_data.account }}</a>
         </span>
+
         {% if account_data['is_pr'] %}
+        <br />
         <span class="bg-pink-500 text-white text-xs px-2 py-1 rounded">Principal Representative</span>
-        {% endif %} {% else %}
-        <span class="bg-blue-500 text-white text-sm px-2 py-1 rounded">
-          {{account_data['account_formatted']}}
-          <i class="copy_btn" data-value="{{account_data['account']}}"></i>
-        </span>
         {% endif %}
       </div>
 

@@ -43,7 +43,9 @@
             <span class="absolute bottom-2 {{ block_data.send_block.left_align }} text-black text-xs px-2 py-1">
               {{ block_data.send_block.time_ago }}
             </span>
-            <span class="absolute bottom-2 right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded">send block</span>
+            <span class="absolute bottom-2 right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded">
+              {{ block_data.send_block.block_type }}
+            </span>
           </div>
         </div>
 
@@ -64,7 +66,9 @@
           <span class="absolute bottom-2 {{ block_data.receive_block.left_align }} text-black text-xs px-2 py-1">
             {{ block_data.receive_block.time_ago }}
           </span>
-          <span class="absolute bottom-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded">receive block</span>
+          <span class="absolute bottom-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded">
+            {{ block_data.receive_block.block_type }}
+          </span>
         </div>
         {% else %}
         <!-- No Receive Block -->
