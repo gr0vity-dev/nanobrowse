@@ -1,6 +1,7 @@
 from quart import Blueprint, jsonify, abort, make_response, jsonify
 from deps.rpc_client import nanorpc
 from utils.formatting import format_balance, get_time_ago
+import json
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -54,17 +55,18 @@ async def fetch_blocks_info(data, hash):
     elif safe_get(data, "subtype") == "receive":
         receive_hash = hash
         send_hash = safe_get(data, "contents", "link")
-    elif safe_get(data, "subtype") == "change":
-        raise ValueError("Change blocks not yet supported")
-        change_hash = hash
+    # elif safe_get(data, "subtype") == "change":
+    #     raise ValueError("Change blocks not yet supported")
+    #     change_hash = hash
     else:
         logging.info(data)
         subtype = safe_get(data, "subtype")
         if not subtype:
             legacy_type = safe_get(data, "contents", "type")
             subtype = f"legacy_{legacy_type}"
-        raise ValueError(f"{subtype} blocks not yet supported")
-        other_hash = hash
+        raise ValueError(
+            f"{subtype} blocks not yet supported\n {json.dumps(data, indent=2)}")
+        # other_hash = hash
 
     valid_hashes = [h for h in [send_hash,
                                 receive_hash, change_hash, other_hash] if validate_hash(h)]

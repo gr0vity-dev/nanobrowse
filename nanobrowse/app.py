@@ -10,7 +10,15 @@ logging.basicConfig(level=logging.INFO)
 @app.errorhandler(ValueError)
 async def handle_value_error(error):
     logging.error("Handling ValueError")
-    return await make_response(jsonify({"error": str(error)}), 400)
+    error_split = str(error).split("\n")
+
+    error_dict = {
+        "header": "Error: " + error_split.pop(0) if error_split else "Error!",
+        "body": "\n" + "\n".join(error_split)
+    }
+    logging.info(error_dict["body"])
+
+    return await make_response(jsonify(error=error_dict), 400)
 
 
 @app.route('/test-error')

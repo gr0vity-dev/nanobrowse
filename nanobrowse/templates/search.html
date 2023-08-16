@@ -30,11 +30,13 @@
             <h1 class="text-4xl mb-4">nanoBrowse</h1>
             
             {% if error %}
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded relative mb-4" role="alert">
-                    <strong class="font-bold">Error!</strong>
-                    <span class="block sm:inline">{{ error }}</span>
-                </div>
-            {% endif %}
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded relative mb-4 w-full" role="alert">
+                    <strong class="font-bold block mb-2">{{ error.header }}</strong> 
+                </div>                   
+                <pre class="rounded max-w-full overflow-hidden">
+                    <code>{{ error.body }}</code>
+                </pre>                
+            {% endif %}            
 
             <form onsubmit="handleFormSubmit(event)" class="w-full">
                 <div class="flex">
