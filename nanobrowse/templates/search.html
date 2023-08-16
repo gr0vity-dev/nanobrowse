@@ -9,7 +9,7 @@
     <script>
       function handleFormSubmit(event) {
         event.preventDefault(); // Prevent form from submitting the traditional way
-        const inputValue = document.querySelector('[name="blockhash"]').value;
+        const inputValue = document.querySelector('[name="blockhash"]').value.trim();
 
         if (inputValue.startsWith("xrb_") || inputValue.startsWith("nano_")) {
           // Redirect to the account viewer

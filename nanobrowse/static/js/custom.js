@@ -16,7 +16,7 @@ function handleCopyEvent(selector, position) {
             event.preventDefault();   // prevent the default behavior
             event.stopPropagation(); // prevent event from bubbling up
 
-            var copyValue = el.getAttribute('data-value');
+            var copyValue = el.getAttribute('data-value').trim();
             var textArea = document.createElement("textarea");
             textArea.value = copyValue;
             document.body.appendChild(textArea);
