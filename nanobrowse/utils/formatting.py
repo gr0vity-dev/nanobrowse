@@ -51,13 +51,15 @@ def format_weight(value):
 
 def format_balance(value, subtype="", default="0"):
     try:
-        balance = "{:.8f}".format(int(value) / 10 ** 30)
+        balance = "{:.8f}".format(int(value) / 10 ** 30) or "0"
         if subtype == "send":
             return "- " + balance
         elif subtype == "receive":
             return "+ " + balance
-        elif subtype == "":
+        elif subtype == "change":
             return balance
+        else:
+            return "0"
     except (ValueError, TypeError):
         return default
 
