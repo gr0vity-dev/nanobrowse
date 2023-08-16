@@ -94,9 +94,6 @@
         <tbody>
           {% for entry in account_data['history'] %}
           <tr class="divide-y divide-gray-400">
-            <!-- Time Ago -->
-            <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500">{{ entry['time_ago'] }}</td>
-
             <!-- Type Label (Send/Receive) -->
             <td class="px-2 py-2 whitespace-nowrap text-sm">
               <a href="{{ request.url_root }}block/{{ entry['hash'] }}">
@@ -105,6 +102,7 @@
                 >
                   {{ entry['type'] }}
                 </span>
+                <p class="text-xs">{{ entry['time_ago'] }}</p>
               </a>
             </td>
 
