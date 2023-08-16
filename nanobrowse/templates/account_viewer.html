@@ -47,7 +47,7 @@
         <div class="py-1 flex" >
             <span class="bg-pink-500 text-white text-xs px-2 py-1 rounded flex items-center justify-center w-32 h-6">
                 <a href="{{ request.url_root }}account/{{account_data['representative'] }}">Representative</a></span>
-            <span class="px-2 text-xs copy_btn">
+            <span class="px-2 text-xs copy_btn_front overflow-hidden">
                 <a href="{{ request.url_root }}account/{{account_data['representative'] }}">{{account_data['representative'] }}</a></span>
         </div>              
 
@@ -55,7 +55,7 @@
         <div class="py-1 flex" >
             <span class="bg-indigo-500 text-white text-xs px-2 py-1 rounded flex items-center justify-center w-32 h-6">
                 <a href="{{ request.url_root }}block/{{account_data['frontier'] }}"><b>Last Block</b></a></span>
-            <span class="px-2 text-xs copy_btn">
+            <span class="px-2 text-xs copy_btn_front overflow-hidden">
                 <a href="{{ request.url_root }}block/{{account_data['frontier'] }}">{{account_data['frontier'] }}</a></span>
         </div>
             
@@ -64,7 +64,7 @@
         <div class="py-1 flex" >
             <span class="bg-indigo-500 text-white text-xs px-2 py-1 rounded flex items-center justify-center w-32 h-6">
                 <a href="{{ request.url_root }}block/{{account_data['open_block'] }}"><b>Open Block</b></a></span>
-            <span class="px-2 text-xs copy_btn">
+            <span class="px-2 text-xs copy_btn_front overflow-hidden">
                 <a href="{{ request.url_root }}block/{{account_data['open_block'] }}">{{account_data['open_block'] }}</a></span>
         </div>
        

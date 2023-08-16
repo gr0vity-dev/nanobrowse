@@ -45,6 +45,7 @@
 .copy_btn, .copy_btn_front {
   display: inline-block;
   position: relative;
+  white-space: nowrap; /* Prevent wrapping */
 }
 
 .copy_icon {
