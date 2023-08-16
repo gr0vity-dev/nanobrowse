@@ -71,11 +71,14 @@ def process_block_data(block_data, key):
     balance = format_balance(safe_get(block, "balance"))
     amount = format_balance(safe_get(block, "amount"))
     is_confirmed = safe_get(block, "confirmed") == "true"
+    left_align = "left-20" if is_confirmed else "left-24"
+    status = "Confirmed" if is_confirmed else "Unconfirmed"
     local_timestamp = safe_get(block, "local_timestamp", default="")
     time_ago = get_time_ago(local_timestamp)
     block_type = safe_get(block, "subtype", default="")
     representative = safe_get(block, "contents", "representative", default="")
     hash = key
+    hash_exists = True if hash and hash != "0" * 64 else False
 
     if block_type == "send":
         account = safe_get(block, "contents", "account", default="")
@@ -99,9 +102,12 @@ def process_block_data(block_data, key):
         "balance": balance,
         "amount": amount,
         "hash": hash,
+        "hash_exists": hash_exists,
         "is_confirmed": is_confirmed,
         "local_timestamp": local_timestamp,
-        "time_ago": time_ago
+        "time_ago": time_ago,
+        "status": status,
+        "left_align": left_align
     }
 
 
