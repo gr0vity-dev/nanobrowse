@@ -55,11 +55,9 @@ async def fetch_blocks_info(data, hash):
     elif safe_get(data, "subtype") == "receive":
         receive_hash = hash
         send_hash = safe_get(data, "contents", "link")
-    # elif safe_get(data, "subtype") == "change":
-    #     raise ValueError("Change blocks not yet supported")
-    #     change_hash = hash
+    elif safe_get(data, "subtype") == "change":
+        change_hash = hash
     else:
-        logging.info(data)
         subtype = safe_get(data, "subtype")
         if not subtype:
             legacy_type = safe_get(data, "contents", "type")
@@ -106,9 +104,9 @@ def process_block_data(block_data, key):
         sender = safe_get(block, "source_account", default="")
         receiver = safe_get(block, "contents", "account", default="")
     else:
-        account = ""
-        sender = ""
-        receiver = ""
+        account = safe_get(block, "contents", "account", default="")
+        sender = safe_get(block, "contents", "account", default="")
+        receiver = safe_get(block, "contents", "account", default="")
 
     return {
         "account": account,
@@ -143,10 +141,8 @@ async def transform_block_data(data, hash):
 
     blocks_info, send_hash, receive_hash, change_hash = await fetch_blocks_info(data, hash)
 
-    logging.info(f"change_hash: {change_hash}")
     # Process block data
-    send_block_data = {}
-    receive_block_data = {}
+    is_change = False
 
     # If there's a send block, process its data
     if send_hash:
@@ -162,6 +158,7 @@ async def transform_block_data(data, hash):
 
     if change_hash:
         change_block_data = process_block_data(blocks_info, change_hash)
+        is_change = True
     else:
         change_block_data = process_block_data(blocks_info, "0"*64)
 
@@ -190,7 +187,7 @@ async def transform_block_data(data, hash):
         "receiver_account": receiver_account,
         "receiver_account_formatted": receiver_account_formatted,
         "receiver_balance": receive_block_data.get("balance", ""),
-        "change_block": change_block_data
+        "change_block": change_block_data,
+        "is_change": is_change,
     }
-
     return result

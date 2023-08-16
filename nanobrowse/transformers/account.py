@@ -1,6 +1,9 @@
 from quart import Blueprint, jsonify, request, abort
 from deps.rpc_client import nanorpc
 from utils.formatting import get_time_ago, format_weight, format_balance, format_hash, format_account
+import logging
+
+logging.basicConfig(level=logging.INFO)
 
 account_transformer = Blueprint('account_transformer', __name__)
 
@@ -18,7 +21,7 @@ async def get_account_history(account):
 
 async def fetch_account_history(account):
 
-    response = await nanorpc.account_history(account, count="25") or {}
+    response = await nanorpc.account_history(account, count="25", raw="true") or {}
     response["account_info"] = await nanorpc.account_info(account, include_confirmed="true", representative="true", receivable="true", weight="true")
 
     if "error" in response:
@@ -33,11 +36,21 @@ def transform_account_data(data):
     transformed_history = []
     for entry in history:
         time_ago = get_time_ago(entry.get("local_timestamp"))
+        account = entry.get("account") or entry.get("representative")
+        type = entry.get("subtype")
+
+        amount = entry.get("amount")
+        if type == "change":
+            amount_formatted = "new rep"
+        else:
+            amount_formatted = format_balance(amount, type) + "Ӿ"
+
         transformed_history.append({
-            "type": entry.get("type"),
-            "account": entry.get("account"),
-            "account_formatted": format_account(entry.get("account")),
-            "amount": format_balance(entry.get("amount"), entry.get("type")),
+            "type": type,
+            "account": account,
+            "account_formatted": format_account(account),
+            "amount": amount,
+            "amount_formatted": amount_formatted,
             "timestamp": entry.get("local_timestamp"),
             "height": entry.get("height"),
             "hash": entry.get("hash"),

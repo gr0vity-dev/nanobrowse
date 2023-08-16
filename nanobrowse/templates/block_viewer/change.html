@@ -1,0 +1,55 @@
+<div class="flex flex-col items-center mx-4 my-6 sm:mx-auto max-w-screen-md">
+  <!-- Sender Address -->
+  <div class="text-center mb-2">
+    <span class="bg-blue-500 text-white text-sm px-2 py-1 rounded break-all">
+      <i class="copy_btn" data-value="{{block_data.change_block.account}}"></i>
+      <a href="{{ request.url_root }}account/{{ block_data.change_block.account }}">
+        {{ block_data.change_block.account }}
+      </a>
+    </span>
+    <p class="text-2xl font-bold text-center">Sender</p>
+  </div>
+
+  <!-- Sender Pin Shape -->
+  <div class="flex flex-col items-center">
+    <div class="w-12 h-12 border-2 border-blue-500 rounded-full"></div>
+    <div class="bg-blue-500 h-6 w-1"></div>
+  </div>
+
+  <div class="flex flex-col items-center">
+    <!-- Change Block -->
+    <div class="border-2 border-purple-500 bg-purple-100 rounded p-2 text-purple-500 relative">
+      <span class="text-xs break-all">
+        <i class="copy_btn" data-value="{{block_data.change_block.hash}}"></i>
+        <a href="{{ request.url_root }}block/{{ block_data.change_block.hash }}">{{ block_data.change_block.hash }}</a>
+      </span>
+      <p class="text-2xl font-bold text-center mb-6">{{ block_data.change_block.amount }} Ӿ</p>
+      <span class="absolute bottom-2 left-2 bg-purple-500 text-white text-xs px-2 py-1 rounded">
+        {{ block_data.change_block.status }}
+      </span>
+      <span class="absolute bottom-2 {{ block_data.change_block.left_align }} text-black text-xs px-2 py-1">
+        {{ block_data.change_block.time_ago }}
+      </span>
+      <span class="absolute bottom-2 right-2 bg-purple-500 text-white text-xs px-2 py-1 rounded">
+        {{ block_data.change_block.block_type }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Receiver Pin Shape  -->
+  <div class="flex flex-col items-center">
+    <div class="bg-purple-600 h-6 w-1"></div>
+    <div class="w-12 h-12 border-2 border-purple-600 rounded-full"></div>
+  </div>
+
+  <!-- Receiver Address -->
+  <div class="text-center">
+    <p class="text-2xl font-bold text-center">New Representative</p>
+    <span class="bg-purple-600 text-white text-sm px-2 py-1 rounded break-all">
+      <i class="copy_btn" data-value="{{block_data.representative}}"></i>
+      <a href="{{ request.url_root }}account/{{ block_data.change_block.representative }}">
+        {{ block_data.change_block.representative }}
+      </a>
+    </span>
+  </div>
+</div>

@@ -14,7 +14,7 @@
       <!-- Account address -->
       <div class="text-center mb-2">
         <span
-          class="bg-{% if account_data['show_weight'] %}pink{% else %}blue{% endif %}-500 text-white text-sm px-2 py-1 rounded break-all"
+          class="bg-{% if account_data['show_weight'] %}purple{% else %}blue{% endif %}-500 text-white text-sm px-2 py-1 rounded break-all"
         >
           <i class="copy_btn" data-value="{{ account_data.account }}"></i>
           <a href="{{ request.url_root }}account/{{ account_data.account }}">{{ account_data.account }}</a>
@@ -22,7 +22,7 @@
 
         {% if account_data['is_pr'] %}
         <br />
-        <span class="bg-pink-500 text-white text-xs px-2 py-1 rounded">Principal Representative</span>
+        <span class="bg-purple-600 text-white text-xs px-2 py-1 rounded">Principal Representative</span>
         {% endif %}
       </div>
 
@@ -41,7 +41,7 @@
           {% if account_data['show_weight'] %}
           <!-- Weight -->
           <tr>
-            <td class="bg-pink-500 text-white text-xs px-3 rounded w-32 h-6 flex items-center justify-center">
+            <td class="bg-purple-600 text-white text-xs px-3 rounded w-32 h-6 flex items-center justify-center">
               Weight
             </td>
             <td class="px-3 py-1 font-bold">{{account_data['weight_formatted'] }}</td>
@@ -50,7 +50,7 @@
 
           <!-- Representative -->
           <tr>
-            <td class="bg-pink-500 text-white text-xs px-3 py-2 rounded w-32 h-6 flex items-center justify-center">
+            <td class="bg-purple-600 text-white text-xs px-3 py-2 rounded w-32 h-6 flex items-center justify-center">
               <a href="{{ request.url_root }}account/{{account_data['representative'] }}">Representative</a>
             </td>
             <td class="px-3 py-2 text-xs overflow-hidden">
@@ -62,6 +62,7 @@
           </tr>
 
           <!-- Last Block -->
+          {#
           <tr>
             <td class="bg-indigo-500 text-white text-xs px-3 py-2 rounded w-32 h-6 flex items-center justify-center">
               <a href="{{ request.url_root }}block/{{account_data['frontier'] }}"><b>Last Block</b></a>
@@ -73,10 +74,11 @@
               </a>
             </td>
           </tr>
+          #}
 
           <!-- Open Block -->
           <tr>
-            <td class="bg-indigo-500 text-white text-xs px-3 py-2 rounded w-32 h-6 flex items-center justify-center">
+            <td class="bg-green-500 text-white text-xs px-3 py-2 rounded w-32 h-6 flex items-center justify-center">
               <a href="{{ request.url_root }}block/{{account_data['open_block'] }}"><b>Open Block</b></a>
             </td>
             <td class="px-3 py-2 text-xs overflow-hidden">
@@ -98,7 +100,7 @@
             <td class="px-2 py-2 whitespace-nowrap text-sm">
               <a href="{{ request.url_root }}block/{{ entry['hash'] }}">
                 <span
-                  class="flex items-center justify-center w-20 h-6 text-xs rounded {% if entry['type'] == 'send' %} bg-blue-500 text-white {% else %} bg-green-500 text-white {% endif %}"
+                  class="flex items-center justify-center w-20 h-6 text-xs rounded {% if entry['type'] == 'send' %} bg-blue-500 text-white {% elif entry['type'] == 'change' %} bg-purple-600 text-white {% elif entry['type'] == 'receive' %} bg-green-500 text-white {% else %} bg-gray-500 text-white {% endif %}"
                 >
                   {{ entry['type'] }}
                 </span>
@@ -108,9 +110,9 @@
 
             <!-- Amount -->
             <td
-              class="px-4 py-4 whitespace-nowrap text-sm {% if entry['type'] == 'send' %} text-blue-500 {% else %} text-green-500{% endif %}"
+              class="px-4 py-4 whitespace-nowrap text-sm {% if entry['type'] == 'send' %} text-blue-500 {% elif entry['type'] == 'receive' %} text-green-500 {% elif entry['type'] == 'change' %} text-purple-500 {% else %} text-gray-500{% endif %}"
             >
-              {{ entry['amount'] }} Ӿ
+              {{ entry['amount_formatted'] }}
             </td>
 
             <!-- Account & Hash -->

@@ -16,8 +16,7 @@ async def handle_value_error(error):
         "header": "Error: " + error_split.pop(0) if error_split else "Error!",
         "body": "\n" + "\n".join(error_split)
     }
-    logging.info(error_dict["body"])
-
+    logging.info(error_dict["header"])
     return await make_response(jsonify(error=error_dict), 400)
 
 
