@@ -10,8 +10,6 @@
     <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
   </head>
   <body class="bg-gray-100">
-    {{ block_data.is_change }}
-
     <div class="flex flex-col items-center mx-4 my-6 sm:mx-auto max-w-screen-md">
       {% if block_data.is_change %} {% include 'block_viewer/change.html' %} {% else %} {% include
       'block_viewer/send_receive.html' %} {% endif %}
