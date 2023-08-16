@@ -58,7 +58,11 @@ async def fetch_blocks_info(data, hash):
         raise ValueError("Change blocks not yet supported")
         change_hash = hash
     else:
+        logging.info(data)
         subtype = safe_get(data, "subtype")
+        if not subtype:
+            legacy_type = safe_get(data, "contents", "type")
+            subtype = f"legacy_{legacy_type}"
         raise ValueError(f"{subtype} blocks not yet supported")
         other_hash = hash
 
