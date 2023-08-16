@@ -60,3 +60,24 @@ def format_balance(value, subtype="", default="0"):
             return balance
     except (ValueError, TypeError):
         return default
+
+
+def format_account(hash_str: str) -> str:
+    # Split the hash on "_"
+    parts = hash_str.split("_", 1)
+
+    # If there's only one part or the second part is less than 11 characters, return as is
+    if len(parts) != 2 or len(parts[1]) < 11:
+        return hash_str
+
+    # Return the formatted string with the first 7 characters after "_" and the last 4 characters
+    return f"{parts[0]}_{parts[1][:7]}...{parts[1][-4:]}"
+
+
+def format_hash(block_str: str) -> str:
+    # If the block string is less than 10 characters, return as is
+    if len(block_str) < 15:
+        return block_str
+
+    # Return the first 10 characters followed by "..."
+    return f"{block_str[:15]}..."

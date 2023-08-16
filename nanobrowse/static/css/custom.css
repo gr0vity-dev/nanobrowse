@@ -27,17 +27,17 @@
     td.text-gray-500 {
         color: #e5e7eb;
     }
-    
+
     input[type="text"].border {
         background-color: #4A5568; /* Equivalent to bg-gray-700 in Tailwind */
         color: #E2E8F0; /* Equivalent to text-gray-300 in Tailwind */
         border-color: #4A5568; /* To keep the border same as the background color */
       }
-  
+
       input[type="text"].border::placeholder {
         color: #A0AEC0; /* Equivalent to text-gray-400 in Tailwind */
       }
-        
+
 }
 
 
@@ -56,6 +56,7 @@
 
 .copy_btn .copy_icon {
   margin-left: 5px; /* space it out a bit from the text when at the end */
+  margin-right: 5px;
 }
 
 .copy_btn_front .copy_icon {

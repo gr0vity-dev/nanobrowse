@@ -1,6 +1,6 @@
 from quart import Blueprint, jsonify, request, abort
 from deps.rpc_client import nanorpc
-from utils.formatting import get_time_ago, format_weight, format_balance
+from utils.formatting import get_time_ago, format_weight, format_balance, format_hash, format_account
 
 account_transformer = Blueprint('account_transformer', __name__)
 
@@ -36,10 +36,12 @@ def transform_account_data(data):
         transformed_history.append({
             "type": entry.get("type"),
             "account": entry.get("account"),
+            "account_formatted": format_account(entry.get("account")),
             "amount": format_balance(entry.get("amount"), entry.get("type")),
             "timestamp": entry.get("local_timestamp"),
             "height": entry.get("height"),
             "hash": entry.get("hash"),
+            "hash_formatted": format_hash(entry.get("hash")),
             "confirmed": entry.get("confirmed"),
             "time_ago": time_ago
         })
@@ -48,14 +50,18 @@ def transform_account_data(data):
         account_info.get("weight"))
     response = {
         "account": data.get("account"),
+        "account_formatted": format_account(data.get("account")),
         "confirmed_balance": format_balance(account_info.get("confirmed_balance", 0)),
         "receivable": account_info.get("receivable", 0),
         "block_count": account_info.get("block_count", 0),
         "confirmed_blocks": account_info.get("confirmed_height", 0),
         "unconfirmed_blocks": int(account_info.get("block_count", 0)) - int(account_info.get("confirmed_height", 0)),
         "frontier": account_info.get("confirmed_frontier"),
+        "frontier_formatted": format_hash(account_info.get("confirmed_frontier")),
         "open_block": account_info.get("open_block"),
+        "open_block_formatted": format_hash(account_info.get("open_block")),
         "representative": account_info.get("representative"),
+        "representative_formatted": format_account(account_info.get("representative")),
         "history": transformed_history,
         "previous": data.get("previous"),
         "weight": account_info.get("weight"),

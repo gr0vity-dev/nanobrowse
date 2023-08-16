@@ -1,50 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>nanoBrowse</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/darkmode.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}" />
     <script>
-        function handleFormSubmit(event) {
-            event.preventDefault();  // Prevent form from submitting the traditional way
-            const inputValue = document.querySelector('[name="blockhash"]').value;
-            
-            if (inputValue.startsWith("xrb_") || inputValue.startsWith("nano_")) {
-                // Redirect to the account viewer
-                window.location.href = `/account/${inputValue}`;
-            } else if (inputValue.length === 64) {
-                // Redirect to the block viewer
-                window.location.href = `/block/${inputValue}`;
-            } else {
-                // Handle the case where the input doesn't match any of the criteria
-                alert("Invalid input. Please enter a valid account or block hash.");
-            }
-        }
-    </script>
-</head>
-<body class="bg-gray-100">
-    <div class="h-screen flex justify-center items-center">
-        <div class="w-4/5 flex flex-col items-center" style="max-width: 800px;">
-            <h1 class="text-4xl mb-4">nanoBrowse</h1>
-            
-            {% if error %}
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded relative mb-4 w-full" role="alert">
-                    <strong class="font-bold block mb-2">{{ error.header }}</strong> 
-                </div>                   
-                <pre class="rounded max-w-full overflow-hidden">
-                    <code>{{ error.body }}</code>
-                </pre>                
-            {% endif %}            
+      function handleFormSubmit(event) {
+        event.preventDefault(); // Prevent form from submitting the traditional way
+        const inputValue = document.querySelector('[name="blockhash"]').value;
 
-            <form onsubmit="handleFormSubmit(event)" class="w-full">
-                <div class="flex">
-                    <input type="text" name="blockhash" placeholder="Enter blockhash or account..." class="border rounded p-2 flex-1 mr-2">
-                    <input type="submit" value="Search" class="bg-blue-500 text-white rounded p-2">
-                </div>
-            </form>
+        if (inputValue.startsWith("xrb_") || inputValue.startsWith("nano_")) {
+          // Redirect to the account viewer
+          window.location.href = `/account/${inputValue}`;
+        } else if (inputValue.length === 64) {
+          // Redirect to the block viewer
+          window.location.href = `/block/${inputValue}`;
+        } else {
+          // Handle the case where the input doesn't match any of the criteria
+          alert("Invalid input. Please enter a valid account or block hash.");
+        }
+      }
+    </script>
+  </head>
+  <body class="bg-gray-100">
+    <div class="h-screen flex justify-center items-center">
+      <div class="w-4/5 flex flex-col items-center" style="max-width: 800px">
+        <h1 class="text-4xl mb-4">nanoBrowse</h1>
+
+        {% if error %}
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded relative mb-4 w-full" role="alert">
+          <strong class="font-bold block mb-2">{{ error.header }}</strong>
         </div>
+        <pre class="rounded max-w-full overflow-hidden">
+                    <code>{{ error.body }}</code>
+                </pre>
+        {% endif %}
+
+        <form onsubmit="handleFormSubmit(event)" class="w-full">
+          <div class="flex">
+            <input
+              type="text"
+              name="blockhash"
+              placeholder="Enter blockhash or account..."
+              class="border rounded p-2 flex-1 mr-2"
+            />
+            <input type="submit" value="Search" class="bg-blue-500 text-white rounded p-2" />
+          </div>
+        </form>
+      </div>
     </div>
-</body>
+  </body>
 </html>

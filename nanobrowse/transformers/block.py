@@ -1,6 +1,6 @@
 from quart import Blueprint, jsonify, abort, make_response, jsonify
 from deps.rpc_client import nanorpc
-from utils.formatting import format_balance, get_time_ago
+from utils.formatting import format_balance, get_time_ago, format_hash, format_account
 import json
 import logging
 
@@ -104,12 +104,17 @@ def process_block_data(block_data, key):
 
     return {
         "account": account,
+        "account_formatted": format_account(account),
         "sender": sender,
+        "sender_formatted": format_account(sender),
         "receiver": receiver,
+        "receiver_formatted": format_account(receiver),
         "representative": representative,
+        "representative_formatted": format_account(representative),
         "balance": balance,
         "amount": amount,
         "hash": hash,
+        "hash_formatted": format_hash(hash),
         "hash_exists": hash_exists,
         "is_confirmed": is_confirmed,
         "local_timestamp": local_timestamp,
@@ -157,15 +162,18 @@ async def transform_block_data(data, hash):
     # Adjusting the extraction of receiver_account
 
     receiver_account = send_block_data.get("receiver", "")
+    receiver_account_formatted = send_block_data.get("receiver_formatted", "")
 
     result = {
         "sender_account": send_block_data.get("account", ""),
         "sender_balance": send_block_data.get("balance", ""),
+        "sender_account_formatted": send_block_data.get("account_formatted", ""),
         "send_block": send_block_data,
         "duration": duration,
         "duration_formatted": duration_formatted,
         "receive_block": receive_block_data,
         "receiver_account": receiver_account,
+        "receiver_account_formatted": receiver_account_formatted,
         "receiver_balance": receive_block_data.get("balance", ""),
         "is_change": True if change_hash else False,
         "change_block": change_block_data
