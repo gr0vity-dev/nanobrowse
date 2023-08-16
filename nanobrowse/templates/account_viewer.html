@@ -50,25 +50,31 @@
 
                 <!-- Representative -->
                 <tr>
-                    <td class="py-1 flex ">
-                        <span class="bg-pink-500 text-white text-xs px-2 py-1 rounded flex items-center justify-center w-32 h-6">Representative</span>
-                        <span class="px-2 text-xs"><a href="{{ request.url_root }}account/{{account_data['representative'] }}">{{account_data['representative'] }}</a></span>
+                    <td >
+                        <a class="py-1 flex " href="{{ request.url_root }}account/{{account_data['representative'] }}">
+                            <span class="bg-pink-500 text-white text-xs px-2 py-1 rounded flex items-center justify-center w-32 h-6">Representative</span>
+                            <span class="px-2 text-xs">{{account_data['representative'] }}</span>
+                        </a>
                     </td>
                 </tr>
 
                 <!-- Last Block -->
                 <tr>
-                    <td class="py-1 flex">
-                        <span class="bg-indigo-500 text-white text-xs px-2 py-1 rounded flex items-center justify-center w-32 h-6"><b>Last Block</b></span>
-                        <span class="px-2 text-xs" ><a href="{{ request.url_root }}block/{{account_data['frontier'] }}">{{account_data['frontier'] }}</a></span>
+                    <td>
+                        <a class="py-1 flex" href="{{ request.url_root }}block/{{account_data['frontier'] }}">
+                            <span class="bg-indigo-500 text-white text-xs px-2 py-1 rounded flex items-center justify-center w-32 h-6"><b>Last Block</b></span>
+                            <span class="px-2 text-xs" >{{account_data['frontier'] }}</span>
+                        </a>
                     </td>
                 </tr>
 
                 <!-- Open Block -->
                 <tr>
-                    <td class="py-1 flex">
-                        <span class="bg-indigo-400 text-white text-xs px-2 py-1 rounded flex items-center justify-center w-32 h-6"><b>Open Block</b></span>
-                        <span class="px-2 text-xs"><a href="{{ request.url_root }}block/{{account_data['open_block'] }}">{{account_data['open_block'] }}</a></span>
+                    <td>
+                        <a  class="py-1 flex" href="{{ request.url_root }}block/{{account_data['open_block'] }}">
+                            <span class="bg-indigo-400 text-white text-xs px-2 py-1 rounded flex items-center justify-center w-32 h-6"><b>Open Block</b></span>
+                            <span class="px-2 text-xs">{{account_data['open_block'] }}</span>
+                        </a>
                     </td>
                 </tr>
             </tbody>
@@ -87,9 +93,11 @@
 
                     <!-- Type Label (Send/Receive) -->
                     <td class="px-2 py-2 whitespace-nowrap text-sm">
-                        <span class="flex items-center justify-center w-20 h-6 text-xs rounded {% if entry['type'] == 'send' %} bg-blue-500 text-white {% else %} bg-green-500 text-white {% endif %}">
-                            {{ entry['type'] }}
-                        </span>
+                        <a href="{{ request.url_root }}block/{{ entry['hash'] }}">
+                            <span class="flex items-center justify-center w-20 h-6 text-xs rounded {% if entry['type'] == 'send' %} bg-blue-500 text-white {% else %} bg-green-500 text-white {% endif %}">
+                                {{ entry['type'] }}
+                            </span>
+                        </a>
                     </td>
 
                     <!-- Amount -->
