@@ -6,7 +6,8 @@
     <title>nanoBrowse Account Viewer</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/darkmode.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+    <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
 
 </head>
 <body class="bg-gray-100 mx-4 my-6">
@@ -15,70 +16,58 @@
         <!-- <h1 class="text-2xl font-bold mb-8 text-center">{{account_data['account']}}</h1> -->
         <div class="mb-8 flex flex-col items-center break-all">
             {% if account_data['show_weight'] %}
-                <span class="bg-pink-500 text-white text-sm px-2 py-1 rounded"><i class="fa-solid fa-wallet"></i> {{account_data['account']}}</span>
+                <span class="bg-pink-500 text-white text-sm px-2 py-1 rounded"><p class="copy_btn">{{account_data['account']}}</p></span>
                 {% if account_data['is_pr'] %}                
                 <span class="bg-pink-500 text-white text-xs px-2 py-1 rounded">Principal Representative</span>               
                 {% endif %}            
             {% else %}
-                <span class="bg-blue-500 text-white text-sm px-2 py-1 rounded"><i class="fa-solid fa-wallet"></i> {{account_data['account']}}</span>
+                <span class="bg-blue-500 text-white text-sm px-2 py-1 rounded"><p class="copy_btn">{{account_data['account']}}</p></span>
             {% endif %}
         </div>
        
 
 
         <!-- Account Info -->
-        <!-- Account Details Table -->
-        <table class="w-full divide-y divide-transparent">
-            <tbody>     
-                <!-- Balance -->
-                <tr>
-                    <td class="py-1 flex">
-                        <span class="bg-blue-500 text-white text-xs px-2 py-1 rounded flex items-center justify-center w-32 h-6">Balance</span>
-                        <span class="px-2"><b>{{account_data['confirmed_balance'] }} Ӿ</b></span>
-                    </td>
-                </tr>
 
-                {% if account_data['show_weight'] %}
-                <!-- Weight -->
-                <tr>
-                    <td class="py-1 flex">
-                        <span class="bg-pink-500 text-white text-xs px-2 py-1 rounded flex items-center justify-center w-32 h-6">Weight</span>
-                        <span class="px-2"><b> {{account_data['weight_formatted'] }}</b></span>
-                    </td>                   
-                </tr>
-                {% endif %}
+        <!-- Balance -->     
+        <div class="py-1 flex">
+            <span class="bg-blue-500 text-white text-xs px-2 py-1 rounded flex items-center justify-center w-32 h-6">Balance</span>
+            <span class="px-2"><b>{{account_data['confirmed_balance'] }} Ӿ</b></span>
+        </div>
 
-                <!-- Representative -->
-                <tr>
-                    <td >
-                        <a class="py-1 flex " href="{{ request.url_root }}account/{{account_data['representative'] }}">
-                            <span class="bg-pink-500 text-white text-xs px-2 py-1 rounded flex items-center justify-center w-32 h-6">Representative</span>
-                            <span class="px-2 text-xs">{{account_data['representative'] }}</span>
-                        </a>
-                    </td>
-                </tr>
+        {% if account_data['show_weight'] %}
+        <!-- Weight -->               
+        <div class="py-1 flex">
+            <span class="bg-pink-500 text-white text-xs px-2 py-1 rounded flex items-center justify-center w-32 h-6">Weight</span>
+            <span class="px-2"><b> {{account_data['weight_formatted'] }}</b></span>
+        </div>               
+        {% endif %}
 
-                <!-- Last Block -->
-                <tr>
-                    <td>
-                        <a class="py-1 flex" href="{{ request.url_root }}block/{{account_data['frontier'] }}">
-                            <span class="bg-indigo-500 text-white text-xs px-2 py-1 rounded flex items-center justify-center w-32 h-6"><b>Last Block</b></span>
-                            <span class="px-2 text-xs" >{{account_data['frontier'] }}</span>
-                        </a>
-                    </td>
-                </tr>
+        <!-- Representative -->                
+        <div class="py-1 flex" >
+            <span class="bg-pink-500 text-white text-xs px-2 py-1 rounded flex items-center justify-center w-32 h-6">
+                <a href="{{ request.url_root }}account/{{account_data['representative'] }}">Representative</a></span>
+            <span class="px-2 text-xs copy_btn">
+                <a href="{{ request.url_root }}account/{{account_data['representative'] }}">{{account_data['representative'] }}</a></span>
+        </div>              
 
-                <!-- Open Block -->
-                <tr>
-                    <td>
-                        <a  class="py-1 flex" href="{{ request.url_root }}block/{{account_data['open_block'] }}">
-                            <span class="bg-indigo-400 text-white text-xs px-2 py-1 rounded flex items-center justify-center w-32 h-6"><b>Open Block</b></span>
-                            <span class="px-2 text-xs">{{account_data['open_block'] }}</span>
-                        </a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <!-- Last Block -->
+        <div class="py-1 flex" >
+            <span class="bg-indigo-500 text-white text-xs px-2 py-1 rounded flex items-center justify-center w-32 h-6">
+                <a href="{{ request.url_root }}block/{{account_data['frontier'] }}"><b>Last Block</b></a></span>
+            <span class="px-2 text-xs copy_btn">
+                <a href="{{ request.url_root }}block/{{account_data['frontier'] }}">{{account_data['frontier'] }}</a></span>
+        </div>
+            
+        
+        <!-- Open Block -->
+        <div class="py-1 flex" >
+            <span class="bg-indigo-500 text-white text-xs px-2 py-1 rounded flex items-center justify-center w-32 h-6">
+                <a href="{{ request.url_root }}block/{{account_data['open_block'] }}"><b>Open Block</b></a></span>
+            <span class="px-2 text-xs copy_btn">
+                <a href="{{ request.url_root }}block/{{account_data['open_block'] }}">{{account_data['open_block'] }}</a></span>
+        </div>
+       
 
 
         <!-- Transactions Table -->
@@ -107,8 +96,8 @@
 
                     <!-- Account & Hash -->
                     <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500">
-                        <a href="{{ request.url_root }}account/{{ entry['account'] }}">{{ entry['account'] }}</a><br>
-                        <a href="{{ request.url_root }}block/{{ entry['hash'] }}"><b>{{ entry['hash'] }}</b></a>
+                        <a href="{{ request.url_root }}account/{{ entry['account'] }}"><p class="copy_btn_front">{{ entry['account'] }}</p></a><br>
+                        <a href="{{ request.url_root }}block/{{ entry['hash'] }}"><b class="copy_btn_front">{{ entry['hash'] }}</b></a>
                     </td>
                 </tr>
                 {% endfor %}

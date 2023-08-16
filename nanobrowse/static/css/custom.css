@@ -1,0 +1,64 @@
+/* Dark mode styles */
+@media (prefers-color-scheme: dark) {
+
+    body {
+        background-color: #1a202c; /* This is roughly equivalent to bg-gray-800 in Tailwind */
+        color: #e5e7eb;           /* Roughly equivalent to text-gray-300 in Tailwind */
+    }
+
+    .bg-gray-100 {
+        background-color: #2D3748; /* This color is equivalent to bg-gray-800 in Tailwind */
+    }
+    .bg-gray-500 {
+        background-color: #e5e7eb; /* This color is equivalent to bg-gray-800 in Tailwind */
+    }
+
+    .bg-blue-500 {
+        background-color: #4299E1; /* Same color but might be adjusted for better visibility on dark bg */
+      }
+
+    .text-blue-500 {
+        color: #4daefe; /* Same color but might be adjusted for better visibility on dark bg */
+      }
+
+    body.text-gray-500 {
+        color: #e5e7eb;
+    }
+    td.text-gray-500 {
+        color: #e5e7eb;
+    }
+    
+    input[type="text"].border {
+        background-color: #4A5568; /* Equivalent to bg-gray-700 in Tailwind */
+        color: #E2E8F0; /* Equivalent to text-gray-300 in Tailwind */
+        border-color: #4A5568; /* To keep the border same as the background color */
+      }
+  
+      input[type="text"].border::placeholder {
+        color: #A0AEC0; /* Equivalent to text-gray-400 in Tailwind */
+      }
+        
+}
+
+
+/* Copiable classes */
+.copy_btn, .copy_btn_front {
+  display: inline-block;
+  position: relative;
+}
+
+.copy_icon {
+  display: inline; /* make it always visible */
+  cursor: pointer;
+  color: currentColor; /* inherit color from parent */
+}
+
+.copy_btn .copy_icon {
+  margin-left: 5px; /* space it out a bit from the text when at the end */
+}
+
+.copy_btn_front .copy_icon {
+  margin-right: 5px; /* space it out a bit from the text when at the front */
+}
+
+
