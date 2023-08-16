@@ -58,6 +58,8 @@ async def fetch_blocks_info(data, hash):
         raise ValueError("Change blocks not yet supported")
         change_hash = hash
     else:
+        subtype = safe_get(data, "subtype")
+        raise ValueError(f"{subtype} blocks not yet supported")
         other_hash = hash
 
     valid_hashes = [h for h in [send_hash,
