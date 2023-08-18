@@ -25,7 +25,7 @@
     </script>
   </head>
   <body class="bg-gray-100">
-    <div class="h-screen flex justify-center items-center">
+    <div class="mt-20 flex items-center justify-center">
       <div class="w-4/5 flex flex-col items-center" style="max-width: 800px">
         <h1 class="text-4xl mb-4">nanoBrowse</h1>
 
@@ -49,6 +49,34 @@
             <input type="submit" value="Search" class="bg-blue-500 text-white rounded p-2" />
           </div>
         </form>
+        <table class="mt-6">
+          <thead class="text-gray-400">
+            <td></td>
+            <td class="justify-center">Recent Confirmations</td>
+            <td class="px-2">Stats</td>
+          </thead>
+          <tbody>
+            {% for entry in recent_blocks %}
+            <tr class="divide-y divide-gray-400">
+              <!-- Time Ago -->
+              <td class="px-4 py-2 whitespace-nowrap text-sm">{{ entry['time_ago'] }}</td>
+              <!-- Block Hash -->
+              <td class="px-4 py-2 whitespace-nowrap text-sm">
+                <a href="{{ request.url_root }}block/{{ entry['hash'] }}">
+                  <b>{{ entry['hash_formatted'] }}</b>
+                  <!-- Showing only first 10 characters for brevity -->
+                </a>
+              </td>
+              <!-- Voters & Duration -->
+              <td class="px-4 py-2 whitespace-nowrap text-sm">
+                {{ entry['conf_duration'] }}
+                <br />
+                {{ entry['voters'] }}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
     </div>
   </body>

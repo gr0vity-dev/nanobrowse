@@ -1,5 +1,5 @@
 from quart import Quart, make_response, jsonify, request
-from transformers import account_transformer, block_transformer
+from transformers import block, search, account
 from frontend.views import frontend
 import logging
 
@@ -24,10 +24,10 @@ async def handle_value_error(error):
 async def test_error():
     raise ValueError("This is a test error")
 
-app.register_blueprint(
-    account_transformer.account_transformer, url_prefix='/api')
-app.register_blueprint(block_transformer.block_transformer, url_prefix='/api')
 app.register_blueprint(frontend)
+app.register_blueprint(account.account_transformer, url_prefix='/api')
+app.register_blueprint(block.block_transformer, url_prefix='/api')
+app.register_blueprint(search.search_transformer,  url_prefix='/api')
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)

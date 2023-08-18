@@ -7,7 +7,11 @@ frontend = Blueprint('frontend', __name__,
 
 @frontend.route('/')
 async def index():
-    return await render_template("search.html")
+    async with httpx.AsyncClient() as client:
+        response = await client.get(f'http://127.0.0.1:5000/api/search/confirmation_history')
+
+    recent_blocks = response.json()
+    return await render_template("search.html", recent_blocks=recent_blocks)
 
 
 @frontend.route('/block/<blockhash>', methods=["GET"])
