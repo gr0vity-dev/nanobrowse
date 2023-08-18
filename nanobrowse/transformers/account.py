@@ -1,11 +1,13 @@
 from quart import Blueprint, jsonify, request, abort
 from deps.rpc_client import nanorpc
 from utils.formatting import get_time_ago, format_weight, format_balance, format_hash, format_account
+from utils.known import AccountLookup
 import logging
 
 logging.basicConfig(level=logging.INFO)
 
 account_transformer = Blueprint('account_transformer', __name__)
+account_lookup = AccountLookup()
 
 
 @account_transformer.route('/account/<account>', methods=['GET'])
@@ -15,7 +17,7 @@ async def get_account_history(account):
     if not data:
         abort(500, description="Error communicating with RPC server")
 
-    transformed_data = transform_account_data(data)
+    transformed_data = await transform_account_data(data)
     return jsonify(transformed_data)
 
 
@@ -30,7 +32,10 @@ async def fetch_account_history(account):
     return response
 
 
-def transform_account_data(data):
+async def transform_account_data(data):
+    if not account_lookup.data_sources:
+        await account_lookup.initialize_default_sources()
+
     history = data.get('history', [])
     account_info = data.get('account_info', {})
     transformed_history = []
@@ -45,9 +50,14 @@ def transform_account_data(data):
         else:
             amount_formatted = format_balance(amount, type) + "Ӿ"
 
+        is_known_account, known_account = account_lookup.lookup_account(
+            account)
+
         transformed_history.append({
             "type": type,
             "account": account,
+            "is_known_account": is_known_account,
+            "known_account": known_account,
             "account_formatted": format_account(account),
             "amount": amount,
             "amount_formatted": amount_formatted,
@@ -61,9 +71,16 @@ def transform_account_data(data):
 
     formatted_weight, weight_percent, show_weight = format_weight(
         account_info.get("weight"))
+    main_account = data.get("account")
+    main_account_formatted = format_account(main_account),
+    is_known_account, known_account = account_lookup.lookup_account(
+        main_account)
+
     response = {
-        "account": data.get("account"),
-        "account_formatted": format_account(data.get("account")),
+        "account": main_account,
+        "account_formatted": main_account_formatted,
+        "is_known_account": is_known_account,
+        "known_account": known_account,
         "confirmed_balance": format_balance(account_info.get("confirmed_balance", 0), "any"),
         "receivable": account_info.get("receivable", 0),
         "block_count": account_info.get("block_count", 0),

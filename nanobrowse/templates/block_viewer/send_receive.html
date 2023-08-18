@@ -2,8 +2,8 @@
   <!-- Sender Address -->
   <div class="text-center mb-2">
     <span class="bg-blue-500 text-white text-sm px-2 py-1 rounded break-all">
-      <i class="copy_btn" data-value="{{block_data.sender_account}}"></i>
-      <a href="{{ request.url_root }}account/{{ block_data.sender_account }}">{{ block_data.sender_account }}</a>
+      <i class="copy_btn" data-value="{{block_data.send_block.sender}}"></i>
+      <a href="{{ request.url_root }}account/{{ block_data.send_block.sender }}">{{ block_data.send_block.sender }}</a>
     </span>
     <p class="text-2xl font-bold text-center">Sender</p>
   </div>
@@ -81,11 +81,20 @@
   {% endif %}
 
   <!-- Receiver Address -->
-  <div class="text-center">
+  <div class="text-left">
     <p class="text-2xl font-bold text-center">Receiver</p>
-    <span class="bg-green-500 text-white text-sm px-2 py-1 rounded break-all">
-      <i class="copy_btn" data-value="{{block_data.receiver_account}}"></i>
-      <a href="{{ request.url_root }}account/{{ block_data.receiver_account }}">{{ block_data.receiver_account }}</a>
-    </span>
+    {% if block_data.send_block.is_known_receiver %}
+    <p class="bg-green-500 text-white text-sm px-2 py-1 rounded break-all">
+      {% if block_data.send_block.known_receiver.url %}
+      <a href="{{ block_data.send_block.known_receiver.url }}">{{ block_data.send_block.known_receiver.name }}</a>
+      {% else %} {{ block_data.send_block.known_receiver.name }} {% endif %}
+    </p>
+    {% endif %}
+    <p class="bg-green-500 text-white text-sm px-2 py-1 rounded break-all">
+      <i class="copy_btn" data-value="{{block_data.send_block.receiver}}"></i>
+      <a href="{{ request.url_root }}account/{{ block_data.send_block.receiver }}">
+        {{ block_data.send_block.receiver }}
+      </a>
+    </p>
   </div>
 </div>
