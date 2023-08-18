@@ -74,14 +74,15 @@ async def fetch_blocks_info(data, hash):
 
 def process_block_data(block_data, key):
     block = safe_get(block_data, key, default={})
+    block_type = safe_get(block, "subtype", default="")
     balance = format_balance(safe_get(block, "balance"))
-    amount = format_balance(safe_get(block, "amount"))
+    amount = format_balance(safe_get(block, "amount"), subtype=block_type)
     is_confirmed = safe_get(block, "confirmed") == "true"
     left_align = "left-20" if is_confirmed else "left-24"
     status = "Confirmed" if is_confirmed else "Unconfirmed"
     local_timestamp = safe_get(block, "local_timestamp", default="")
     time_ago = get_time_ago(local_timestamp)
-    block_type = safe_get(block, "subtype", default="")
+
     representative = safe_get(block, "contents", "representative", default="")
     previous = safe_get(block, "contents", "previous", default="")
     successor = safe_get(block, "successor", default="")
