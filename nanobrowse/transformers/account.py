@@ -64,7 +64,7 @@ def transform_account_data(data):
     response = {
         "account": data.get("account"),
         "account_formatted": format_account(data.get("account")),
-        "confirmed_balance": format_balance(account_info.get("confirmed_balance", 0)),
+        "confirmed_balance": format_balance(account_info.get("confirmed_balance", 0), "any"),
         "receivable": account_info.get("receivable", 0),
         "block_count": account_info.get("block_count", 0),
         "confirmed_blocks": account_info.get("confirmed_height", 0),

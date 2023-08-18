@@ -58,6 +58,8 @@ def format_balance(value, subtype="", default="0"):
             return "+ " + balance
         elif subtype == "change":
             return balance
+        elif subtype == "any":
+            return balance
         else:
             return "0"
     except (ValueError, TypeError):
