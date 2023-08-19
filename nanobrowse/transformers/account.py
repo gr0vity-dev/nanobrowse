@@ -52,13 +52,15 @@ async def transform_account_data(data):
 
         is_known_account, known_account = account_lookup.lookup_account(
             account)
+        account_formatted = known_account["name"] if is_known_account else format_account(
+            account)
 
         transformed_history.append({
             "type": type,
             "account": account,
             "is_known_account": is_known_account,
             "known_account": known_account,
-            "account_formatted": format_account(account),
+            "account_formatted": account_formatted,
             "amount": amount,
             "amount_formatted": amount_formatted,
             "timestamp": entry.get("local_timestamp"),
@@ -72,13 +74,20 @@ async def transform_account_data(data):
     formatted_weight, weight_percent, show_weight = format_weight(
         account_info.get("weight"))
     main_account = data.get("account")
-    main_account_formatted = format_account(main_account),
+    representative = account_info.get("representative")
     is_known_account, known_account = account_lookup.lookup_account(
+        main_account)
+    is_known_representative, known_representative = account_lookup.lookup_account(
+        representative)
+
+    representative_formatted = known_representative["name"] if is_known_representative else format_account(
+        representative)
+    account_formatted = known_account["name"] if is_known_account else format_account(
         main_account)
 
     response = {
         "account": main_account,
-        "account_formatted": main_account_formatted,
+        "account_formatted": account_formatted,
         "is_known_account": is_known_account,
         "known_account": known_account,
         "confirmed_balance": format_balance(account_info.get("confirmed_balance", 0), "any"),
@@ -90,8 +99,10 @@ async def transform_account_data(data):
         "frontier_formatted": format_hash(account_info.get("confirmed_frontier")),
         "open_block": account_info.get("open_block"),
         "open_block_formatted": format_hash(account_info.get("open_block")),
-        "representative": account_info.get("representative"),
-        "representative_formatted": format_account(account_info.get("representative")),
+        "representative": representative,
+        "representative_formatted": representative_formatted,
+        "is_known_representative": is_known_representative,
+        "known_representative": known_representative,
         "history": transformed_history,
         "previous": data.get("previous"),
         "weight": account_info.get("weight"),
