@@ -1,11 +1,16 @@
 <div class="flex flex-col items-center mx-4 my-6 sm:mx-auto max-w-screen-md">
   <!-- Sender Address -->
-  <div class="text-center mb-2">
+  <div class="text-left mb-2">
     <span class="bg-blue-500 text-white text-sm px-2 py-1 rounded break-all">
       <i class="copy_btn" data-value="{{block_data.send_block.sender}}"></i>
       <a href="{{ request.url_root }}account/{{ block_data.send_block.sender }}">{{ block_data.send_block.sender }}</a>
     </span>
-    <p class="text-2xl font-bold text-center">Sender</p>
+    <p class="text-2xl font-bold text-center">
+      Sender {% if block_data.send_block.is_known_sender %} {% if block_data.send_block.known_sender.url %}
+      <a href="{{ block_data.send_block.known_sender.url }}">: {{ block_data.send_block.known_sender.name }}</a>
+      {% else %}: {{ block_data.send_block.known_sender.name }} {% endif %}
+    </p>
+    {% endif %}
   </div>
 
   <!-- Sender Pin Shape -->
@@ -17,7 +22,9 @@
   <div class="flex flex-col items-center">
     <!-- Send Block -->
     <div>
-      <div class="border-2 border-blue-500 bg-blue-100 rounded p-2 text-blue-500 mb-20 relative overflow-clip">
+      <div
+        class="border-2 border-blue-500 bg-blue-100 rounded p-2 text-blue-500 mb-20 relative overflow-clip text-left"
+      >
         <span class="text-xs break-all">
           <i class="copy_btn" data-value="{{block_data.send_block.hash}}"></i>
           <a href="{{ request.url_root }}block/{{ block_data.send_block.hash }}">{{ block_data.send_block.hash }}</a>
@@ -38,7 +45,7 @@
     <!-- Receive Block -->
     {% if block_data.receive_block.hash_exists %}
     <!-- Receive Block -->
-    <div class="border-2 border-green-500 bg-green-100 rounded p-2 text-green-500 relative">
+    <div class="border-2 border-green-500 bg-green-100 rounded p-2 text-green-500 relative text-left">
       <span class="text-xs break-all">
         <i class="copy_btn" data-value="{{block_data.receive_block.hash}}"></i>
         <a href="{{ request.url_root }}block/{{ block_data.receive_block.hash }}">
@@ -82,12 +89,10 @@
 
   <!-- Receiver Address -->
   <div class="text-left">
-    <p class="text-2xl font-bold text-center">Receiver</p>
-    {% if block_data.send_block.is_known_receiver %}
-    <p class="bg-green-500 text-white text-sm px-2 py-1 rounded break-all">
-      {% if block_data.send_block.known_receiver.url %}
-      <a href="{{ block_data.send_block.known_receiver.url }}">{{ block_data.send_block.known_receiver.name }}</a>
-      {% else %} {{ block_data.send_block.known_receiver.name }} {% endif %}
+    <p class="text-2xl font-bold text-center">
+      Receiver {% if block_data.send_block.is_known_receiver %} {% if block_data.send_block.known_receiver.url %}
+      <a href="{{ block_data.send_block.known_receiver.url }}">: {{ block_data.send_block.known_receiver.name }}</a>
+      {% else %}: {{ block_data.send_block.known_receiver.name }} {% endif %}
     </p>
     {% endif %}
     <p class="bg-green-500 text-white text-sm px-2 py-1 rounded break-all">

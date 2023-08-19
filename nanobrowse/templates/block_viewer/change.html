@@ -7,7 +7,11 @@
         {{ block_data.change_block.account }}
       </a>
     </span>
-    <p class="text-2xl font-bold text-center">Sender</p>
+    <p class="text-2xl font-bold text-center">
+      Sender{% if block_data.change_block.is_known_account %} {% if block_data.change_block.known_account.url %}
+      <a href="{{ block_data.change_block.known_account.url }}">: {{ block_data.change_block.known_account.name }}</a>
+      {% else %}: {{ block_data.change_block.known_account.name }} {% endif %} {% endif %}
+    </p>
   </div>
 
   <!-- Sender Pin Shape -->
@@ -23,7 +27,7 @@
         <i class="copy_btn" data-value="{{block_data.change_block.hash}}"></i>
         <a href="{{ request.url_root }}block/{{ block_data.change_block.hash }}">{{ block_data.change_block.hash }}</a>
       </span>
-      <p class="text-2xl font-bold text-center mb-6">{{ block_data.change_block.amount }} Ӿ</p>
+      <p class="text-2xl font-bold text-center mb-6">delegate {{ block_data.change_block.balance }} Ӿ</p>
       <span class="absolute bottom-2 left-2 bg-purple-500 text-white text-xs px-2 py-1 rounded">
         {{ block_data.change_block.status }}
       </span>
@@ -44,7 +48,14 @@
 
   <!-- Receiver Address -->
   <div class="text-center">
-    <p class="text-2xl font-bold text-center">New Representative</p>
+    <p class="text-2xl font-bold text-center">
+      New Representative{% if block_data.change_block.is_known_representative %} {% if
+      block_data.change_block.known_representative.url %}
+      <a href="{{ block_data.change_block.known_representative.url }}">
+        : {{ block_data.change_block.known_representative.name }}
+      </a>
+      {% else %}: {{ block_data.change_block.known_representative.name }} {% endif %} {% endif %}
+    </p>
     <span class="bg-purple-600 text-white text-sm px-2 py-1 rounded break-all">
       <i class="copy_btn" data-value="{{block_data.representative}}"></i>
       <a href="{{ request.url_root }}account/{{ block_data.change_block.representative }}">

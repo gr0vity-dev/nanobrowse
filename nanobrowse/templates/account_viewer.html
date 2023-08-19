@@ -14,15 +14,20 @@
       <!-- Account address -->
       <div class="text-center mb-2">
         <span
-          class="bg-{% if account_data['show_weight'] %}purple{% else %}blue{% endif %}-500 text-white text-sm px-2 py-1 rounded break-all"
+          class="bg-{% if account_data['show_weight'] %}purple{% else %}blue{% endif %}-500 text-white text-sm px-2 py-1 rounded overflow-hidden whitespace-nowrap"
         >
           <i class="copy_btn" data-value="{{ account_data.account }}"></i>
           <a href="{{ request.url_root }}account/{{ account_data.account }}">{{ account_data.account }}</a>
         </span>
-
-        {% if account_data['is_pr'] %}
+        {% if account_data.is_known_account %}
         <br />
-        <span class="bg-purple-600 text-white text-xs px-2 py-1 rounded">Principal Representative</span>
+        <span
+          class="bg-{% if account_data['show_weight'] %}purple{% else %}blue{% endif %}-500 text-white text-xs px-2 py-1 rounded"
+        >
+          {{ account_data.known_account.name}}
+        </span>
+        {% endif %} {% if account_data['is_pr'] %}
+        <span class="text-left bg-purple-600 text-white text-xs ml-4 px-2 py-1 rounded">Principal Representative</span>
         {% endif %}
       </div>
 

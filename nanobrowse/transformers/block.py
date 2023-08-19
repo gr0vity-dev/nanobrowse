@@ -77,7 +77,7 @@ async def fetch_blocks_info(data, hash):
 def process_block_data(block_data, key):
     block = safe_get(block_data, key, default={})
     block_type = safe_get(block, "subtype", default="")
-    balance = format_balance(safe_get(block, "balance"))
+    balance = format_balance(safe_get(block, "balance"), "any")
     amount = format_balance(safe_get(block, "amount"), subtype=block_type)
     is_confirmed = safe_get(block, "confirmed") == "true"
     left_align = "left-20" if is_confirmed else "left-24"
