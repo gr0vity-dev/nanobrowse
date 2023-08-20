@@ -1,105 +1,103 @@
-<div class="flex flex-col items-center mx-4 my-6 sm:mx-auto max-w-screen-md">
+<div class="flex flex-col mt-4 mx-auto max-w-screen-sm w-full">
+  <!-- Ensure this div spans full width -->
   <!-- Sender Address -->
-  <div class="text-left mb-2">
-    <span class="bg-blue-500 text-white text-sm px-2 py-1 rounded break-all">
-      <i class="copy_btn" data-value="{{block_data.send_block.sender}}"></i>
-      <a href="{{ request.url_root }}account/{{ block_data.send_block.sender }}">{{ block_data.send_block.sender }}</a>
-    </span>
-    <p class="text-2xl font-bold text-center">
-      Sender {% if block_data.send_block.is_known_sender %} {% if block_data.send_block.known_sender.url %}
-      <a href="{{ block_data.send_block.known_sender.url }}">: {{ block_data.send_block.known_sender.name }}</a>
-      {% else %}: {{ block_data.send_block.known_sender.name }} {% endif %}
-    </p>
-    {% endif %}
-  </div>
 
   <!-- Sender Pin Shape -->
-  <div class="flex flex-col items-center">
-    <div class="w-12 h-12 border-2 border-blue-500 rounded-full"></div>
-    <div class="bg-blue-500 h-6 w-1"></div>
-  </div>
-
-  <div class="flex flex-col items-center">
-    <!-- Send Block -->
-    <div>
-      <div
-        class="border-2 border-blue-500 bg-blue-100 rounded p-2 text-blue-500 mb-20 relative overflow-clip text-left"
-      >
-        <span class="text-xs break-all">
-          <i class="copy_btn" data-value="{{block_data.send_block.hash}}"></i>
-          <a href="{{ request.url_root }}block/{{ block_data.send_block.hash }}">{{ block_data.send_block.hash }}</a>
-        </span>
-        <p class="text-2xl font-bold text-center mb-6">{{ block_data.send_block.amount }} Ӿ</p>
-        <span class="absolute bottom-2 left-2 bg-blue-500 text-white text-xs px-2 py-1 rounded">
-          {{ block_data.send_block.status }}
-        </span>
-        <span class="absolute bottom-2 {{ block_data.send_block.left_align }} text-black text-xs px-2 py-1">
-          {{ block_data.send_block.time_ago }}
-        </span>
-        <span class="absolute bottom-2 right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded">
-          {{ block_data.send_block.block_type }}
-        </span>
-      </div>
+  <div class="flex items-start">
+    <div class="flex flex-col">
+      <div class="w-12 mt-2 h-12 border-2 border-blue-500 rounded-full"></div>
+      <div class="ml-6 bg-blue-500 h-12 w-1"></div>
     </div>
+    <div class="text-left ml-4">
+      <span class="text-2xl font-bold">
+        Sender {% if block_data.send_block.is_known_sender %}
+        <span class="text-xl font-light"> {% if block_data.send_block.known_sender.url %}
+        <a href="{{ block_data.send_block.known_sender.url }}">: {{ block_data.send_block.known_sender.name }}</a>
+        {% else %}: {{ block_data.send_block.known_sender.name }}{% endif %}</span> {% endif %}
+      </span>
 
-    <!-- Receive Block -->
-    {% if block_data.receive_block.hash_exists %}
-    <!-- Receive Block -->
-    <div class="border-2 border-green-500 bg-green-100 rounded p-2 text-green-500 relative text-left">
-      <span class="text-xs break-all">
-        <i class="copy_btn" data-value="{{block_data.receive_block.hash}}"></i>
-        <a href="{{ request.url_root }}block/{{ block_data.receive_block.hash }}">
-          {{ block_data.receive_block.hash }}
+      <span class="bg-blue-500 text-white text-sm px-2 py-1 rounded overflow-hidden whitespace-nowrap">
+        <i class="copy_btn" data-value="{{block_data.send_block.sender}}"></i>
+        <a href="{{ request.url_root }}account/{{ block_data.send_block.sender }}">
+          {{ block_data.send_block.sender }}
         </a>
       </span>
-      <p class="text-2xl font-bold text-center mb-6">{{ block_data.receive_block.amount }} Ӿ</p>
-      <span class="absolute bottom-2 left-2 bg-green-500 text-white text-xs px-2 py-1 rounded">
-        {{ block_data.receive_block.status }}
-      </span>
-      <span class="absolute bottom-2 {{ block_data.receive_block.left_align }} text-black text-xs px-2 py-1">
-        {{ block_data.receive_block.time_ago }}
-      </span>
-      <span class="absolute bottom-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded">
-        {{ block_data.receive_block.block_type }}
-      </span>
     </div>
-    {% else %}
-    <!-- No Receive Block -->
-    <div class="border-2 border-gray-400 bg-gray-200 rounded p-2 text-gray-500 relative">
-      <p class="text-2xl font-bold text-center mb-6">Ready for recipient to receive</p>
-      <span class="absolute bottom-2 right-2 bg-gray-400 text-white text-xs px-2 py-1 rounded">receive block</span>
-    </div>
-    {% endif %}
   </div>
 
-  <!-- Receiver Pin Shape  -->
-  {% if block_data.receive_block.hash_exists %}
-  <!-- green -->
-  <div class="flex flex-col items-center">
-    <div class="bg-green-500 h-6 w-1"></div>
-    <div class="w-12 h-12 border-2 border-green-500 rounded-full"></div>
-  </div>
-  {% else %}
-  <!-- gray -->
-  <div class="flex flex-col items-center">
-    <div class="bg-gray-500 h-6 w-1"></div>
-    <div class="w-12 h-12 border-2 border-gray-500 rounded-full"></div>
-  </div>
-  {% endif %}
+  <!-- Ensure this div spans full width -->
+  <!-- Send Block -->
 
-  <!-- Receiver Address -->
-  <div class="text-left">
-    <p class="text-2xl font-bold text-center">
-      Receiver {% if block_data.send_block.is_known_receiver %} {% if block_data.send_block.known_receiver.url %}
-      <a href="{{ block_data.send_block.known_receiver.url }}">: {{ block_data.send_block.known_receiver.name }}</a>
-      {% else %}: {{ block_data.send_block.known_receiver.name }} {% endif %}
-    </p>
-    {% endif %}
-    <p class="bg-green-500 text-white text-sm px-2 py-1 rounded break-all">
-      <i class="copy_btn" data-value="{{block_data.send_block.receiver}}"></i>
-      <a href="{{ request.url_root }}account/{{ block_data.send_block.receiver }}">
-        {{ block_data.send_block.receiver }}
-      </a>
-    </p>
+  <!-- Ensure this div spans full width -->
+  <div class="border-2 border-blue-500 bg-blue-100 rounded p-2 text-blue-500 mb-20 w-full relative text-center">
+    <span class="text-xs whitespace-nowrap overflow-hidden block mb-1 mt-1">
+      <i class="copy_btn" data-value="{{block_data.send_block.hash}}"></i>
+      <a href="{{ request.url_root }}block/{{ block_data.send_block.hash }}">{{ block_data.send_block.hash }}</a>
+    </span>
+    <p class="text-2xl font-bold text-center mb-6">{{ block_data.send_block.amount }} Ӿ</p>
+    <span class="absolute bottom-2 left-2 bg-blue-500 text-white text-xs px-2 py-1 rounded">
+      {{ block_data.send_block.status }}
+    </span>
+    <span class="absolute bottom-2 {{ block_data.send_block.left_align }} text-black text-xs px-2 py-1">
+      {{ block_data.send_block.time_ago }}
+    </span>
+    <span class="absolute bottom-2 right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded">
+      {{ block_data.send_block.block_type }}
+    </span>
   </div>
+  
+  
+  <!-- Receive Block -->
+  <div class="border-2 border-green-500 bg-green-100 rounded p-2 text-green-500 w-full text-center relative">
+   <span class="text-xs whitespace-nowrap overflow-hidden block mb-1 mt-1">
+      <i class="copy_btn" data-value="{{block_data.receive_block.hash}}"></i>
+      <a href="{{ request.url_root }}block/{{ block_data.receive_block.hash }}">{{ block_data.receive_block.hash }}</a>
+    </span>
+    <p class="text-2xl font-bold text-center mb-6">{{ block_data.send_block.amount }} Ӿ</p>
+    <span class="absolute bottom-2 left-2 bg-green-500 text-white text-xs px-2 py-1 rounded">
+      {{ block_data.send_block.status }}
+    </span>
+    <span class="absolute bottom-2 {{ block_data.receive_block.left_align }} text-black text-xs px-2 py-1">
+      {{ block_data.receive_block.time_ago }}
+    </span>
+    <span class="absolute bottom-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded">
+      {{ block_data.receive_block.block_type }}
+    </span>
+  </div>
+  
+  <!-- Receiver Pin Shape -->
+  <div class="flex items-start">
+    <div class="flex flex-col">
+       {% if block_data.receive_block.hash_exists %}
+       <!-- green -->
+      <div class="ml-6 bg-green-500 h-12 w-1"></div>
+      <div class="w-12 h-12 border-2 border-green-500 rounded-full"></div>
+        {% else %}
+          <!-- gray -->
+          <div class="ml-6 bg-gray-500 h-8 w-1"></div>
+      <div class="w-12 h-12 border-2 border-gray-500 rounded-full"></div>
+        {% endif %}
+      
+    </div>
+    <div class="text-left ml-4 mt-10">
+      <span class="text-2xl font-bold">
+        Receiver {% if block_data.send_block.is_known_receiver %}<span class="text-xl font-light"> {% if block_data.send_block.known_receiver.url %}
+        <a href="{{ block_data.send_block.known_receiver.url }}">: {{ block_data.send_block.known_receiver.name }}</a>
+        {% else %}: {{ block_data.send_block.known_receiver.name }}{% endif %}</span> {% endif %}
+      </span>
+
+      <span class="bg-green-500 text-white text-sm px-2 py-1 rounded overflow-hidden whitespace-nowrap">
+        <i class="copy_btn" data-value="{{block_data.send_block.sender}}"></i>
+        <a href="{{ request.url_root }}account/{{ block_data.send_block.sender }}">
+          {{ block_data.send_block.sender }}
+        </a>
+      </span>
+    </div>
+  </div>
+  
+  
+  
+
+
+
 </div>
