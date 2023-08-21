@@ -157,7 +157,7 @@ def process_block_data(block_data, key):
         "block_type": "send block" if is_send else "receive block" if is_receive else "open block" if is_open else "change block" if is_change else "epoch block" if is_epoch else ""
     }
 
-    logging.info(response)
+    
     return response
 
 
