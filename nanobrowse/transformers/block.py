@@ -24,9 +24,12 @@ async def get_block_info(hash):
 
 async def fetch_block_info(hashes):
 
-    response = await nanorpc.blocks_info(hashes, json_block="true", source="true", receive_hash="true")
-    if "error" in response:
-        raise ValueError("Invalid hash")
+    try:
+        response = await nanorpc.blocks_info(hashes, json_block="true", source="true", receive_hash="true")
+        if "error" in response:
+            raise ValueError("Invalid hash")
+    except Exception as exc:
+        raise ValueError("Timeout...\nPlease try again later.")
 
     return response.get("blocks", {})
 
