@@ -48,7 +48,7 @@ async def transform_account_data(data):
         if type == "change":
             amount_formatted = "new rep"
         else:
-            amount_formatted = format_balance(amount, type) + "Ӿ"
+            amount_formatted = format_balance(amount, type)
 
         is_known_account, known_account = account_lookup.lookup_account(
             account)

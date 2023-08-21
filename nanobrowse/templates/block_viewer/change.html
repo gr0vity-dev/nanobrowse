@@ -9,18 +9,18 @@
       <div class="ml-6 bg-blue-500 h-12 w-1"></div>
     </div>
     <div class="text-left ml-4">
-      <span class="text-2xl font-bold">
+      <div class="text-2xl font-bold">
         Sender {% if block_data.change_block.is_known_sender %} <span class="text-xl font-light"> {% if block_data.change_block.known_sender.url %}
         <a href="{{ block_data.change_block.known_sender.url }}">: {{ block_data.change_block.known_sender.name }}</a>
         {% else %}: {{ block_data.change_block.known_sender.name }}{% endif %}</span> {% endif %}
-      </span>
+      </div>
 
-      <span class="bg-blue-500 text-white text-sm px-2 py-1 rounded overflow-hidden whitespace-nowrap">
+      <div class="bg-blue-500 text-white text-sm px-2 py-1 rounded overflow-hidden whitespace-nowrap">
         <i class="copy_btn" data-value="{{block_data.change_block.sender}}"></i>
         <a href="{{ request.url_root }}account/{{ block_data.change_block.sender }}">
           {{ block_data.change_block.sender }}
         </a>
-      </span>
+      </div>
     </div>
   </div>
 
@@ -58,7 +58,7 @@
     </div>
     <div class="text-left ml-4 mt-10">
      
-        <span class="text-2xl font-bold">New Representative
+        <div class="text-2xl font-bold">New Representative
         {% if block_data.change_block.is_known_receiver %}
         <span class="text-xl font-light">
           {% if block_data.change_block.known_receiver.url %}
@@ -68,14 +68,14 @@
            {% endif %}
            </span>
         {% endif %}
-      </span>
+      </div>
 
-      <span class="bg-purple-500 text-white text-sm px-2 py-1 rounded overflow-hidden whitespace-nowrap">
+      <div class="bg-purple-500 text-white text-sm px-2 py-1 rounded overflow-hidden whitespace-nowrap">
         <i class="copy_btn" data-value="{{block_data.change_block.sender}}"></i>
         <a href="{{ request.url_root }}account/{{ block_data.change_block.sender }}">
           {{ block_data.change_block.sender }}
         </a>
-      </span>
+      </div>
     </div>
   </div>
   

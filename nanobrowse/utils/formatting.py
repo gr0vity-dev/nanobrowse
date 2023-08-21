@@ -36,7 +36,7 @@ def format_weight(value):
     show_weight = False
     try:
         weight = int(value) / 10 ** 30
-        weight_formatted = "{:.0f} Ӿ".format(weight)
+        weight_formatted =  "Ӿ {:,.2f}".format(weight)
         weight_percent = (int(value) / NANO_SUPPLY) * 100
         weight_percent_formatted = "{:.2f}".format(weight_percent)
         if weight_percent > ignore_weight_below:
@@ -53,15 +53,15 @@ def format_balance(value, subtype="", default="0"):
     try:
         balance = "{:,.8f}".format(int(value) / 10 ** 30)
         if subtype == "send":
-            return "- " + balance
+            return "-Ӿ " + balance
         elif subtype == "receive":
-            return "+ " + balance
+            return "+Ӿ " + balance
         elif subtype == "change":
-            return balance
+            return "Ӿ " + balance
         elif subtype == "any":
-            return balance
+            return  "Ӿ " + balance
         else:
-            return "0"
+            return "Ӿ 0"
     except (ValueError, TypeError):
         return default
 

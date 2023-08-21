@@ -78,7 +78,8 @@ def process_block_data(block_data, key):
     block = safe_get(block_data, key, default={})
     block_type = safe_get(block, "subtype", default="")
     balance = format_balance(safe_get(block, "balance"), "any")
-    amount = format_balance(safe_get(block, "amount"), subtype=block_type)
+    amount = safe_get(block, "amount")
+    amount_formatted = format_balance(amount, subtype=block_type)
     is_confirmed = safe_get(block, "confirmed") == "true"
     left_align = "left-20" if is_confirmed else "left-24"
     status = "Confirmed" if is_confirmed else "Unconfirmed"
@@ -139,6 +140,7 @@ def process_block_data(block_data, key):
         "known_representative": known_representative,
         "balance": balance,
         "amount": amount,
+        "amount_formatted": amount_formatted,
         "hash": hash,
         "hash_formatted": format_hash(hash),
         "previous_hash": previous,
