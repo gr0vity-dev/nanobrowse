@@ -26,6 +26,7 @@ async def fetch_account_history(account):
     try: 
         response = await nanorpc.account_history(account, count="25", raw="true") or {}
         response["account_info"] = await nanorpc.account_info(account, include_confirmed="true", representative="true", receivable="true", weight="true")
+        response["receivable"] = await nanorpc.receivable(account)
     
         if "error" in response:
             raise ValueError("Invalid account")
@@ -42,6 +43,7 @@ async def transform_account_data(data):
 
     history = data.get('history', [])
     account_info = data.get('account_info', {})
+    account_receivable = data.get("receivable", {})
     transformed_history = []
     for entry in history:
         time_ago = get_time_ago(entry.get("local_timestamp"))
@@ -75,6 +77,11 @@ async def transform_account_data(data):
             "time_ago": time_ago
         })
 
+    receivable = account_info.get("receivable", 0)
+    receivable_formatted = format_balance(receivable, "any")
+    show_receivable = True if int(receivable) > 0 else False
+    receivable_count = len(account_receivable["blocks"]) if account_receivable and "blocks" in account_receivable else 0
+    
     formatted_weight, weight_percent, show_weight = format_weight(
         account_info.get("weight"))
     main_account = data.get("account")
@@ -95,7 +102,10 @@ async def transform_account_data(data):
         "is_known_account": is_known_account,
         "known_account": known_account,
         "confirmed_balance": format_balance(account_info.get("confirmed_balance", 0), "any"),
-        "receivable": account_info.get("receivable", 0),
+        "show_receivable" : show_receivable,
+        "receivable": receivable,
+        "receivable_formatted" : receivable_formatted,
+        "receivable_count" : receivable_count,
         "block_count": account_info.get("block_count", 0),
         "confirmed_blocks": account_info.get("confirmed_height", 0),
         "unconfirmed_blocks": int(account_info.get("block_count", 0)) - int(account_info.get("confirmed_height", 0)),

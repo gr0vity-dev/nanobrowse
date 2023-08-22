@@ -38,10 +38,21 @@
           <!-- Balance -->
           <tr>
             <td class="bg-blue-500 text-white text-xs px-3 rounded w-32 h-6 flex items-center justify-center">
-              Balance
+              Available Balance
             </td>
             <td class="px-3 py-1 font-bold">{{account_data['confirmed_balance'] }}</td>
           </tr>
+          
+          {% if account_data['show_receivable'] %}
+          <!-- Receivable balance -->
+          <tr>
+            <td class="bg-blue-600 text-white text-xs px-3 rounded w-32 h-8 flex flex-col items-center justify-center">
+              <div>Ready to receive</div>
+              <div>({{account_data['receivable_count'] }} blocks)</div>
+            </td>
+            <td class="px-3 py-2 font-bold">{{account_data['receivable_formatted'] }}</td>
+          </tr>
+          {% endif %}
 
           {% if account_data['show_weight'] %}
           <!-- Weight -->
@@ -117,7 +128,7 @@
             <td
               class="px-4 py-4 whitespace-nowrap text-sm {% if entry['type'] == 'send' %} text-blue-500 {% elif entry['type'] == 'receive' %} text-green-500 {% elif entry['type'] == 'change' %} text-purple-500 {% else %} text-gray-500{% endif %}"
             >
-              {{ entry['amount_formatted'] }}
+              <b>{{ entry['amount_formatted'] }}</b>
             </td>
 
             <!-- Account & Hash -->
