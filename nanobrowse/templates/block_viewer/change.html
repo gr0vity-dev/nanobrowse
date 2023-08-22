@@ -59,12 +59,12 @@
     <div class="text-left ml-4 mt-10">
      
         <div class="text-2xl font-bold">New Representative
-        {% if block_data.change_block.is_known_receiver %}
+        {% if block_data.change_block.is_known_representative %}
         <span class="text-xl font-light">
-          {% if block_data.change_block.known_receiver.url %}
-            <a href="{{ block_data.change_block.known_receiver.url }}">: {{ block_data.change_block.known_receiver.name }}</a>
+          {% if block_data.change_block.known_representative.url %}
+            <a href="{{ block_data.change_block.known_representative.url }}">: {{ block_data.change_block.known_representative.name }}</a>
           {% else %}:
-             {{ block_data.change_block.known_receiver.name }}
+             {{ block_data.change_block.known_representative.name }}
            {% endif %}
            </span>
         {% endif %}
