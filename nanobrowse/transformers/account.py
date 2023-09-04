@@ -26,7 +26,8 @@ async def fetch_account_history(account):
     try: 
         response = await nanorpc.account_history(account, count="25", raw="true") or {}
         response["account_info"] = await nanorpc.account_info(account, include_confirmed="true", representative="true", receivable="true", weight="true")
-        response["receivable"] = await nanorpc.receivable(account)
+        response["receivable"] = await nanorpc.receivable(account, source="true", include_only_confirmed="false" , sorting="true")
+       # response["delegators"] = await nanorpc.delegators(account, threshold="1000000000000000000000000000000000", count="200")        
     
         if "error" in response:
             raise ValueError("Invalid account")
@@ -37,13 +38,8 @@ async def fetch_account_history(account):
     return response
 
 
-async def transform_account_data(data):
-    if not account_lookup.data_sources:
-        await account_lookup.initialize_default_sources()
+async def transform_history_data(history):
 
-    history = data.get('history', [])
-    account_info = data.get('account_info', {})
-    account_receivable = data.get("receivable", {})
     transformed_history = []
     for entry in history:
         time_ago = get_time_ago(entry.get("local_timestamp"))
@@ -56,10 +52,8 @@ async def transform_account_data(data):
         else:
             amount_formatted = format_balance(amount, type)
 
-        is_known_account, known_account = account_lookup.lookup_account(
-            account)
-        account_formatted = known_account["name"] if is_known_account else format_account(
-            account)
+        is_known_account, known_account = account_lookup.lookup_account(account)
+        account_formatted = known_account["name"] if is_known_account else format_account(account)
 
         transformed_history.append({
             "type": type,
@@ -76,11 +70,82 @@ async def transform_account_data(data):
             "confirmed": entry.get("confirmed"),
             "time_ago": time_ago
         })
+    return transformed_history
+
+
+async def transform_delegator_data(delegators):
+    transformed_delegators = []
+    # Sort the raw delegators data to get top 50 by weight
+    top_50_delegators = sorted(delegators["delegators"].items(), key=lambda x: int(x[1]), reverse=True)[:50]
+
+    # Transform the top 50 delegators
+    for delegator, weight in top_50_delegators:
+        is_known_delegator, known_delegator = account_lookup.lookup_account(delegator)
+        delegator_formatted = known_delegator["name"] if is_known_delegator else format_account(delegator)
+
+        formatted_weight, weight_percent, show_weight = format_weight(weight)
+
+        transformed_delegators.append({
+            "delegator": delegator,
+            "is_known_delegator": is_known_delegator,
+            "known_delegator": known_delegator,
+            "delegator_formatted": delegator_formatted,
+            "weight": weight,
+            "weight_formatted": formatted_weight
+        })
+
+    return transformed_delegators
+    
+
+async def transform_receivable_data(blocks):
+    
+    if not blocks or len(blocks) == 0: return []
+    transformed_blocks = []
+    trimmed_blocks = list(blocks.items())[:50]
+    
+    # Transform the block data
+    for block_hash, block_data in trimmed_blocks:
+        amount = block_data.get("amount")
+        source = block_data.get("source")
+        
+        amount_formatted = format_balance(amount, "any")  
+        is_known_source, known_source = account_lookup.lookup_account(source)
+        source_formatted = known_source["name"] if is_known_source else format_account(source) 
+        hash_formatted = format_hash(block_hash) 
+        
+        transformed_blocks.append({
+            "hash": block_hash,
+            "hash_formatted" : hash_formatted, 
+            "amount": amount,
+            "amount_formatted": amount_formatted,
+            "source": source,
+            "is_known_source": is_known_source,
+            "known_source": known_source,
+            "source_formatted": source_formatted
+        })
+
+    return transformed_blocks
+        
+
+async def transform_account_data(data):
+    if not account_lookup.data_sources:
+        await account_lookup.initialize_default_sources()
+        
+    history = data.get('history', [])
+    #delegators = data.get('delegators', {})
+    account_info = data.get('account_info', {})
+    account_receivable = data.get("receivable", {})
+    
+    
+    transformed_history = await transform_history_data(history)
+    transformed_receivable = await transform_receivable_data(account_receivable["blocks"])
+    #transformed_delegators = await transform_delegator_data(delegators)
 
     receivable = account_info.get("receivable", 0)
     receivable_formatted = format_balance(receivable, "any")
     show_receivable = True if int(receivable) > 0 else False
     receivable_count = len(account_receivable["blocks"]) if account_receivable and "blocks" in account_receivable else 0
+
     
     formatted_weight, weight_percent, show_weight = format_weight(
         account_info.get("weight"))
@@ -104,6 +169,7 @@ async def transform_account_data(data):
         "confirmed_balance": format_balance(account_info.get("confirmed_balance", 0), "any"),
         "show_receivable" : show_receivable,
         "receivable": receivable,
+        "receivables" : transformed_receivable,
         "receivable_formatted" : receivable_formatted,
         "receivable_count" : receivable_count,
         "block_count": account_info.get("block_count", 0),
@@ -118,11 +184,13 @@ async def transform_account_data(data):
         "is_known_representative": is_known_representative,
         "known_representative": known_representative,
         "history": transformed_history,
+       # "delegators": transformed_delegators,
         "previous": data.get("previous"),
         "weight": account_info.get("weight"),
         "weight_percent": weight_percent,
         "weight_formatted": formatted_weight,
     }
+    
 
     response["show_receivable"] = True if int(
         response["receivable"]) > 0 else False

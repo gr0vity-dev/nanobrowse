@@ -3,7 +3,6 @@ import datetime
 
 NANO_SUPPLY = 133246401824662258600496820004700378675
 
-
 def get_time_ago(timestamp):
     timestamp = 0 if timestamp == "" else int(timestamp)
     current_time = datetime.datetime.now().timestamp()
@@ -31,13 +30,14 @@ def get_time_ago(timestamp):
         return f"{years} year(s) ago"
 
 
-def format_weight(value):
+def format_weight(value, base_weight=None):
     ignore_weight_below = 0.01  # percent
     show_weight = False
+    base_weight = base_weight or NANO_SUPPLY
     try:
         weight = int(value) / 10 ** 30
         weight_formatted =  "Ӿ {:,.2f}".format(weight)
-        weight_percent = (int(value) / NANO_SUPPLY) * 100
+        weight_percent = (int(value) / int(base_weight)) * 100
         weight_percent_formatted = "{:.2f}".format(weight_percent)
         if weight_percent > ignore_weight_below:
             show_weight = True
