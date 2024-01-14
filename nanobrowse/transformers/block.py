@@ -1,12 +1,14 @@
 from quart import Blueprint, jsonify, abort, make_response, jsonify
 from deps.rpc_client import nanorpc
 from utils.formatting import format_balance, get_time_ago, format_hash, format_account
+from utils.known import AccountLookup
 import json
 import logging
 
 logging.basicConfig(level=logging.INFO)
 
 block_transformer = Blueprint('block_transformer', __name__)
+account_lookup = AccountLookup()
 
 
 @block_transformer.route('/block/<hash>', methods=['GET'])
@@ -22,9 +24,12 @@ async def get_block_info(hash):
 
 async def fetch_block_info(hashes):
 
-    response = await nanorpc.blocks_info(hashes, json_block="true", source="true", receive_hash="true")
-    if "error" in response:
-        raise ValueError("Invalid hash")
+    try:
+        response = await nanorpc.blocks_info(hashes, json_block="true", source="true", receive_hash="true")
+        if "error" in response:
+            raise ValueError("Invalid hash")
+    except Exception as exc:
+        raise ValueError("Timeout...\nPlease try again later.")
 
     return response.get("blocks", {})
 
@@ -75,8 +80,9 @@ async def fetch_blocks_info(data, hash):
 def process_block_data(block_data, key):
     block = safe_get(block_data, key, default={})
     block_type = safe_get(block, "subtype", default="")
-    balance = format_balance(safe_get(block, "balance"))
-    amount = format_balance(safe_get(block, "amount"), subtype=block_type)
+    balance = format_balance(safe_get(block, "balance"), "any")
+    amount = safe_get(block, "amount")
+    amount_formatted = format_balance(amount, subtype=block_type)
     is_confirmed = safe_get(block, "confirmed") == "true"
     left_align = "left-20" if is_confirmed else "left-24"
     status = "Confirmed" if is_confirmed else "Unconfirmed"
@@ -109,17 +115,35 @@ def process_block_data(block_data, key):
         sender = safe_get(block, "contents", "account", default="")
         receiver = safe_get(block, "contents", "account", default="")
 
-    return {
+    is_known_account, known_account = account_lookup.lookup_account(
+        account)
+    is_known_sender, known_sender = account_lookup.lookup_account(
+        sender)
+    is_known_receiver, known_receiver = account_lookup.lookup_account(
+        receiver)
+    is_known_representative, known_representative = account_lookup.lookup_account(
+        representative)
+
+    response = {
         "account": account,
         "account_formatted": format_account(account),
+        "is_known_account": is_known_account,
+        "known_account": known_account,
         "sender": sender,
         "sender_formatted": format_account(sender),
+        "is_known_sender": is_known_sender,
+        "known_sender": known_sender,
         "receiver": receiver,
         "receiver_formatted": format_account(receiver),
+        "is_known_receiver": is_known_receiver,
+        "known_receiver": known_receiver,
         "representative": representative,
         "representative_formatted": format_account(representative),
+        "is_known_representative": is_known_representative,
+        "known_representative": known_representative,
         "balance": balance,
         "amount": amount,
+        "amount_formatted": amount_formatted,
         "hash": hash,
         "hash_formatted": format_hash(hash),
         "previous_hash": previous,
@@ -134,11 +158,14 @@ def process_block_data(block_data, key):
         "status": status,
         "left_align": left_align,
         "block_type": "send block" if is_send else "receive block" if is_receive else "open block" if is_open else "change block" if is_change else "epoch block" if is_epoch else ""
-
     }
+
+    return response
 
 
 async def transform_block_data(data, hash):
+    if not account_lookup.data_sources:
+        await account_lookup.initialize_default_sources()
 
     blocks_info, send_hash, receive_hash, change_hash = await fetch_blocks_info(data, hash)
 
@@ -172,21 +199,12 @@ async def transform_block_data(data, hash):
         duration = 0
         duration_formatted = ""
 
-    # Adjusting the extraction of receiver_account
-
-    receiver_account = send_block_data.get("receiver", "")
-    receiver_account_formatted = send_block_data.get("receiver_formatted", "")
-
     result = {
-        "sender_account": send_block_data.get("account", ""),
         "sender_balance": send_block_data.get("balance", ""),
-        "sender_account_formatted": send_block_data.get("account_formatted", ""),
         "send_block": send_block_data,
         "duration": duration,
         "duration_formatted": duration_formatted,
         "receive_block": receive_block_data,
-        "receiver_account": receiver_account,
-        "receiver_account_formatted": receiver_account_formatted,
         "receiver_balance": receive_block_data.get("balance", ""),
         "change_block": change_block_data,
         "is_change": is_change,

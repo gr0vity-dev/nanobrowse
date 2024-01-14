@@ -4,10 +4,54 @@ document.addEventListener("DOMContentLoaded", function() {
     handleCopyEvent('.copy_btn_front', 'prepend');
 });
 
+document.addEventListener('DOMContentLoaded', function() {
+    let account = document.body.getAttribute('data-get-delegators-for-account');
+    if (account) {
+            fetchDelegatorsData(account);
+    }
+});
+        
+function __fetchDelegatorsData(account) {
+    fetch(`/delegators/${account}`)
+    .then(response => response.text())  // Note that we're fetching text (HTML) now
+    .then(renderedTableRows => {
+        let tableBody = document.querySelector("#delegatorTable tbody");
+        tableBody.innerHTML = renderedTableRows;
+        
+    handleCopyEvent('.copy_btn', 'append');
+    handleCopyEvent('.copy_btn_front', 'prepend'); 
+    });
+}
+
+function fetchDelegatorsData(account) {
+    fetch(`/delegators/${account}`)
+    .then(response => response.text())  
+    .then(renderedTableRows => {
+        let tableBody = document.querySelector("#delegatorTable tbody");
+        tableBody.innerHTML = renderedTableRows;
+        
+        document.getElementById('loadingSpinnerRow').style.display = 'none'; // hide the spinner row
+
+        handleCopyEvent('.copy_btn', 'append');
+        handleCopyEvent('.copy_btn_front', 'prepend'); 
+    })
+    .catch(err => {
+        console.error("Error fetching delegators data:", err);
+        let tableBody = document.querySelector("#delegatorTable tbody");
+        tableBody.innerHTML = "<tr><td colspan='3'>Failed to load data. Please try again.</td></tr>";
+    });
+}
+
+
 function handleCopyEvent(selector, position) {
     var copyElements = document.querySelectorAll(selector);
 
     copyElements.forEach(function(el) {
+        // Check if the element already has the copy icon
+        if (el.getAttribute('data-has-copy-icon')) {
+            return;  // Skip this iteration if it already has the copy icon
+        }
+
         var copyIcon = document.createElement('span');
         copyIcon.innerHTML = '<i class="fa-regular fa-copy"></i>';
         copyIcon.classList.add('copy_icon');
@@ -38,5 +82,10 @@ function handleCopyEvent(selector, position) {
         } else if (position === 'prepend') {
             el.insertBefore(copyIcon, el.firstChild);
         }
+
+        // Mark this element as having the copy icon
+        el.setAttribute('data-has-copy-icon', 'true');
     });
 }
+
+

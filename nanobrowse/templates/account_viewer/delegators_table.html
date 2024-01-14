@@ -1,0 +1,47 @@
+<!-- Delegators Table -->
+<table id="delegatorTable" class="table mt-6 mx-auto" style="display: none;">
+    <tbody>
+        <!-- Place spinner here initially -->
+        <tr id="loadingSpinnerRow">
+            <td colspan="3" class="text-center">
+                <div class="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-64 w-64"></div>
+            </td>
+        </tr>
+        
+        {% for entry in account_data['delegators'] %}
+        <tr class="divide-y divide-gray-400">
+        
+            
+            <!-- delegate -->
+            <td class="px-2 py-2 whitespace-nowrap text-sm">
+              <a href="{{ request.url_root }}block/{{ entry['hash'] }}">
+                <span
+                  class="flex items-center justify-center w-20 h-6 text-xs rounded bg-purple-600 text-white"
+                >
+                  delegate
+                </span>
+              </a>
+            </td>
+            
+            
+            <!-- Weight -->
+            <td class="px-4 py-4 whitespace-nowrap text-sm ">
+              <b>{{ entry['weight_formatted'] }}</b>
+            </td>
+            
+            <!-- Delegator -->
+             <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500">
+              <a href="{{ request.url_root }}account/{{ entry['delegator'] }}">
+                <i class="copy_btn" data-value="{{ entry['delegator'] }}"></i>
+                {{ entry['delegator_formatted'] }}
+              </a>
+            </td>
+              
+            
+           
+            
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+

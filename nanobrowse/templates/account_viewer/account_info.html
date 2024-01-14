@@ -1,0 +1,74 @@
+      <!-- Account Info -->
+      <table class="mt-6 mx-auto border-collapse">
+        <tbody>
+          <!-- Balance -->
+          <tr>
+            <td data-show-table="transactionTable" style="cursor:pointer" class="bg-blue-500 text-white text-xs px-3 rounded w-32 h-6 flex items-center justify-center">
+              Available Balance
+            </td>
+            <td class="px-3 py-1 font-bold">{{account_data['confirmed_balance'] }}</td>
+          </tr>
+          
+          {% if account_data['show_receivable'] %}
+          <!-- Receivable balance -->
+          <tr>
+            <td data-show-table="pendingTable" style="cursor:pointer" class="bg-blue-600 text-white text-xs px-3 rounded w-32 h-8 flex flex-col items-center justify-center">
+              <div>Ready to receive</div>
+              <div>({{account_data['receivable_count'] }} blocks)</div>
+            </td>
+            <td class="px-3 py-2 font-bold">{{account_data['receivable_formatted'] }}</td>
+          </tr>
+          {% endif %}
+
+          {% if account_data['show_weight'] %}
+          <!-- Weight -->
+          <tr>
+            <td data-show-table="delegatorTable" style="cursor:pointer" class="bg-purple-600 text-white text-xs px-3 rounded w-32 h-6 flex items-center justify-center">
+              Weight
+            </td>
+            <td class="px-3 py-1 font-bold">{{account_data['weight_formatted'] }}</td>
+          </tr>
+          {% endif %}
+
+          <!-- Representative -->
+          <tr>
+            <td class="bg-purple-600 text-white text-xs px-3 py-2 rounded w-32 h-6 flex items-center justify-center">
+              <a href="{{ request.url_root }}account/{{account_data['representative'] }}">Representative</a>
+            </td>
+            <td class="px-3 py-2 text-xs overflow-hidden">
+              <i class="copy_btn" data-value="{{account_data['representative']}}"></i>
+              <a href="{{ request.url_root }}account/{{account_data['representative'] }}">
+                {{account_data['representative_formatted'] }}
+              </a>
+            </td>
+          </tr>
+
+          <!-- Last Block -->
+          {#
+          <tr>
+            <td class="bg-indigo-500 text-white text-xs px-3 py-2 rounded w-32 h-6 flex items-center justify-center">
+              <a href="{{ request.url_root }}block/{{account_data['frontier'] }}"><b>Last Block</b></a>
+            </td>
+            <td class="px-3 py-2 text-xs overflow-hidden">
+              <i class="copy_btn" data-value="{{account_data['frontier']}}"></i>
+              <a href="{{ request.url_root }}block/{{account_data['frontier'] }}">
+                {{account_data['frontier_formatted'] }}
+              </a>
+            </td>
+          </tr>
+          #}
+
+          <!-- Open Block -->
+          <tr>
+            <td class="bg-green-500 text-white text-xs px-3 py-2 rounded w-32 h-6 flex items-center justify-center">
+              <a href="{{ request.url_root }}block/{{account_data['open_block'] }}"><b>Open Block</b></a>
+            </td>
+            <td class="px-3 py-2 text-xs overflow-hidden">
+              <i class="copy_btn" data-value="{{account_data['open_block']}}"></i>
+              <a href="{{ request.url_root }}block/{{account_data['open_block'] }}">
+                {{account_data['open_block_formatted'] }}
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
