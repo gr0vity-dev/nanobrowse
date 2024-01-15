@@ -31,8 +31,7 @@ def get_time_ago(timestamp):
         return f"{years} year(s) ago"
 
 
-def format_weight(value, base_weight=None):
-    ignore_weight_below = 0.01  # percent
+def format_weight(value, base_weight=None, ignore_weight_below=0.01):
     show_weight = False
     base_weight = base_weight or NANO_SUPPLY
     try:

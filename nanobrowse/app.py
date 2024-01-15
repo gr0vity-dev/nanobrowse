@@ -1,5 +1,5 @@
 from quart import Quart, make_response, jsonify, request
-from transformers import block, search, account, delegators
+from transformers import block, search, account, delegators, representatives as reps
 from frontend.views import frontend
 import logging
 
@@ -29,6 +29,7 @@ app.register_blueprint(account.account_transformer, url_prefix='/api')
 app.register_blueprint(block.block_transformer, url_prefix='/api')
 app.register_blueprint(search.search_transformer,  url_prefix='/api')
 app.register_blueprint(delegators.delegators_transformer,  url_prefix='/api')
+app.register_blueprint(reps.rep_transformer,  url_prefix='/api')
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)

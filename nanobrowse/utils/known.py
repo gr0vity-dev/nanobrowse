@@ -11,6 +11,7 @@ class AccountLookup:
         # To store the data of all files
         # Structure: {source: {key_field: value_field, "url": url}}
         self.data_sources = {}
+        self.initialize_default_sources()
 
     def lookup_account(self, account):
         """
@@ -24,6 +25,7 @@ class AccountLookup:
         first_known = matches[0] if is_known else {}
         return is_known, first_known
 
-    async def initialize_default_sources(self):
+    def initialize_default_sources(self):
+        # with open("./nanobrowse/utils/known.json", 'r') as file:
         with open("/app/utils/known.json", 'r') as file:
             self.data_sources = json.load(file)

@@ -11,9 +11,12 @@
     <script defer data-domain="nanobrowse.com" src="https://plausible.bnano.info/js/script.js"></script>
   </head>
   <body class="bg-gray-100">
+    {% include 'header/nanobrowse.html' %}
+
     <div class="flex flex-col items-center mx-4 my-6 sm:mx-auto max-w-screen-md">
       {% if block_data.is_change %} {% include 'block_viewer/change.html' %} {% else %} {% include
       'block_viewer/send_receive.html' %} {% endif %}
     </div>
+
   </body>
 </html>

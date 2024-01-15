@@ -8,10 +8,12 @@ frontend = Blueprint('frontend', __name__,
 @frontend.route('/')
 async def index():
     async with httpx.AsyncClient() as client:
-        response = await client.get(f'http://127.0.0.1:5000/api/search/confirmation_history')
+        recent_blocks_resp = await client.get(f'http://127.0.0.1:5000/api/search/confirmation_history')
+        reps_online_resp = await client.get(f'http://127.0.0.1:5000/api/reps_online/')
 
-    recent_blocks = response.json()
-    return await render_template("search.html", recent_blocks=recent_blocks)
+    recent_blocks = recent_blocks_resp.json()
+    reps_online = reps_online_resp.json()
+    return await render_template("search.html", recent_blocks=recent_blocks, reps_online=reps_online)
 
 
 @frontend.route('/block/<blockhash>', methods=["GET"])
@@ -54,3 +56,17 @@ async def delegators(account):
 
     account_data = response.json()
     return await render_template("account_viewer/delegators_table.html", account_data=account_data)
+
+
+# @frontend.route('/reps_online/', methods=["GET"])
+# async def reps_online():
+#     async with httpx.AsyncClient(timeout=10.0) as client:
+#         response = await client.get(f'http://127.0.0.1:5000/api/reps_online/')
+
+#     if response.status_code == 400:
+#         error_data = response.json()
+#         # Decide how you want to handle the error, maybe render an error template
+#         return await render_template("search.html", error=error_data["error"])
+
+#     reps_online = response.json()
+#     return await render_template("reps_online.html", reps_online=reps_online)

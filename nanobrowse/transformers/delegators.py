@@ -26,7 +26,8 @@ async def fetch_delegators(account):
     try:
         response = {}
         response["base_weight"] = await nanorpc.account_weight(account)
-        # optimisation possible, return early if < 0.01% (outsource this show_weight_threshold to common module, as it's checked in multiple places)
+        # optimisation possible, return early if < 0.01% (outsource this show_weight_threshold to common module, as it's checkedin multiple places)
+        # response["delegators_count"] = await nanorpc.delegators_count(account)
         response["delegators"] = await nanorpc.delegators(account, threshold="1000000000000000000000000000000000", count="1000")
 
         if "error" in response:
@@ -72,10 +73,12 @@ async def transform_delegators_data(data):
         await account_lookup.initialize_default_sources()
 
     delegators = data.get('delegators', {}).get("delegators", {})
+    # delegators_count = data.get('delegators_count', 0)
     base_weight = data.get('base_weight', {}).get("weight", 0)
     transformed_delegators = await transform_delegator_data(delegators, base_weight)
 
     response = {
+        # "delegators_count": delegators_count,
         "delegators": transformed_delegators
     }
 

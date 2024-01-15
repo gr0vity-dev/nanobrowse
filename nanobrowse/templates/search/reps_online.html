@@ -1,0 +1,22 @@
+  <table class="mt-6">
+    <thead class="text-gray-400">
+      <td class="px-2">Online Weight</td>
+      <td class="px-2">Account</td>            
+    </thead>
+    <tbody>
+      {% for entry in reps_online %}
+      <tr class="divide-y divide-gray-400">
+          <!-- Vote weight -->
+        <td class=" text-sm whitespace-nowrap ">               
+          {{ entry['weight_formatted'] }}
+        </td>
+        <!-- Rep Account -->
+        <td class="px-4 py-2 text-sm">
+          <a href="{{ request.url_root }}account/{{ entry['account'] }}">
+            <b>{{ entry['account_formatted'] }}</b>                 
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
