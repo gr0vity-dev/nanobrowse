@@ -32,9 +32,9 @@
     <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
     <script defer data-domain="nanobrowse.com" src="https://plausible.bnano.info/js/script.js"></script>
   </head>
-  <body class="bg-gray-100">
+  <body data-get-delegators-for-account="{{ account_data.account }}" class="bg-gray-100">
     {% include 'header/nanobrowse.html' %}
-    <div data-get-delegators-for-account="{{ account_data.account }}" class="bg-gray-100 mx-4 my-6 w-400">
+    <div  class="bg-gray-100 mx-4 my-6 w-400">
     <div class="container mx-auto">
       <!-- Account address -->
       <div class="text-center mb-2">
