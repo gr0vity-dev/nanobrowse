@@ -21,6 +21,19 @@ Fire it up
 docker-compose up -d
 ```
 
+### Rpc commands in use
+The following rpc commands are required to run the block explorer :
+```json
+account_info
+account_history
+account_weight
+confirmation_history
+delegators
+receivable
+representatives_online
+``````
+
+
 ## Features
 
 **Search by Account or Block Hash**: Just type in a Nano account starting with `xrb_` or `nano_`, or input a block hash (64 characters long), and dive right into the data.

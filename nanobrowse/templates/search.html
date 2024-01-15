@@ -6,23 +6,6 @@
     <title>nanoBrowse</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
     <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}" />
-    <script>
-      function handleFormSubmit(event) {
-        event.preventDefault(); // Prevent form from submitting the traditional way
-        const inputValue = document.querySelector('[name="blockhash"]').value.trim();
-
-        if (inputValue.startsWith("xrb_") || inputValue.startsWith("nano_")) {
-          // Redirect to the account viewer
-          window.location.href = `/account/${inputValue}`;
-        } else if (inputValue.length === 64) {
-          // Redirect to the block viewer
-          window.location.href = `/block/${inputValue}`;
-        } else {
-          // Handle the case where the input doesn't match any of the criteria
-          alert("Invalid input. Please enter a valid account or block hash.");
-        }
-      }
-    </script>
     <script defer data-domain="nanobrowse.com" src="https://plausible.bnano.info/js/script.js"></script>
   </head>
   <body class="bg-gray-100">
@@ -73,6 +56,22 @@
         document.getElementById('confirmationHistory').style.display = section === 'confirmationHistory' ? 'block' : 'none';
         document.getElementById('representatives').style.display = section === 'representatives' ? 'block' : 'none';
       }
+
+      function handleFormSubmit(event) {
+          event.preventDefault(); // Prevent form from submitting the traditional way
+          const inputValue = document.querySelector('[name="blockhash"]').value.trim();
+  
+          if (inputValue.startsWith("xrb_") || inputValue.startsWith("nano_")) {
+            // Redirect to the account viewer
+            window.location.href = `/account/${inputValue}`;
+          } else if (inputValue.length === 64) {
+            // Redirect to the block viewer
+            window.location.href = `/block/${inputValue}`;
+          } else {
+            // Handle the case where the input doesn't match any of the criteria
+            alert("Invalid input. Please enter a valid account or block hash.");
+          }
+        }
     </script>
   </body>
 </html>
