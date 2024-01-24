@@ -1,10 +1,12 @@
-from nanorpc.client import NanoRpc, NodeVersion
+from nanorpc.client import NanoRpcTyped, NodeVersion
+from nanorpc.client_nanoto import NanoToRpcTyped
 import os
 
 RPC_URL = os.getenv("RPC_URL")
 AUTH_USERNAME = os.getenv("AUTH_USERNAME")
 AUTH_PASSWORD = os.getenv("AUTH_PASSWORD")
 NODE_VERSION = NodeVersion.V25_0
+NANO_TO_AUTH_KEY = os.getenv("NANO_TO_AUTH_KEY")  # optinal
 
 
 def get_nanorpc_client(rpc_url=None, auth_username=None, auth_password=None, node_version=None):
@@ -15,11 +17,15 @@ def get_nanorpc_client(rpc_url=None, auth_username=None, auth_password=None, nod
     node_version = node_version or NODE_VERSION
 
     # Initialize and return the NanoRpc client
-    return NanoRpc(url=rpc_url,
-                   username=auth_username,
-                   password=auth_password,
-                   node_version=node_version)
+    return NanoRpcTyped(url=rpc_url,
+                        username=auth_username,
+                        password=auth_password)
+
+
+def get_nanoto_client():
+    return NanoToRpcTyped(NANO_TO_AUTH_KEY, app_name="nanobrowse.com", app_email="iq.cc@pm.me")
 
 
 # Create a single instance of NanoRpc client
-nanorpc = get_nanorpc_client()
+nanorpc: NanoRpcTyped = get_nanorpc_client()
+nanoto: NanoToRpcTyped = get_nanoto_client()

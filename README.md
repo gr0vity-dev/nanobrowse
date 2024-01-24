@@ -14,6 +14,7 @@ Self hosting nanoBrowse:
 RPC_URL=your_rpc_url_here
 AUTH_USERNAME=your_rpc_username_here
 AUTH_PASSWORD=your_rpc_password_here
+NANO_TO_AUTH_KEY=optional access key for rpc.nano.to
 ```
 
 Fire it up

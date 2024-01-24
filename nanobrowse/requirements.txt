@@ -1,4 +1,4 @@
 hypercorn
 httpx
-nanorpc>=0.0.3
+nanorpc==0.0.9
 quart
