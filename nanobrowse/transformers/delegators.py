@@ -28,7 +28,7 @@ async def fetch_delegators(account):
         response["base_weight"] = await nanorpc.account_weight(account)
         # optimisation possible, return early if < 0.01% (outsource this show_weight_threshold to common module, as it's checkedin multiple places)
         # response["delegators_count"] = await nanorpc.delegators_count(account)
-        response["delegators"] = await nanorpc.delegators(account, threshold="1000000000000000000000000000000000", count="1000")
+        response["delegators"] = await nanorpc.delegators(account, threshold=1000 * 10**30, count="1000")
 
         if "error" in response:
             raise ValueError("Invalid account")
@@ -48,7 +48,7 @@ async def transform_delegator_data(delegators, base_weight):
 
     # Transform the top 50 delegators
     for delegator, weight in top_50_delegators:
-        is_known_delegator, known_delegator = account_lookup.lookup_account(
+        is_known_delegator, known_delegator = await account_lookup.lookup_account(
             delegator)
         delegator_formatted = known_delegator["name"] if is_known_delegator else format_account(
             delegator)

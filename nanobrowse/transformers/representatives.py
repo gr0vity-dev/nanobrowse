@@ -50,7 +50,7 @@ async def transform_reps_online_data(data):
         address_formatted = format_account(account)
 
         # Perform account lookup
-        is_known_account, known_account = account_lookup.lookup_account(
+        is_known_account, known_account = await account_lookup.lookup_account(
             account)
 
         # Format the weight

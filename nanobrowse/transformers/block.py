@@ -77,7 +77,7 @@ async def fetch_blocks_info(data, hash):
     return await fetch_block_info(valid_hashes), send_hash, receive_hash, change_hash
 
 
-def process_block_data(block_data, key):
+async def process_block_data(block_data, key):
     block = safe_get(block_data, key, default={})
     block_type = safe_get(block, "subtype", default="")
     balance = format_balance(safe_get(block, "balance"), "any")
@@ -115,13 +115,13 @@ def process_block_data(block_data, key):
         sender = safe_get(block, "contents", "account", default="")
         receiver = safe_get(block, "contents", "account", default="")
 
-    is_known_account, known_account = account_lookup.lookup_account(
+    is_known_account, known_account = await account_lookup.lookup_account(
         account)
-    is_known_sender, known_sender = account_lookup.lookup_account(
+    is_known_sender, known_sender = await account_lookup.lookup_account(
         sender)
-    is_known_receiver, known_receiver = account_lookup.lookup_account(
+    is_known_receiver, known_receiver = await account_lookup.lookup_account(
         receiver)
-    is_known_representative, known_representative = account_lookup.lookup_account(
+    is_known_representative, known_representative = await account_lookup.lookup_account(
         representative)
 
     response = {
@@ -174,21 +174,21 @@ async def transform_block_data(data, hash):
 
     # If there's a send block, process its data
     if send_hash:
-        send_block_data = process_block_data(blocks_info, send_hash)
+        send_block_data = await process_block_data(blocks_info, send_hash)
     else:
-        send_block_data = process_block_data(blocks_info, "")
+        send_block_data = await process_block_data(blocks_info, "")
 
     # If there's a receive block, process its data
     if receive_hash:
-        receive_block_data = process_block_data(blocks_info, receive_hash)
+        receive_block_data = await process_block_data(blocks_info, receive_hash)
     else:
-        receive_block_data = process_block_data(blocks_info, "0"*64)
+        receive_block_data = await process_block_data(blocks_info, "0"*64)
 
     if change_hash:
-        change_block_data = process_block_data(blocks_info, change_hash)
+        change_block_data = await process_block_data(blocks_info, change_hash)
         is_change = True
     else:
-        change_block_data = process_block_data(blocks_info, "0"*64)
+        change_block_data = await process_block_data(blocks_info, "0"*64)
 
     # Calculate duration
     try:
