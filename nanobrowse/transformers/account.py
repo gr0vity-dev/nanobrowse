@@ -44,11 +44,11 @@ def group_and_sort_history(transformed_history):
         if key not in grouped_history:
             # Create a new entry for the group
             grouped_history[key] = entry.copy()
-            grouped_history[key]['total_amount'] = int(entry['amount'])
+            grouped_history[key]['total_amount'] = int(entry['amount'] or 0)
             # Initialize transaction count
             grouped_history[key]['transaction_count'] = 1
         else:
-            grouped_history[key]['total_amount'] += int(entry['amount'])
+            grouped_history[key]['total_amount'] += int(entry['amount'] or 0)
             # Increment transaction count
             grouped_history[key]['transaction_count'] += 1
             # Update 'time_ago' to the most recent time
@@ -58,7 +58,12 @@ def group_and_sort_history(transformed_history):
 
     # Sort the grouped history by type and account in ascending order
     sorted_grouped_history = sorted(
-        grouped_history.values(), key=lambda x: (x['type'], x['total_amount']), reverse=True)
+        grouped_history.values(),
+        key=lambda x: (
+            x['total_amount'] if x['total_amount'] is not None else 0
+        ),
+        reverse=True
+    )
 
     # Format the final output
     for entry in sorted_grouped_history:
