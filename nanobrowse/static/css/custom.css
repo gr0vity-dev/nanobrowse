@@ -76,3 +76,15 @@ margin-right: 5px; /* space it out a bit from the text when at the front */
   animation: spin 1s linear infinite;
 }
 
+.suggestions-container div {
+  padding: 5px;
+  cursor: pointer;
+  border-bottom: 1px solid #ddd;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.suggestions-container div:hover {
+  opacity: 90%;
+}

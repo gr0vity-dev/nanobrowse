@@ -10,10 +10,12 @@ async def index():
     async with httpx.AsyncClient() as client:
         recent_blocks_resp = await client.get(f'http://127.0.0.1:5000/api/search/confirmation_history')
         reps_online_resp = await client.get(f'http://127.0.0.1:5000/api/reps_online/')
+        known_accounts_resp = await client.get(f'http://127.0.0.1:5000/api/search/known_accounts')
 
     recent_blocks = recent_blocks_resp.json()
     reps_online = reps_online_resp.json()
-    return await render_template("search.html", recent_blocks=recent_blocks, reps_online=reps_online)
+    known_accounts = known_accounts_resp.json()
+    return await render_template("search.html", recent_blocks=recent_blocks, reps_online=reps_online, known_accounts=known_accounts)
 
 
 @frontend.route('/block/<blockhash>', methods=["GET"])

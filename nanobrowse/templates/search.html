@@ -4,19 +4,30 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>nanoBrowse</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}" />
-    <script defer data-domain="nanobrowse.com" src="https://plausible.bnano.info/js/script.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/custom.css') }}"
+    />
+    <script
+      defer
+      data-domain="nanobrowse.com"
+      src="https://plausible.bnano.info/js/script.js"
+    ></script>
   </head>
   <body class="bg-gray-100">
     {% include 'header/nanobrowse.html' %}
 
     <div class="mt-20 flex items-center justify-center">
       <div class="w-4/5 flex flex-col items-center" style="max-width: 800px">
-        
-
         {% if error %}
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded relative mb-4 w-full" role="alert">
+        <div
+          class="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded relative mb-4 w-full"
+          role="alert"
+        >
           <strong class="font-bold block mb-2">{{ error.header }}</strong>
         </div>
         <pre class="rounded max-w-full overflow-hidden">
@@ -31,15 +42,32 @@
               name="blockhash"
               placeholder="Enter blockhash or account..."
               class="border rounded p-2 flex-1 mr-2"
+              oninput="showSuggestions(this.value)"
+              autocomplete="off"
             />
-            <input type="submit" value="Search" class="bg-blue-500 text-white rounded p-2" />
+            <input
+              type="submit"
+              value="Search"
+              class="bg-blue-500 text-white rounded p-2"
+            />
           </div>
+          <div id="suggestions" class="suggestions-container"></div>
         </form>
 
-         <!-- Toggle Buttons -->
+        <!-- Toggle Buttons -->
         <div class="mt-4 mb-4">
-          <button onclick="showSection('confirmationHistory')" class="bg-blue-600 text-white text-xs px-2 py-1 rounded">Latest Transactions</button>
-          <button onclick="showSection('representatives')" class="bg-purple-600 text-white text-xs px-2 py-1 rounded ml-2">Online Representatives</button>
+          <button
+            onclick="showSection('confirmationHistory')"
+            class="bg-blue-600 text-white text-xs px-2 py-1 rounded"
+          >
+            Latest Transactions
+          </button>
+          <button
+            onclick="showSection('representatives')"
+            class="bg-purple-600 text-white text-xs px-2 py-1 rounded ml-2"
+          >
+            Online Representatives
+          </button>
         </div>
         <div id="confirmationHistory">
           {% include 'search/confirmation_history.html' %}
@@ -47,31 +75,63 @@
         <div id="representatives" class="hidden">
           {% include 'search/reps_online.html' %}
         </div>
-        
       </div>
     </div>
 
     <script>
-      function showSection(section) {
-        document.getElementById('confirmationHistory').style.display = section === 'confirmationHistory' ? 'block' : 'none';
-        document.getElementById('representatives').style.display = section === 'representatives' ? 'block' : 'none';
-      }
+            function showSection(section) {
+              document.getElementById('confirmationHistory').style.display = section === 'confirmationHistory' ? 'block' : 'none';
+              document.getElementById('representatives').style.display = section === 'representatives' ? 'block' : 'none';
+            }
 
-      function handleFormSubmit(event) {
-          event.preventDefault(); // Prevent form from submitting the traditional way
-          const inputValue = document.querySelector('[name="blockhash"]').value.trim();
-  
-          if (inputValue.startsWith("xrb_") || inputValue.startsWith("nano_")) {
-            // Redirect to the account viewer
-            window.location.href = `/account/${inputValue}`;
-          } else if (inputValue.length === 64) {
-            // Redirect to the block viewer
-            window.location.href = `/block/${inputValue}`;
-          } else {
-            // Handle the case where the input doesn't match any of the criteria
-            alert("Invalid input. Please enter a valid account or block hash.");
+
+            var knownAccounts = {{ known_accounts | tojson | safe }};
+
+            function showSuggestions(value) {
+              let preview_count = 10
+              const suggestionsContainer = document.getElementById('suggestions');
+              suggestionsContainer.innerHTML = ''; // Clear previous suggestions
+
+              if (value.length > 0) {
+                  const filteredAccounts = knownAccounts
+                      .filter(account => account.name.toLowerCase().includes(value.toLowerCase()))
+                      .slice(0, preview_count); // Replace N with the max number of suggestions you want
+
+                  filteredAccounts.forEach(account => {
+                      const div = document.createElement('div');
+                      // Display both name and account_formatted
+                      div.innerHTML = `${account.name} (${account.account_formatted}) [${account.source}]`;
+                      div.onclick = () => selectAccount(account);
+                      suggestionsContainer.appendChild(div);
+                  });
+              }
           }
+
+          function selectAccount(account) {
+            const searchInput = document.querySelector('[name="blockhash"]');
+            searchInput.value = account.account;
+            document.getElementById('suggestions').innerHTML = '';
+            handleFormSubmit();
         }
+
+
+        function handleFormSubmit() {
+          // Prevent the default form submission if called directly
+          if (event) event.preventDefault();
+
+          const inputValue = document.querySelector('[name="blockhash"]').value.trim();
+
+          if (inputValue.startsWith("xrb_") || inputValue.startsWith("nano_")) {
+              // Redirect to the account viewer
+              window.location.href = `/account/${inputValue}`;
+          } else if (inputValue.length === 64) {
+              // Redirect to the block viewer
+              window.location.href = `/block/${inputValue}`;
+          } else {
+              // Handle the case where the input doesn't match any of the criteria
+              alert("Invalid input. Please enter a valid account or block hash.");
+          }
+      }
     </script>
   </body>
 </html>

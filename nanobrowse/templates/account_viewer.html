@@ -65,8 +65,8 @@
           class="bg-{% if account_data['show_weight'] %}purple{% else %}blue{% endif %}-500 text-white text-xs px-2 py-1 rounded"
         >
         {% if account_data.known_account.url %}
-        <a href="{{ account_data.known_account.url }}">: {{ account_data.known_account.name }}</a>
-        {% else %}: {{ account_data.known_account.name }}{% endif %}
+        <a href="{{ account_data.known_account.url }}"> {{ account_data.known_account.name }}</a>
+        {% else %} {{ account_data.known_account.name }}{% endif %}
         </span>
         {% endif %} {% if account_data['is_pr'] %}
         <span class="text-left bg-purple-600 text-white text-xs ml-4 px-2 py-1 rounded">Principal Representative</span>

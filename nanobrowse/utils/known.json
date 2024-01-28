@@ -1287,7 +1287,7 @@
             "url": null
         }
     },
-    "known_accounts_2": {
+    "mnn": {
         "nano_1111111111111111111111111111111111111111111111111111hifc8npp": {
             "name": "Burn",
             "url": null
@@ -1581,8 +1581,8 @@
             "url": null
         },
         "nano_3msc38fyn67pgio16dj586pdrceahtn75qgnx7fy19wscixrc8dbb3abhbw6": {
-            "name": "gr0vity",
-            "url": null
+            "name": "gr0vity node",
+            "url": "http://65.108.10.185:8081/"
         },
         "nano_3nbizdu6dygcmcf3xauca7s1s4xtt6a3eq51ym74zfn3bxxngry7uwfo9sd4": {
             "name": "StefanRvO's Node",

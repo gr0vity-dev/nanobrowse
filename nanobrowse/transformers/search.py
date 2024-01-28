@@ -1,15 +1,27 @@
 from quart import Blueprint, jsonify, abort, make_response, jsonify
 from deps.rpc_client import nanorpc
 from utils.formatting import get_time_ago, format_hash, format_account
+from utils.known import AccountLookup
 import logging
 
 logging.basicConfig(level=logging.INFO)
 
 search_transformer = Blueprint('search_transformer', __name__)
+account_lookup = AccountLookup()
+
+
+@search_transformer.route('/search/known_accounts', methods=['GET'])
+async def search_known_accounts():
+    data = await account_lookup.get_all_known()
+
+    if not data:
+        abort(500, description="Error communicating with RPC server")
+
+    return jsonify(data)
 
 
 @search_transformer.route('/search/confirmation_history', methods=['GET'])
-async def get_block_info():
+async def search_confirmation_history():
     data = await fetch_confirmation_history()
 
     if not data:
