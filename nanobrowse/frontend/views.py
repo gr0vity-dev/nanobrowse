@@ -18,12 +18,13 @@ async def index():
     return await render_template("search.html", recent_blocks=recent_blocks, reps_online=reps_online, known_accounts=known_accounts)
 
 
+@frontend.route('/block/', defaults={'blockhash': None}, methods=["GET"])
 @frontend.route('/block/<blockhash>', methods=["GET"])
 async def block_viewer(blockhash):
     async with httpx.AsyncClient() as client:
         response = await client.get(f'http://127.0.0.1:5000/api/block/{blockhash}')
 
-    if response.status_code == 400:
+    if response.status_code != 200:
         error_data = response.json()
         # Decide how you want to handle the error, maybe render an error template
         return await render_template("search.html", error=error_data["error"])
@@ -32,12 +33,13 @@ async def block_viewer(blockhash):
     return await render_template("block_viewer.html", block_data=block_data)
 
 
+@frontend.route('/account/', defaults={'account': None}, methods=["GET"])
 @frontend.route('/account/<account>', methods=["GET"])
 async def account_viewer(account):
     async with httpx.AsyncClient() as client:
         response = await client.get(f'http://127.0.0.1:5000/api/account/{account}')
 
-    if response.status_code == 400:
+    if response.status_code != 200:
         error_data = response.json()
         # Decide how you want to handle the error, maybe render an error template
         return await render_template("search.html", error=error_data["error"])
@@ -46,12 +48,13 @@ async def account_viewer(account):
     return await render_template("account_viewer.html", account_data=account_data)
 
 
+@frontend.route('/delegators/', defaults={'account': None}, methods=["GET"])
 @frontend.route('/delegators/<account>', methods=["GET"])
 async def delegators(account):
     async with httpx.AsyncClient(timeout=10.0) as client:
         response = await client.get(f'http://127.0.0.1:5000/api/delegators/{account}')
 
-    if response.status_code == 400:
+    if response.status_code != 200:
         error_data = response.json()
         # Decide how you want to handle the error, maybe render an error template
         return await render_template("search.html", error=error_data["error"])

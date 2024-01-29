@@ -85,7 +85,7 @@
             }
 
 
-            var knownAccounts = {{ known_accounts | tojson | safe }};
+            var knownAccounts = {{ known_accounts | default([]) | tojson | safe }};
 
             function showSuggestions(value) {
               let preview_count = 10

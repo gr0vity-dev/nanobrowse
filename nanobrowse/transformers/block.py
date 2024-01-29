@@ -22,14 +22,28 @@ async def get_block_info(hash):
     return jsonify(transformed_data)
 
 
-async def fetch_block_info(hashes):
+def validate_hash(hash):
+    return len(hash) == 64 and all(c in '0123456789abcdef' for c in hash.lower())
 
+
+def is_valid_hash(hashes):
+    return all(validate_hash(hash) for hash in hashes)
+
+
+async def fetch_block_info(hashes):
+    if not is_valid_hash(hashes):
+        invalid_hashes = "\n".join(
+            [f"{hash}" for hash in hashes if not validate_hash(hash)])
+        raise ValueError(f"Invalid Blockhash! \n{invalid_hashes}")
     try:
         response = await nanorpc.blocks_info(hashes, json_block="true", source="true", receive_hash="true")
-        if "error" in response:
-            raise ValueError("Invalid hash")
     except Exception as exc:
         raise ValueError("Timeout...\nPlease try again later.")
+
+    if "error" in response:
+        not_found_hashes = "\n".join(
+            [f"{hash}" for hash in hashes])
+        raise ValueError(f"Blockhash not found!\n {not_found_hashes}")
 
     return response.get("blocks", {})
 
