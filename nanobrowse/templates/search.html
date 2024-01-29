@@ -45,10 +45,11 @@
               oninput="showSuggestions(this.value)"
               autocomplete="off"
             />
-            <input style="cursor:pointer"
+            <input
+              style="cursor: pointer"
               type="submit"
               value="Search"
-              class="bg-blue-300  text-gray-700 rounded p-2"
+              class="bg-blue-300 text-gray-700 rounded p-2"
             />
           </div>
           <div id="suggestions" class="suggestions-container"></div>
@@ -79,59 +80,8 @@
     </div>
 
     <script>
-            function showSection(section) {
-              document.getElementById('confirmationHistory').style.display = section === 'confirmationHistory' ? 'block' : 'none';
-              document.getElementById('representatives').style.display = section === 'representatives' ? 'block' : 'none';
-            }
-
-
-            var knownAccounts = {{ known_accounts | default([]) | tojson | safe }};
-
-            function showSuggestions(value) {
-              let preview_count = 10
-              const suggestionsContainer = document.getElementById('suggestions');
-              suggestionsContainer.innerHTML = ''; // Clear previous suggestions
-
-              if (value.length > 0) {
-                  const filteredAccounts = knownAccounts
-                      .filter(account => account.name.toLowerCase().includes(value.toLowerCase()))
-                      .slice(0, preview_count); // Replace N with the max number of suggestions you want
-
-                  filteredAccounts.forEach(account => {
-                      const div = document.createElement('div');
-                      // Display both name and account_formatted
-                      div.innerHTML = `${account.name} (${account.account_formatted}) [${account.source}]`;
-                      div.onclick = () => selectAccount(account);
-                      suggestionsContainer.appendChild(div);
-                  });
-              }
-          }
-
-          function selectAccount(account) {
-            const searchInput = document.querySelector('[name="blockhash"]');
-            searchInput.value = account.account;
-            document.getElementById('suggestions').innerHTML = '';
-            handleFormSubmit();
-        }
-
-
-        function handleFormSubmit() {
-          // Prevent the default form submission if called directly
-          if (event) event.preventDefault();
-
-          const inputValue = document.querySelector('[name="blockhash"]').value.trim();
-
-          if (inputValue.startsWith("xrb_") || inputValue.startsWith("nano_")) {
-              // Redirect to the account viewer
-              window.location.href = `/account/${inputValue}`;
-          } else if (inputValue.length === 64) {
-              // Redirect to the block viewer
-              window.location.href = `/block/${inputValue}`;
-          } else {
-              // Handle the case where the input doesn't match any of the criteria
-              alert("Invalid input. Please enter a valid account or block hash.");
-          }
-      }
+      var knownAccounts = {{ known_accounts | default([]) | tojson | safe }};
     </script>
+    <script src="{{ url_for('static', filename='js/search.js') }}"></script>
   </body>
 </html>
