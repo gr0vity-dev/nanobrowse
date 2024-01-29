@@ -1,7 +1,5 @@
-# account_lookup.py
-
+import asyncio
 import logging
-import time
 import json
 from utils.formatting import format_account
 from utils.constants import KNOWN_ACCOUNTS_FILE, UPDATE_KNOW_INTERVAL
@@ -10,18 +8,20 @@ from deps.rpc_client import nanoto
 
 class KnownAccountManager:
     def __init__(self):
-        self.data_sources = {}
-        self.last_update_time = 0
-        self.data_sources_changes = False
+        self.data_sources = None
+
+    async def get_known_accounts(self):
+        return self.data_sources
+
+    async def run(self):
+        asyncio.create_task(self.background_update_task())
+
+    async def background_update_task(self):
+        while True:
+            await self.update_known_accounts()
+            await asyncio.sleep(UPDATE_KNOW_INTERVAL)
 
     async def update_known_accounts(self):
-        current_time = time.time()
-        if current_time - self.last_update_time < UPDATE_KNOW_INTERVAL:
-            return
-
-        self.last_update_time = current_time
-        self.data_sources_changes = False
-
         new_accounts = []
         try:
             new_accounts = await nanoto.known()
@@ -31,9 +31,7 @@ class KnownAccountManager:
         with open(KNOWN_ACCOUNTS_FILE, 'r', encoding='utf-8') as file:
             known_accounts = json.load(file)
 
-        self._update_accounts(new_accounts, known_accounts)
-
-        if self.data_sources_changes:
+        if self._update_accounts(new_accounts, known_accounts):
             logging.info("Updated known.json")
             with open(KNOWN_ACCOUNTS_FILE, 'w', encoding='utf-8') as file:
                 json.dump(known_accounts, file, indent=4)
@@ -43,6 +41,7 @@ class KnownAccountManager:
     def _update_accounts(self, new_accounts, known_accounts):
         nano_to_key = "nano_to"
         nano_to_section = known_accounts.get(nano_to_key, {})
+        updated = False
 
         for account in new_accounts:
             address = account["address"]
@@ -51,9 +50,10 @@ class KnownAccountManager:
                     "name": account["name"],
                     "url": f"https://nano.to/{account['name']}"
                 }
-                self.data_sources_changes = True
+                updated = True
 
         known_accounts[nano_to_key] = nano_to_section
+        return updated
 
 
 class AccountLookup:
@@ -61,18 +61,20 @@ class AccountLookup:
         self.data_manager = KnownAccountManager()
         self.known_accounts = None
 
-    async def get_all_known(self):
-        await self.data_manager.update_known_accounts()
+    def get_known_accounts(self):
+        with open(KNOWN_ACCOUNTS_FILE, 'r', encoding='utf-8') as file:
+            return json.load(file)
 
-        if not self.known_accounts or self.data_manager.data_sources_changes:
-            self.known_accounts = self._aggregate_accounts()
+    async def get_all_known(self):
+        known_accounts = self.get_known_accounts()
+        self.known_accounts = self._aggregate_accounts(known_accounts)
 
         return self.known_accounts
 
-    def _aggregate_accounts(self):
+    def _aggregate_accounts(self, known_accounts: dict):
         aggregated_accounts = []
-        for key in self.data_manager.data_sources.keys():
-            for account, details in self.data_manager.data_sources[key].items():
+        for key in known_accounts.keys():
+            for account, details in known_accounts[key].items():
                 entry = {
                     "source": key,
                     "account": account,
@@ -85,10 +87,10 @@ class AccountLookup:
         return aggregated_accounts
 
     async def lookup_account(self, account):
-        await self.data_manager.update_known_accounts()
+        known_accounts = self.get_known_accounts()
 
         matches = [{"account": account, "name": data[account].get("name"), "url": data[account].get("url")}
-                   for source, data in self.data_manager.data_sources.items() if account in data]
+                   for source, data in known_accounts.items() if account in data]
 
         is_known = bool(matches)
         first_known = matches[0] if is_known else {}

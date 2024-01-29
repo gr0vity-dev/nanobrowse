@@ -1,10 +1,18 @@
 from quart import Quart, make_response, jsonify, request
 from transformers import block, search, account, delegators, representatives as reps
+from utils.known import KnownAccountManager
 from frontend.views import frontend
 import logging
 
 app = Quart(__name__)
 logging.basicConfig(level=logging.INFO)
+
+account_manager = KnownAccountManager()
+
+
+@app.before_serving
+async def startup():
+    await account_manager.run()
 
 
 @app.errorhandler(ValueError)
