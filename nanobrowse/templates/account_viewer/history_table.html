@@ -7,7 +7,7 @@
         <td class="px-2 py-2 whitespace-nowrap text-sm">
           <a href="{{ request.url_root }}block/{{ entry['hash'] }}">
             <span
-              class="flex items-center justify-center w-20 h-6 text-xs rounded {% if entry['type'] == 'send' %} bg-blue-500 text-white {% elif entry['type'] == 'change' %} bg-purple-600 text-white {% elif entry['type'] == 'receive' %} bg-green-500 text-white {% else %} bg-gray-500 text-white {% endif %}"
+              class="flex items-center justify-center w-20 h-6 text-xs rounded {% if entry['type'] == 'send' %} bg-blue-500 text-white {% elif entry['type'] == 'change' %} bg-yellow-300 text-gray-700 {% elif entry['type'] == 'receive' %} bg-green-500 text-white {% else %} bg-gray-500 text-white {% endif %}"
             >
               {{ entry['type'] }}
             </span>
@@ -17,7 +17,7 @@
 
         <!-- Amount -->
         <td
-          class="px-4 py-4 whitespace-nowrap text-sm {% if entry['type'] == 'send' %} text-blue-500 {% elif entry['type'] == 'receive' %} text-green-500 {% elif entry['type'] == 'change' %} text-purple-500 {% else %} text-gray-500{% endif %}"
+          class="px-4 py-4 whitespace-nowrap text-sm {% if entry['type'] == 'send' %} text-blue-500 {% elif entry['type'] == 'receive' %} text-green-500 {% elif entry['type'] == 'change' %} text-yellow-300 {% else %} text-gray-500{% endif %}"
         >
           <b>{{ entry['amount_formatted'] }}</b>
         </td>

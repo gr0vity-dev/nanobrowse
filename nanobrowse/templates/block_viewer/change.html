@@ -28,19 +28,19 @@
   <!-- Send Block -->
 
   <!-- Ensure this div spans full width -->
-  <div class="border-2 border-purple-500 bg-purple-100 rounded p-2 text-purple-500 w-full relative text-center">
-    <span class="text-xs whitespace-nowrap overflow-hidden block mb-1 mt-1">
+  <div class="border-2 border-yellow-300 bg-yellow-100 rounded p-2 text-gray-700 w-full relative text-center">
+    <span class="text-xs whitespace-nowrap overflow-hidden block mb-1 mt-1 ">
       <i class="copy_btn" data-value="{{block_data.change_block.hash}}"></i>
       <a href="{{ request.url_root }}block/{{ block_data.change_block.hash }}">{{ block_data.change_block.hash }}</a>
     </span>
-    <p class="font-light mb-6">delegate<span class="text-2xl font-bold"> {{ block_data.change_block.balance }}</span></p>
-    <span class="absolute bottom-2 left-2 bg-purple-500 text-white text-xs px-2 py-1 rounded">
+    <p class="font-light mb-6 text-yellow-500">delegate<span class="text-2xl font-bold "> {{ block_data.change_block.balance }}</span></p>
+    <span class="absolute bottom-2 left-2 bg-yellow-300 text-xs px-2 py-1 rounded">
       {{ block_data.change_block.status }}
     </span>
     <span class="absolute bottom-2 {{ block_data.change_block.left_align }} text-black text-xs px-2 py-1">
       {{ block_data.change_block.time_ago }}
     </span>
-    <span class="absolute bottom-2 right-2 bg-purple-500 text-white text-xs px-2 py-1 rounded">
+    <span class="absolute bottom-2 right-2 bg-yellow-300 text-xs px-2 py-1 rounded">
       {{ block_data.change_block.block_type }}
     </span>
   </div>
@@ -51,8 +51,8 @@
   <div class="flex items-start">
     <div class="flex flex-col">
 
-      <div class="ml-6 bg-purple-500 h-12 w-1"></div>
-      <div class="w-12 h-12 border-2 border-purple-500 rounded-full"></div>
+      <div class="ml-6 bg-yellow-300 h-12 w-1"></div>
+      <div class="w-12 h-12 border-2 border-yellow-300 rounded-full"></div>
 
       
     </div>
@@ -70,7 +70,7 @@
         {% endif %}
       </div>
 
-      <div class="bg-purple-500 text-white text-sm px-2 py-1 rounded overflow-hidden whitespace-nowrap">
+      <div class="bg-yellow-300 text-gray-700 text-sm px-2 py-1 rounded overflow-hidden whitespace-nowrap">
         <i class="copy_btn" data-value="{{block_data.change_block.representative}}"></i>
         <a href="{{ request.url_root }}account/{{ block_data.change_block.representative }}">
           {{ block_data.change_block.representative }}

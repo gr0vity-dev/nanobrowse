@@ -30,7 +30,7 @@
 
   <!-- Ensure this div spans full width -->
   <div class="border-2 border-blue-500 bg-blue-100 rounded p-2 text-blue-500 mb-20 w-full relative text-center">
-    <span class="text-xs whitespace-nowrap overflow-hidden block mb-1 mt-1 text-blue-600">
+    <span class="text-xs whitespace-nowrap overflow-hidden block mb-1 mt-1 text-gray-700">
       <i class="copy_btn" data-value="{{block_data.send_block.hash}}"></i>
       <a href="{{ request.url_root }}block/{{ block_data.send_block.hash }}">{{ block_data.send_block.hash }}</a>
     </span>
@@ -50,7 +50,7 @@
     {% if block_data.receive_block.hash_exists %}
   <!-- Receive Block -->
   <div class="border-2 border-green-500 bg-green-100 rounded p-2 text-green-500 w-full text-center relative">
-   <span class="text-xs whitespace-nowrap overflow-hidden block mb-1 mt-1 text-green-600">
+   <span class="text-xs whitespace-nowrap overflow-hidden block mb-1 mt-1 text-gray-700">
       <i class="copy_btn" data-value="{{block_data.receive_block.hash}}"></i>
       <a href="{{ request.url_root }}block/{{ block_data.receive_block.hash }}">{{ block_data.receive_block.hash }}</a>
     </span>

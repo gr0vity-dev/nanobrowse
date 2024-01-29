@@ -12,7 +12,7 @@
           {% if account_data['show_receivable'] %}
           <!-- Receivable balance -->
           <tr>
-            <td data-show-table="pendingTable" style="cursor:pointer" class="bg-blue-600 text-white text-xs px-3 rounded w-32 h-8 flex flex-col items-center justify-center">
+            <td data-show-table="pendingTable" style="cursor:pointer" class="bg-gray-700 text-white text-xs px-3 rounded w-32 h-8 flex flex-col items-center justify-center">
               <div>Ready to receive</div>
               <div>({{account_data['receivable_count'] }} blocks)</div>
             </td>
@@ -23,7 +23,7 @@
           {% if account_data['show_weight'] %}
           <!-- Weight -->
           <tr>
-            <td data-show-table="delegatorTable" style="cursor:pointer" class="bg-purple-600 text-white text-xs px-3 rounded w-32 h-6 flex items-center justify-center">
+            <td data-show-table="delegatorTable" style="cursor:pointer" class="bg-gray-700 text-white text-xs px-3 rounded w-32 h-6 flex items-center justify-center">
               Weight
             </td>
             <td class="px-3 py-1 font-bold">{{account_data['weight_formatted'] }}</td>
@@ -32,7 +32,7 @@
 
           <!-- Representative -->
           <tr>
-            <td class="bg-purple-600 text-white text-xs px-3 py-2 rounded w-32 h-6 flex items-center justify-center">
+            <td class="bg-gray-700 text-white text-xs px-3 py-2 rounded w-32 h-6 flex items-center justify-center">
               <a href="{{ request.url_root }}account/{{account_data['representative'] }}">Representative</a>
             </td>
             <td class="px-3 py-2 text-xs overflow-hidden">
@@ -60,8 +60,8 @@
 
           <!-- Open Block -->
           <tr>
-            <td class="bg-green-500 text-white text-xs px-3 py-2 rounded w-32 h-6 flex items-center justify-center">
-              <a href="{{ request.url_root }}block/{{account_data['open_block'] }}"><b>Open Block</b></a>
+            <td class="bg-gray-700 text-white text-xs px-3 py-2 rounded w-32 h-6 flex items-center justify-center">
+              <a href="{{ request.url_root }}block/{{account_data['open_block'] }}">Open Block</a>
             </td>
             <td class="px-3 py-2 text-xs overflow-hidden">
               <i class="copy_btn" data-value="{{account_data['open_block']}}"></i>

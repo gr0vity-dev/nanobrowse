@@ -45,10 +45,10 @@
               oninput="showSuggestions(this.value)"
               autocomplete="off"
             />
-            <input
+            <input style="cursor:pointer"
               type="submit"
               value="Search"
-              class="bg-blue-500 text-white rounded p-2"
+              class="bg-blue-300  text-gray-700 rounded p-2"
             />
           </div>
           <div id="suggestions" class="suggestions-container"></div>
@@ -58,13 +58,13 @@
         <div class="mt-4 mb-4">
           <button
             onclick="showSection('confirmationHistory')"
-            class="bg-blue-600 text-white text-xs px-2 py-1 rounded"
+            class="bg-blue-300 text-gray-700 text-xs px-2 py-1 rounded"
           >
             Latest Transactions
           </button>
           <button
             onclick="showSection('representatives')"
-            class="bg-purple-600 text-white text-xs px-2 py-1 rounded ml-2"
+            class="bg-yellow-300 text-gray-700 text-xs px-2 py-1 rounded ml-2"
           >
             Online Representatives
           </button>

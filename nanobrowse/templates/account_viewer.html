@@ -54,7 +54,7 @@
       <!-- Account address -->
       <div class="text-center mb-2">
         <span
-          class="bg-{% if account_data['show_weight'] %}purple{% else %}blue{% endif %}-500 text-white text-sm px-2 py-1 rounded overflow-hidden whitespace-nowrap"
+          class="bg-{% if account_data['show_weight'] %}yellow-300 text-gray-700{% else %}blue-500 text-white{% endif %}  text-sm px-2 py-1 rounded overflow-hidden whitespace-nowrap"
         >
           <i class="copy_btn" data-value="{{ account_data.account }}"></i>
           <a href="{{ request.url_root }}account/{{ account_data.account }}">{{ account_data.account }}</a>
@@ -62,25 +62,25 @@
         {% if account_data.is_known_account %}
         <br />
         <span
-          class="bg-{% if account_data['show_weight'] %}purple{% else %}blue{% endif %}-500 text-white text-xs px-2 py-1 rounded"
+          class="bg-{% if account_data['show_weight'] %}yellow-300 text-gray-700{% else %}blue-500 text-white{% endif %} text-xs px-2 py-1 rounded"
         >
         {% if account_data.known_account.url %}
         <a href="{{ account_data.known_account.url }}"> {{ account_data.known_account.name }}</a>
         {% else %} {{ account_data.known_account.name }}{% endif %}
         </span>
         {% endif %} {% if account_data['is_pr'] %}
-        <span class="text-left bg-purple-600 text-white text-xs ml-4 px-2 py-1 rounded">Principal Representative</span>
+        <span class="text-left bg-yellow-400 text-gray-700 text-xs ml-4 px-2 py-1 rounded">Principal Representative</span>
         {% endif %}
       </div>
       
       {% include 'account_viewer/account_info.html' %}
 
       <div class="mt-4 text-xs flex items-center justify-center space-x-2">
-        <button data-show-table="groupedTransactionTable" class=" bg-red-300 text-black px-3 py-1 rounded focus:outline-none">
+        <button data-show-table="groupedTransactionTable" class=" bg-gray-800 text-white px-3 py-1 rounded focus:outline-none">
           Grouped Flows
         </button> 
         
-        <button data-show-table="transactionTable" class=" bg-blue-500 text-white px-3 py-1 rounded focus:outline-none">
+        <button data-show-table="transactionTable" class=" bg-gray-800 text-white px-3 py-1 rounded focus:outline-none">
           Timeline
         </button>
       </div>
