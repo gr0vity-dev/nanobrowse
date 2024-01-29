@@ -69,9 +69,6 @@ async def transform_delegator_data(delegators, base_weight):
 
 
 async def transform_delegators_data(data):
-    if not account_lookup.data_sources:
-        await account_lookup.initialize_default_sources()
-
     delegators = data.get('delegators', {}).get("delegators", {})
     # delegators_count = data.get('delegators_count', 0)
     base_weight = data.get('base_weight', {}).get("weight", 0)

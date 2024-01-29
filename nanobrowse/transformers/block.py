@@ -164,9 +164,6 @@ async def process_block_data(block_data, key):
 
 
 async def transform_block_data(data, hash):
-    if not account_lookup.data_sources:
-        await account_lookup.initialize_default_sources()
-
     blocks_info, send_hash, receive_hash, change_hash = await fetch_blocks_info(data, hash)
 
     # Process block data

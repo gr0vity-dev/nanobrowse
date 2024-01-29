@@ -1,71 +1,46 @@
-import time
+# account_lookup.py
+
 import logging
+import time
 import json
-from deps.rpc_client import nanoto
 from utils.formatting import format_account
+from utils.constants import KNOWN_ACCOUNTS_FILE, UPDATE_KNOW_INTERVAL
+from deps.rpc_client import nanoto
 
-logging.basicConfig(level=logging.INFO)
 
-
-class AccountLookup:
-
+class KnownAccountManager:
     def __init__(self):
-        # To store the data of all files
-        # Structure: {source: {key_field: value_field, "url": url}}
         self.data_sources = {}
-        self.last_update_time = 0  # Time of the last update
+        self.last_update_time = 0
         self.data_sources_changes = False
-        self.known_accounts = None
-
-    async def get_all_known(self):
-        await self.update_known_accounts()
-
-        if not self.known_accounts or self.data_sources_changes:
-            self.known_accounts = []
-            for key in self.data_sources.keys():
-                for account, details in self.data_sources[key].items():
-                    entry = {
-                        "source": key,
-                        "account": account,
-                        "account_formatted": format_account(account),
-                        "name": details["name"],
-                        "url": details.get("url"),
-                        "has_url": details.get("url") is not None
-                    }
-                    self.known_accounts.append(entry)
-        return self.known_accounts
-
-    async def lookup_account(self, account):
-        await self.update_known_accounts()
-
-        matches = [{"account": account, "name": data[account].get("name"), "url": data[account].get("url")}
-                   for source, data in self.data_sources.items() if account in data]
-
-        is_known = bool(matches)
-        first_known = matches[0] if is_known else {}
-        logging.info(f"Known lookup {first_known} {is_known}")
-        return is_known, first_known
-
-    async def initialize_default_sources(self):
-        await self.update_known_accounts()
 
     async def update_known_accounts(self):
         current_time = time.time()
-        self.data_sources_changes = False
-        if current_time - self.last_update_time < 600:  # 10 minutes
+        if current_time - self.last_update_time < UPDATE_KNOW_INTERVAL:
             return
 
         self.last_update_time = current_time
-        file_path = "/app/utils/known.json"
+        self.data_sources_changes = False
 
         new_accounts = []
         try:
             new_accounts = await nanoto.known()
-        except:
-            logging.warn("nano.to known() unavailable")
+        except Exception as e:
+            logging.warn(f"nano.to known() unavailable: {e}")
 
-        with open(file_path, 'r') as file:
+        with open(KNOWN_ACCOUNTS_FILE, 'r', encoding='utf-8') as file:
             known_accounts = json.load(file)
+
+        self._update_accounts(new_accounts, known_accounts)
+
+        if self.data_sources_changes:
+            logging.info("Updated known.json")
+            with open(KNOWN_ACCOUNTS_FILE, 'w', encoding='utf-8') as file:
+                json.dump(known_accounts, file, indent=4)
+
+        self.data_sources = known_accounts
+
+    def _update_accounts(self, new_accounts, known_accounts):
         nano_to_key = "nano_to"
         nano_to_section = known_accounts.get(nano_to_key, {})
 
@@ -78,11 +53,43 @@ class AccountLookup:
                 }
                 self.data_sources_changes = True
 
-        if self.data_sources_changes:
-            logging.info("Updated known.json")
-            known_accounts[nano_to_key] = nano_to_section
+        known_accounts[nano_to_key] = nano_to_section
 
-            with open(file_path, 'w') as file:
-                json.dump(known_accounts, file, indent=4)
 
-        self.data_sources = known_accounts
+class AccountLookup:
+    def __init__(self):
+        self.data_manager = KnownAccountManager()
+        self.known_accounts = None
+
+    async def get_all_known(self):
+        await self.data_manager.update_known_accounts()
+
+        if not self.known_accounts or self.data_manager.data_sources_changes:
+            self.known_accounts = self._aggregate_accounts()
+
+        return self.known_accounts
+
+    def _aggregate_accounts(self):
+        aggregated_accounts = []
+        for key in self.data_manager.data_sources.keys():
+            for account, details in self.data_manager.data_sources[key].items():
+                entry = {
+                    "source": key,
+                    "account": account,
+                    "account_formatted": format_account(account),
+                    "name": details["name"],
+                    "url": details.get("url"),
+                    "has_url": details.get("url") is not None
+                }
+                aggregated_accounts.append(entry)
+        return aggregated_accounts
+
+    async def lookup_account(self, account):
+        await self.data_manager.update_known_accounts()
+
+        matches = [{"account": account, "name": data[account].get("name"), "url": data[account].get("url")}
+                   for source, data in self.data_manager.data_sources.items() if account in data]
+
+        is_known = bool(matches)
+        first_known = matches[0] if is_known else {}
+        return is_known, first_known

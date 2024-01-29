@@ -174,9 +174,6 @@ async def transform_receivable_data(blocks):
 
 
 async def transform_account_data(data):
-    if not account_lookup.data_sources:
-        await account_lookup.initialize_default_sources()
-
     history = data.get('history', [])
     # delegators = data.get('delegators', {})
     account_info = data.get('account_info', {})
