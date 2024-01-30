@@ -8,12 +8,12 @@ frontend = Blueprint('frontend', __name__,
 @frontend.route('/')
 async def index(error=None):
     async with httpx.AsyncClient() as client:
-        # recent_blocks_resp = await client.get(f'http://127.0.0.1:5000/api/search/confirmation_history')
-        reps_online_resp = await client.get(f'http://127.0.0.1:5000/api/reps_online/')
+        recent_blocks_resp = await client.get(f'http://127.0.0.1:5000/api/search/confirmation_history')
+        reps_online_resp = await client.get('http://127.0.0.1:5000/api/reps_online/')
 
-    # recent_blocks = recent_blocks_resp.json()
+    recent_blocks = recent_blocks_resp.json()
     reps_online = reps_online_resp.json()
-    return await render_template("search.html", reps_online=reps_online, error=error)
+    return await render_template("search.html", reps_online=reps_online, recent_blocks=recent_blocks, error=error)
 
 
 @frontend.route('/block/', defaults={'blockhash': None}, methods=["GET"])
@@ -33,7 +33,7 @@ async def block_viewer(blockhash):
 @frontend.route('/account/', defaults={'account': None}, methods=["GET"])
 @frontend.route('/account/<account>', methods=["GET"])
 async def account_viewer(account):
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(timeout=10.0) as client:
         response = await client.get(f'http://127.0.0.1:5000/api/account/{account}')
 
     if response.status_code != 200:
@@ -54,14 +54,28 @@ async def delegators(account):
         error_data = response.json()
         return await index(error_data["error"])
 
-    account_data = response.json()
-    return await render_template("account_viewer/delegators_table.html", account_data=account_data)
+    delegators = response.json()
+    return await render_template("account_viewer/delegators_table.html", delegators=delegators)
+
+
+@frontend.route('/receivables/', defaults={'account': None}, methods=["GET"])
+@frontend.route('/receivables/<account>', methods=["GET"])
+async def receivables(account):
+    async with httpx.AsyncClient(timeout=10.0) as client:
+        response = await client.get(f'http://127.0.0.1:5000/api/receivables/{account}')
+
+    if response.status_code != 200:
+        error_data = response.json()
+        return await index(error_data["error"])
+
+    receivables = response.json()
+    return await render_template("account_viewer/pending_table.html", receivables=receivables)
 
 
 @frontend.route('/confirmation_history/', methods=["GET"])
 async def confirmation_history():
     async with httpx.AsyncClient() as client:
-        response = await client.get(f'http://127.0.0.1:5000/api/search/confirmation_history')
+        response = await client.get('http://127.0.0.1:5000/api/search/confirmation_history')
 
     if response.status_code != 200:
         error_data = response.json()

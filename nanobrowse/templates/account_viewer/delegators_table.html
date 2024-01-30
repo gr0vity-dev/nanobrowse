@@ -1,15 +1,14 @@
 <!-- Delegators Table -->
 <table id="delegatorTable" class="table mt-6 mx-auto" style="display: none;">
     <tbody>       
-        <tr id="loadingSpinnerRow">
+        <tr id="delegatorSpinner">
             <td colspan="3" class="text-center">
                 <div class="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-64 w-64"></div>
             </td>
         </tr>
-        
-        {% for entry in account_data['delegators'] %}
-        <tr class="divide-y divide-gray-400">
-        
+        {% if delegators %}
+        {% for entry in delegators['delegators'] %}
+        <tr class="divide-y divide-gray-400">        
             
             <!-- delegate -->
             <td class="px-2 py-2 whitespace-nowrap text-sm">
@@ -41,6 +40,7 @@
             
         </tr>
         {% endfor %}
+        {% endif %}
     </tbody>
 </table>
 

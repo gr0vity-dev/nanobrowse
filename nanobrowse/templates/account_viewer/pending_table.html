@@ -1,41 +1,45 @@
-
 <!-- Receivables Table -->
-<table id="pendingTable" class="table mt-6 mx-auto" style="display: none;">
-    <tbody>
-        {% for entry in account_data['receivables'] %}
-        <tr class="divide-y divide-gray-400">
+<table id="pendingTable" class="table mt-6 mx-auto" style="display: none">
+  <tbody>
+    <tr id="pendingSpinner">
+      <td colspan="3" class="text-center">
+        <div
+          class="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-64 w-64"
+        ></div>
+      </td>
+    </tr>
+    {% if receivables %} {% for entry in receivables['receivables'] %}
+    <tr class="divide-y divide-gray-400">
+      <!-- Type Label (Receivable) -->
+      <td class="px-2 py-2 whitespace-nowrap text-sm">
+        <a href="{{ request.url_root }}block/{{ entry['hash'] }}">
+          <span
+            class="flex items-center justify-center w-20 h-6 text-xs rounded bg-blue-500 text-white"
+          >
+            receivable
+          </span>
+        </a>
+      </td>
 
-            <!-- Type Label (Receivable) -->
-            <td class="px-2 py-2 whitespace-nowrap text-sm">
-              <a href="{{ request.url_root }}block/{{ entry['hash'] }}">
-                <span
-                  class="flex items-center justify-center w-20 h-6 text-xs rounded bg-blue-500 text-white"
-                >
-                  receivable
-                </span>
-              </a>
-            </td>
+      <!-- Amount -->
+      <td class="px-4 py-4 whitespace-nowrap text-sm text-orange-500">
+        <b>{{ entry['amount_formatted'] }}</b>
+      </td>
 
-            <!-- Amount -->
-            <td class="px-4 py-4 whitespace-nowrap text-sm text-orange-500">
-              <b>{{ entry['amount_formatted'] }}</b>
-            </td>
-
-            <!-- Source Account -->
-             <!-- Account & Hash -->
-            <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500">
-              <a href="{{ request.url_root }}account/{{ entry['source'] }}">
-                <i class="copy_btn" data-value="{{ entry['source'] }}"></i>
-                {{ entry['source_formatted'] }}
-              </a>
-              <br />
-              <a href="{{ request.url_root }}block/{{ entry['hash'] }}">
-                <i class="copy_btn" data-value="{{ entry['hash'] }}"></i>
-                <b>{{ entry['hash_formatted'] }}</b>
-              </a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
+      <!-- Source Account -->
+      <!-- Account & Hash -->
+      <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500">
+        <a href="{{ request.url_root }}account/{{ entry['source'] }}">
+          <i class="copy_btn" data-value="{{ entry['source'] }}"></i>
+          {{ entry['source_formatted'] }}
+        </a>
+        <br />
+        <a href="{{ request.url_root }}block/{{ entry['hash'] }}">
+          <i class="copy_btn" data-value="{{ entry['hash'] }}"></i>
+          <b>{{ entry['hash_formatted'] }}</b>
+        </a>
+      </td>
+    </tr>
+    {% endfor %} {% endif %}
+  </tbody>
 </table>
-

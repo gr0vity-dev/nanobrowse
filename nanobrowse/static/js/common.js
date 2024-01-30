@@ -34,8 +34,8 @@ function handleFetchError(error, updateElementId) {
     "<tr><td colspan='3'>Failed to load data. Please try again.</td></tr>";
 }
 
-function hideSpinner() {
-  document.getElementById("loadingSpinnerRow").style.display = "none";
+function hideElement(elementId) {
+  document.getElementById(elementId).style.display = "none";
 }
 
 function handleCopyEvent(selector, position) {
