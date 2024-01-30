@@ -31,6 +31,7 @@
           {% endif %}
 
           <!-- Representative -->
+          {% if account_data['representative'] %}
           <tr>
             <td class="bg-gray-700 text-white text-xs px-3 py-2 rounded w-32 h-6 flex items-center justify-center">
               <a href="{{ request.url_root }}account/{{account_data['representative'] }}">Representative</a>
@@ -42,6 +43,7 @@
               </a>
             </td>
           </tr>
+          {% endif %}
 
           <!-- Last Block -->
           {#
@@ -58,6 +60,7 @@
           </tr>
           #}
 
+          {% if account_data['open_block'] %}
           <!-- Open Block -->
           <tr>
             <td class="bg-gray-700 text-white text-xs px-3 py-2 rounded w-32 h-6 flex items-center justify-center">
@@ -70,5 +73,7 @@
               </a>
             </td>
           </tr>
+          {% endif %}
+
         </tbody>
       </table>
