@@ -16,7 +16,7 @@
       defer
       data-domain="nanobrowse.com"
       src="https://plausible.bnano.info/js/script.js"
-    ></script>
+    ></script>    
   </head>
   <body class="bg-gray-100">
     {% include 'header/nanobrowse.html' %}
@@ -82,6 +82,7 @@
     <script>
       var knownAccounts = {{ known_accounts | default([]) | tojson | safe }};
     </script>
-    <script src="{{ url_for('static', filename='js/search.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/search.js') }}"></script>    
   </body>
 </html>

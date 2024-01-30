@@ -64,17 +64,7 @@ function redirectTo(url) {
     window.location.href = url;
 }
 
-async function fetchData(url) {
-    try {
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return await response.json();
-    } catch (error) {
-        console.error('Error fetching data:', error);
-    }
-}
+
 
 // Loads known accounts from the server
 async function loadKnownAccounts() {
@@ -84,4 +74,6 @@ async function loadKnownAccounts() {
 // Initializes the application
 document.addEventListener('DOMContentLoaded', () => {
     loadKnownAccounts();
+    fetchRenderedData("/confirmation_history", "#confirmationHistoryTable");
+    // fetchRenderedData("/online_reps", "#online_reps");
 });

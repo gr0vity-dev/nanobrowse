@@ -8,12 +8,12 @@ frontend = Blueprint('frontend', __name__,
 @frontend.route('/')
 async def index(error=None):
     async with httpx.AsyncClient() as client:
-        recent_blocks_resp = await client.get(f'http://127.0.0.1:5000/api/search/confirmation_history')
+        # recent_blocks_resp = await client.get(f'http://127.0.0.1:5000/api/search/confirmation_history')
         reps_online_resp = await client.get(f'http://127.0.0.1:5000/api/reps_online/')
 
-    recent_blocks = recent_blocks_resp.json()
+    # recent_blocks = recent_blocks_resp.json()
     reps_online = reps_online_resp.json()
-    return await render_template("search.html", recent_blocks=recent_blocks, reps_online=reps_online, error=error)
+    return await render_template("search.html", reps_online=reps_online, error=error)
 
 
 @frontend.route('/block/', defaults={'blockhash': None}, methods=["GET"])
@@ -56,3 +56,16 @@ async def delegators(account):
 
     account_data = response.json()
     return await render_template("account_viewer/delegators_table.html", account_data=account_data)
+
+
+@frontend.route('/confirmation_history/', methods=["GET"])
+async def confirmation_history():
+    async with httpx.AsyncClient() as client:
+        response = await client.get(f'http://127.0.0.1:5000/api/search/confirmation_history')
+
+    if response.status_code != 200:
+        error_data = response.json()
+        return await index(error_data["error"])
+
+    recent_blocks = response.json()
+    return await render_template("search/confirmation_history.html", recent_blocks=recent_blocks)

@@ -40,11 +40,8 @@
           // Display the target table
           document.getElementById(targetTableID).style.display = 'table';
         }
-      });
-        
-    
-    </script>
-    <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
+      });    
+    </script>   
     <script defer data-domain="nanobrowse.com" src="https://plausible.bnano.info/js/script.js"></script>
   </head>
   <body data-get-delegators-for-account="{{ account_data.account }}" class="bg-gray-100">
@@ -91,8 +88,11 @@
       {% include 'account_viewer/pending_table.html' %}
       {% include 'account_viewer/delegators_table.html' %}
       {% include 'account_viewer/grouped_history.html' %}
-      
+
+      <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+      <script src="{{ url_for('static', filename='js/delegators.js') }}"></script>
       
     </div>
+    
   </body>
 </html>
