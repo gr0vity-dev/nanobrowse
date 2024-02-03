@@ -1,5 +1,5 @@
 from quart import Quart, make_response, jsonify, request
-from transformers import block, search, account, receivables, delegators, representatives as reps
+from transformers import block, search, account, receivables, delegators, representatives as reps, account_history as acc_hist
 from utils.known import KnownAccountManager
 from frontend.views import frontend
 import logging
@@ -34,11 +34,14 @@ async def test_error():
 
 app.register_blueprint(frontend)
 app.register_blueprint(account.account_transformer, url_prefix='/api')
+app.register_blueprint(
+    acc_hist.account_history_transformer,  url_prefix='/api')
 app.register_blueprint(block.block_transformer, url_prefix='/api')
 app.register_blueprint(search.search_transformer,  url_prefix='/api')
 app.register_blueprint(delegators.delegators_transformer,  url_prefix='/api')
 app.register_blueprint(reps.rep_transformer,  url_prefix='/api')
 app.register_blueprint(receivables.receivables_transformer,  url_prefix='/api')
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)

@@ -44,6 +44,20 @@ async def account_viewer(account):
     return await render_template("account_viewer.html", account_data=account_data)
 
 
+@frontend.route('/account_history/', defaults={'account': None}, methods=["GET"])
+@frontend.route('/account_history/<account>', methods=["GET"])
+async def account_history_viewer(account):
+    async with httpx.AsyncClient(timeout=10.0) as client:
+        response = await client.get(f'http://127.0.0.1:5000/api/account_history/{account}')
+
+    if response.status_code != 200:
+        error_data = response.json()
+        return await index(error_data["error"])
+
+    account_history = response.json()
+    return await render_template("account_viewer/history_table.html", account_history=account_history)
+
+
 @frontend.route('/delegators/', defaults={'account': None}, methods=["GET"])
 @frontend.route('/delegators/<account>', methods=["GET"])
 async def delegators(account):
@@ -69,7 +83,7 @@ async def receivables(account):
         return await index(error_data["error"])
 
     receivables = response.json()
-    return await render_template("account_viewer/pending_table.html", receivables=receivables)
+    return await render_template("account_viewer/receivable_table.html", receivables=receivables)
 
 
 @frontend.route('/confirmation_history/', methods=["GET"])

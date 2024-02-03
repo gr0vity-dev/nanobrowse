@@ -4,95 +4,85 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>nanoBrowse Account Viewer</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}" />
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-        // Check for 'grouped' URL parameter
-        const urlParams = new URLSearchParams(window.location.search);
-        const showGrouped = urlParams.has('grouped');
-      
-        // Decide which table to show based on the 'grouped' parameter
-        const defaultTableID = showGrouped ? 'groupedTransactionTable' : 'transactionTable';
-      
-        // Hide all tables
-        document.querySelectorAll('.table').forEach(table => table.style.display = 'none');
-      
-        // Show the default table
-        document.getElementById(defaultTableID).style.display = 'table';
-       });
-
-       document.addEventListener('click', function(event) {
-        let targetElement = event.target;
-      
-        // Traverse up the DOM until we find an element with data-show-table or reach the body
-        while (targetElement && targetElement !== document.body && !targetElement.getAttribute('data-show-table')) {
-          targetElement = targetElement.parentElement;
-        }
-      
-        // Check if targetElement has data-show-table attribute
-        const targetTableID = targetElement.getAttribute('data-show-table');
-        if (targetTableID) {
-          // Hide all tables
-          document.querySelectorAll('.table').forEach(table => table.style.display = 'none');
-      
-          // Display the target table
-          document.getElementById(targetTableID).style.display = 'table';
-        }
-      });    
-    </script>   
-    <script defer data-domain="nanobrowse.com" src="https://plausible.bnano.info/js/script.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/custom.css') }}"
+    />
+    <script
+      defer
+      data-domain="nanobrowse.com"
+      src="https://plausible.bnano.info/js/script.js"
+    ></script>
   </head>
-  <body data-get-delegators-for-account="{{ account_data.account }}" class="bg-gray-100">
+  <body
+    data-get-delegators-for-account="{{ account_data.account }}"
+    class="bg-gray-100"
+  >
     {% include 'header/nanobrowse.html' %}
-    <div  class="bg-gray-100 mx-4 my-6 w-400">
-    <div class="container mx-auto">
+    <div class="container mx-auto bg-gray-100 mx-4 my-6 w-400">
       <!-- Account address -->
       <div class="text-center mb-2">
         <span
-          class="bg-{% if account_data['show_weight'] %}yellow-300 text-gray-700{% else %}blue-500 text-white{% endif %}  text-sm px-2 py-1 rounded overflow-hidden whitespace-nowrap"
+          class="bg-{% if account_data['show_weight'] %}yellow-300 text-gray-700{% else %}blue-500 text-white{% endif %} text-sm px-2 py-1 rounded overflow-hidden whitespace-nowrap"
         >
           <i class="copy_btn" data-value="{{ account_data.account }}"></i>
-          <a href="{{ request.url_root }}account/{{ account_data.account }}">{{ account_data.account }}</a>
+          <a href="{{ request.url_root }}account/{{ account_data.account }}"
+            >{{ account_data.account }}</a
+          >
         </span>
         {% if account_data.is_known_account %}
         <br />
         <span
           class="bg-{% if account_data['show_weight'] %}yellow-300 text-gray-700{% else %}blue-500 text-white{% endif %} text-xs px-2 py-1 rounded"
         >
-        {% if account_data.known_account.url %}
-        <a href="{{ account_data.known_account.url }}"> {{ account_data.known_account.name }}</a>
-        {% else %} {{ account_data.known_account.name }}{% endif %}
+          {% if account_data.known_account.url %}
+          <a href="{{ account_data.known_account.url }}">
+            {{ account_data.known_account.name }}</a
+          >
+          {% else %} {{ account_data.known_account.name }}{% endif %}
         </span>
         {% endif %} {% if account_data['is_pr'] %}
-        <span class="text-left bg-yellow-400 text-gray-700 text-xs ml-4 px-2 py-1 rounded">Principal Representative</span>
+        <span
+          class="text-left bg-yellow-400 text-gray-700 text-xs ml-4 px-2 py-1 rounded"
+          >Principal Representative</span
+        >
         {% endif %}
       </div>
-      
+
       {% include 'account_viewer/account_info.html' %}
 
       <div class="mt-4 text-xs flex items-center justify-center space-x-2">
-        <button data-show-table="groupedTransactionTable" class=" bg-gray-800 text-white px-3 py-1 rounded focus:outline-none">
+        <button
+          data-show-table="groupedTransactionTable"
+          class="bg-gray-800 text-white px-3 py-1 rounded focus:outline-none"
+        >
           Grouped Flows
-        </button> 
-        
-        <button data-show-table="transactionTable" class=" bg-gray-800 text-white px-3 py-1 rounded focus:outline-none">
+        </button>
+
+        <button
+          data-show-table="transactionTable"
+          class="bg-gray-800 text-white px-3 py-1 rounded focus:outline-none"
+        >
           Timeline
         </button>
       </div>
 
-      
-      {% include 'account_viewer/history_table.html' %}
-      {% include 'account_viewer/pending_table.html' %}
-      {% include 'account_viewer/delegators_table.html' %}
-      {% include 'account_viewer/grouped_history.html' %}
+      {% include 'account_viewer/receivable_table.html' %} {% include
+      'account_viewer/delegators_table.html' %} {% include
+      'account_viewer/history_table.html' %}
 
       <script src="{{ url_for('static', filename='js/common.js') }}"></script>
       <script src="{{ url_for('static', filename='js/delegators.js') }}"></script>
       <script src="{{ url_for('static', filename='js/receivables.js') }}"></script>
-      
+      <script src="{{ url_for('static', filename='js/account_history.js') }}"></script>
     </div>
-    
   </body>
 </html>

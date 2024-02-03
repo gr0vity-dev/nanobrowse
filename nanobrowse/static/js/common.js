@@ -23,9 +23,14 @@ function fetchRenderedData(url, updateElementId) {
 }
 
 function updateElement(renderedTableRows, updateElementId) {
-  const tableBody = document.querySelector(updateElementId);
-  tableBody.innerHTML = renderedTableRows;
+  // Create a temporary container for the new content
+  const tempContainer = document.createElement('div');
+  tempContainer.innerHTML = renderedTableRows;  
+  const newElement = tempContainer.querySelector(updateElementId);
+  const oldElement = document.querySelector(updateElementId);
+  oldElement.parentNode.replaceChild(newElement, oldElement);
 }
+
 
 function handleFetchError(error, updateElementId) {
   console.error("Error fetching Data:", error);
