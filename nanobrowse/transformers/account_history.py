@@ -6,6 +6,8 @@ import logging
 
 logging.basicConfig(level=logging.INFO)
 
+HISTORY_COUNT = 2500  # if you use a proxy, make sure it allows this many
+
 account_history_transformer = Blueprint(
     'account_history_transformer', __name__)
 account_lookup = AccountLookup()
@@ -25,7 +27,7 @@ async def get_account_history(account):
 async def fetch_account_history(account):
 
     try:
-        response = await nanorpc.account_history(account, count="500", raw="true") or {}
+        response = await nanorpc.account_history(account, count=HISTORY_COUNT, raw="true") or {}
 
         if "error" in response:
             raise ValueError("Invalid account")

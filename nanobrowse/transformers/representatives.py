@@ -1,6 +1,6 @@
 from quart import Blueprint, jsonify, request, abort
 from deps.rpc_client import nanorpc
-from utils.formatting import format_weight, format_account
+from utils.formatting import format_weight, format_account, safe_get
 from utils.known import AccountLookup
 import logging
 
@@ -35,23 +35,27 @@ async def fetch_reps_online():
 
 
 async def transform_reps_online_data(data):
-    representatives = data["representatives"]
+    representatives = data.get("representatives", {})
+
+    # Ensure representatives is a dictionary
+    if not isinstance(representatives, dict):
+        return []  # or handle the error as appropriate for your application
 
     # Calculate the total weight
-    total_weight = sum(int(rep["weight"]) for rep in representatives.values())
+    total_weight = sum(int(rep.get("weight", 0))
+                       for rep in representatives.values())
 
     # Sort representatives by weight in descending order
     sorted_reps = sorted(representatives.items(),
-                         key=lambda x: int(x[1]["weight"]), reverse=True)
+                         key=lambda x: int(x[1].get("weight", 0)), reverse=True)
 
     transformed_data = []
     for account, info in sorted_reps:
-        account_weight = int(info["weight"])
+        account_weight = int(info.get("weight", 0))
         address_formatted = format_account(account)
 
         # Perform account lookup
-        is_known_account, known_account = await account_lookup.lookup_account(
-            account)
+        is_known_account, known_account = await account_lookup.lookup_account(account)
 
         # Format the weight
         formatted_weight, weight_percent, show_weight = format_weight(

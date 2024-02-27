@@ -1,6 +1,6 @@
 from quart import Blueprint, jsonify, abort, make_response, jsonify
 from deps.rpc_client import nanorpc
-from utils.formatting import format_balance, get_time_ago, format_hash, format_account
+from utils.formatting import format_balance, get_time_ago, format_hash, format_account, safe_get
 from utils.known import AccountLookup
 import json
 import logging
@@ -46,15 +46,6 @@ async def fetch_block_info(hashes):
         raise ValueError(f"Blockhash not found!\n {not_found_hashes}")
 
     return response.get("blocks", {})
-
-
-def safe_get(dictionary, *keys, default=None):
-    for key in keys:
-        try:
-            dictionary = dictionary[key]
-        except (TypeError, KeyError, IndexError):
-            return default
-    return dictionary
 
 
 async def fetch_blocks_info(data, hash):

@@ -58,7 +58,6 @@ class KnownAccountManager:
 
 class AccountLookup:
     def __init__(self):
-        self.data_manager = KnownAccountManager()
         self.known_accounts = None
 
     def get_known_accounts(self):

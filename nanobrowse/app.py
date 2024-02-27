@@ -1,6 +1,7 @@
 from quart import Quart, make_response, jsonify, request
 from transformers import block, search, account, receivables, delegators, representatives as reps, account_history as acc_hist
 from utils.known import KnownAccountManager
+from utils.network_params import NetworkParamManager
 from frontend.views import frontend
 import logging
 
@@ -8,11 +9,13 @@ app = Quart(__name__)
 logging.basicConfig(level=logging.INFO)
 
 account_manager = KnownAccountManager()
+network_params = NetworkParamManager()
 
 
 @app.before_serving
 async def startup():
     await account_manager.run()
+    await network_params.run()
 
 
 @app.errorhandler(ValueError)

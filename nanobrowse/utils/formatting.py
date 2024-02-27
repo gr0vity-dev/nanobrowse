@@ -1,7 +1,9 @@
 
 import datetime
+from utils.network_params import NetworkParamManager
 
-NANO_SUPPLY = 133246401824662258600496820004700378675
+NETWORK_PARAMS = NetworkParamManager().get_params()
+NANO_SUPPLY = NETWORK_PARAMS.available_supply
 
 
 def get_time_ago(timestamp):
@@ -91,3 +93,12 @@ def format_hash(block_str: str) -> str:
 
     # Return the first 10 characters followed by "..."
     return f"{block_str[:15]}..."
+
+
+def safe_get(dictionary, *keys, default=None):
+    for key in keys:
+        try:
+            dictionary = dictionary[key]
+        except (TypeError, KeyError, IndexError):
+            return default
+    return dictionary
