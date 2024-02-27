@@ -61,12 +61,14 @@ async def transform_reps_online_data(data):
         formatted_weight, weight_percent, show_weight = format_weight(
             account_weight, total_weight, 0.0005)
 
+        alias = known_account["name"] if is_known_account else address_formatted
         # Add the transformed data
         transformed_data.append({
             "account": account,
             "is_known_account": is_known_account,
-            "account_formatted": known_account["name"] if is_known_account else address_formatted,
-            "weight_raw": account_weight,
+            "account_formatted": alias,
+            "alias": alias,  # assure compatibility with numsu vote visualizer
+            "votingweight": account_weight,  # assure compatibility with numsu vote visualizer
             "weight_formatted": formatted_weight,
             "weight_percent": weight_percent,
             "show_weight": show_weight
