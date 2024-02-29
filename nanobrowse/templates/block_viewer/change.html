@@ -24,15 +24,16 @@
     </div>
   </div>
 
-  <!-- Ensure this div spans full width -->
-  <!-- Send Block -->
-
-  <!-- Ensure this div spans full width -->
+  <!-- Change Block -->
   <div class="border-2 border-yellow-300 bg-yellow-100 rounded p-2 text-gray-700 w-full relative text-center">
     <span class="text-xs whitespace-nowrap overflow-hidden block mb-1 mt-1 ">
       <i class="copy_btn" data-value="{{block_data.change_block.hash}}"></i>
-      <a href="{{ request.url_root }}block/{{ block_data.change_block.hash }}">{{ block_data.change_block.hash }}</a>
+      <span class="dropdown-arrow cursor-pointer ml-2">{{ block_data.change_block.hash }} &#9660;</span>      
     </span>
+    <!-- Dropdown Content -->
+    <div class="dropdown-content bg-yellow-200 text-gray-800 text-xs p-2 rounded monospace hidden absolute z-10" style="font-family: monospace; left: 0; right: 0; margin-top: 1rem;">
+      <pre style="text-align: left;">{{ block_data.change_block_json }}</pre>
+    </div>
     <p class="font-light mb-6 text-yellow-500">delegate<span class="text-2xl font-bold "> {{ block_data.change_block.balance }}</span></p>
     <span class="absolute bottom-2 left-2 bg-yellow-300 text-xs px-2 py-1 rounded">
       {{ block_data.change_block.status }}

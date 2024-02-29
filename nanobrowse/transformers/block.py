@@ -99,10 +99,10 @@ async def process_block_data(block_data, key):
     successor = safe_get(block, "successor", default="")
     hash = key
     hash_exists = True if hash and hash != "0" * 64 else False
-    is_receive = True if block_type == "receive" else False
+    receive_type = True if block_type == "receive" else False
     is_send = True if block_type == "send" else False
-    is_open = True if is_receive and previous == "0" * 64 else False
-    is_receive = True if is_receive and not is_open else False
+    is_open = True if receive_type and previous == "0" * 64 else False
+    is_receive = True if receive_type and not is_open else False
     is_change = True if block_type == "change" else False
     is_epoch = True if block_type == "epoch" else False
 
@@ -210,5 +210,8 @@ async def transform_block_data(data, hash):
         "receiver_balance": receive_block_data.get("balance", ""),
         "change_block": change_block_data,
         "is_change": is_change,
+        "send_block_json": json.dumps(blocks_info.get(send_block_data.get("hash")), indent=2),
+        "receive_block_json": json.dumps(blocks_info.get(receive_block_data.get("hash")), indent=2),
+        "change_block_json": json.dumps(blocks_info.get(change_block_data.get("hash")), indent=2)
     }
     return result

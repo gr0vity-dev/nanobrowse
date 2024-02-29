@@ -1,7 +1,11 @@
 document.addEventListener("DOMContentLoaded", () => {
   handleCopyEvent(".copy_btn", "append");
   handleCopyEvent(".copy_btn_front", "prepend");
+  document.querySelectorAll('.dropdown-arrow').forEach(arrow => {
+    arrow.onclick = () => arrow.parentElement.nextElementSibling.classList.toggle('hidden');
+  });
 });
+
 
 async function fetchData(url) {
     try {

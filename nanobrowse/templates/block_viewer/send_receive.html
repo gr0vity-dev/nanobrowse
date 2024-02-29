@@ -1,6 +1,6 @@
 <div class="flex flex-col mt-4 mx-auto max-w-screen-sm w-full">
   <!-- Ensure this div spans full width -->
-  <!-- Sender Address -->
+  
 
   <!-- Sender Pin Shape -->
   <div class="flex items-start">
@@ -8,8 +8,9 @@
       <div class="w-12 mt-2 h-12 border-2 border-blue-500 rounded-full"></div>
       <div class="ml-6 bg-blue-500 h-12 w-1"></div>
     </div>
+    <!-- Sender Address -->
     <div class="text-left ml-4">
-      <div class="text-2xl font-bold">
+      <div class="text-2xl font-bold"> 
         Sender {% if block_data.send_block.is_known_sender %}
         <span class="text-xl font-light"> {% if block_data.send_block.known_sender.url %}
         <a href="{{ block_data.send_block.known_sender.url }}">: {{ block_data.send_block.known_sender.name }}</a>
@@ -25,15 +26,16 @@
     </div>
   </div>
 
-  <!-- Ensure this div spans full width -->
   <!-- Send Block -->
-
-  <!-- Ensure this div spans full width -->
   <div class="border-2 border-blue-500 bg-blue-100 rounded p-2 text-blue-500 mb-20 w-full relative text-center">
     <span class="text-xs whitespace-nowrap overflow-hidden block mb-1 mt-1 text-gray-700">
-      <i class="copy_btn" data-value="{{block_data.send_block.hash}}"></i>
-      <a href="{{ request.url_root }}block/{{ block_data.send_block.hash }}">{{ block_data.send_block.hash }}</a>
+      <i class="copy_btn" data-value="{{ block_data.send_block.hash }}"></i>
+      <span class="dropdown-arrow cursor-pointer ml-2">{{ block_data.send_block.hash }} &#9660;</span>
     </span>
+    <!-- Dropdown Content -->
+    <div class="dropdown-content bg-blue-200 text-gray-800 text-xs p-2 rounded monospace hidden absolute z-10" style="font-family: monospace; left: 0; right: 0; margin-top: 1rem;">
+      <pre style="text-align: left;">{{ block_data.send_block_json }}</pre>
+    </div>
     <p class="text-2xl font-bold text-center mb-6">{{ block_data.send_block.amount_formatted }}</p>
     <span class="absolute bottom-2 left-2 bg-blue-500 text-white text-xs px-2 py-1 rounded">
       {{ block_data.send_block.status }}
@@ -47,33 +49,37 @@
   </div>
   
   <!-- Receive Block -->
-    {% if block_data.receive_block.hash_exists %}
-  <!-- Receive Block -->
-  <div class="border-2 border-green-500 bg-green-100 rounded p-2 text-green-500 w-full text-center relative">
-   <span class="text-xs whitespace-nowrap overflow-hidden block mb-1 mt-1 text-gray-700">
-      <i class="copy_btn" data-value="{{block_data.receive_block.hash}}"></i>
-      <a href="{{ request.url_root }}block/{{ block_data.receive_block.hash }}">{{ block_data.receive_block.hash }}</a>
+  {% if block_data.receive_block.hash_exists %}
+    <!-- Receive Block exists-->
+    <div class="border-2 border-green-500 bg-green-100 rounded p-2 text-green-500 w-full text-center relative">
+    <span class="text-xs whitespace-nowrap overflow-hidden block mb-1 mt-1 text-gray-700">
+        <i class="copy_btn" data-value="{{block_data.receive_block.hash}}"></i>        
+        <span class="dropdown-arrow cursor-pointer ml-2">{{ block_data.receive_block.hash }} &#9660;</span>      
     </span>
-    <p class="text-2xl font-bold text-center mb-6">{{ block_data.receive_block.amount_formatted }}</p>
-    <span class="absolute bottom-2 left-2 bg-green-500 text-white text-xs px-2 py-1 rounded">
-      {{ block_data.send_block.status }}
-    </span>
-    <span class="absolute bottom-2 {{ block_data.receive_block.left_align }} text-black text-xs px-2 py-1">
-      {{ block_data.receive_block.time_ago }}
-    </span>
-    <span class="absolute bottom-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded">
-      {{ block_data.receive_block.block_type }}
-    </span>
-  </div>
+    <!-- Dropdown Content -->
+    <div class="dropdown-content bg-green-200 text-gray-800 text-xs p-2 rounded monospace hidden absolute z-10" style="font-family: monospace; left: 0; right: 0; margin-top: 1rem;">
+      <pre style="text-align: left;">{{ block_data.receive_block_json }}</pre>
+    </div>
+      <p class="text-2xl font-bold text-center mb-6">{{ block_data.receive_block.amount_formatted }}</p>
+      <span class="absolute bottom-2 left-2 bg-green-500 text-white text-xs px-2 py-1 rounded">
+        {{ block_data.send_block.status }}
+      </span>
+      <span class="absolute bottom-2 {{ block_data.receive_block.left_align }} text-black text-xs px-2 py-1">
+        {{ block_data.receive_block.time_ago }}
+      </span>
+      <span class="absolute bottom-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded">
+        {{ block_data.receive_block.block_type }}
+      </span>
+    </div>
   {% else %}
-    <!-- No Receive Block -->
+    <!-- No Receive Block exists-->
     <div class="border-2 border-gray-400 bg-gray-200 rounded p-2 text-gray-500 w-full text-center relative">
     <p class="text-2xl font-bold text-center mb-6">Ready for recipient to receive</p>
     <span class="absolute bottom-2 right-2 bg-gray-400 text-white text-xs px-2 py-1 rounded">
       receive block
     </span>
-    </div>
-    {% endif %}
+  </div>
+  {% endif %}
   
   
   <!-- Receiver Pin Shape -->
@@ -87,9 +93,9 @@
           <!-- gray -->
           <div class="ml-6 bg-gray-500 h-12 w-1"></div>
       <div class="w-12 h-12 border-2 border-gray-500 rounded-full"></div>
-        {% endif %}
-      
+        {% endif %}      
     </div>
+
     <div class="text-left ml-4 mt-10">
       <div class="text-2xl font-bold">
         Receiver {% if block_data.send_block.is_known_receiver %}<span class="text-xl font-light"> {% if block_data.send_block.known_receiver.url %}
@@ -105,10 +111,5 @@
       </div>
     </div>
   </div>
-  
-  
-  
-
-
-
 </div>
+  
