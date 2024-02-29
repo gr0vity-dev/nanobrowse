@@ -70,13 +70,17 @@
             Online Representatives
           </button>
         </div>
-        <div id="confirmationHistory">
-          {% include 'search/confirmation_history.html' %}
-        </div>
-        <div id="representatives" class="hidden">
-          {% include 'search/reps_online.html' %}
-        </div>
+        
       </div>
+    </div>
+
+    <div class="mt-4 flex justify-start mx-6 sm:justify-center">
+          <div id="confirmationHistory">
+            {% include 'search/confirmation_history.html' %}
+          </div>
+          <div id="representatives" class="hidden">
+            {% include 'search/reps_online.html' %}
+          </div>
     </div>
 
     <script>
