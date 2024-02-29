@@ -83,13 +83,18 @@ async def transform_history_data(history):
     for entry in history:
         time_ago = get_time_ago(entry.get("local_timestamp"))
         account = entry.get("account") or entry.get("representative")
-        type = entry.get("subtype")
+        confirmed = entry.get("confirmed")
+        block_type = entry.get("subtype")
+
+        block_type_formatted = block_type
+        if confirmed == "false":
+            block_type_formatted = block_type + " ⌛"
 
         amount = entry.get("amount")
-        if type == "change":
+        if block_type == "change":
             amount_formatted = "new rep"
         else:
-            amount_formatted = format_balance(amount, type)
+            amount_formatted = format_balance(amount, block_type)
 
         is_known_account, known_account = await account_lookup.lookup_account(
             account)
@@ -97,7 +102,8 @@ async def transform_history_data(history):
             account)
 
         transformed_history.append({
-            "type": type,
+            "type": block_type,
+            "type_formatted": block_type_formatted,
             "account": account,
             "is_known_account": is_known_account,
             "known_account": known_account,
