@@ -77,3 +77,26 @@ document.addEventListener('DOMContentLoaded', () => {
     // fetchRenderedData("/confirmation_history", "#confirmationHistoryTable");
     // fetchRenderedData("/online_reps", "#online_reps");
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Determine which div to display based on URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const showReps = urlParams.has('reps');  // Checks if 'reps' parameter is present in the URL
+    
+    // Identifiers for the div elements
+    const confirmationHistoryID = 'confirmationHistory';
+    const representativesID = 'representatives';
+    
+    // Get the div elements
+    const confirmationHistoryDiv = document.getElementById(confirmationHistoryID);
+    const representativesDiv = document.getElementById(representativesID);
+
+    // Show the appropriate div based on the presence of 'reps' URL parameter
+    if (showReps) {
+      if (confirmationHistoryDiv) confirmationHistoryDiv.style.display = 'none'; // Hide confirmation history
+      if (representativesDiv) representativesDiv.style.display = 'block'; // Show representatives
+    } else {
+      if (confirmationHistoryDiv) confirmationHistoryDiv.style.display = 'block'; // Show confirmation history
+      if (representativesDiv) representativesDiv.style.display = 'none'; // Ensure representatives is hidden
+    }
+  });

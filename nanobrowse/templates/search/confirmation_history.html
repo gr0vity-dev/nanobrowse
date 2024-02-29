@@ -1,28 +1,30 @@
-<table id="confirmationHistoryTable" class="mt-6">
-     <thead class="text-gray-400">
-      <td></td>
-      <td class="justify-center">Recent Confirmations</td>
-      <td class="px-2">Stats</td>
-    </thead>
-    <tbody>
-      {% for entry in recent_blocks %}
-      <tr class="divide-y divide-gray-400">
-        <!-- Time Ago -->
-        <td class="px-4 py-2 whitespace-nowrap text-sm">{{ entry['time_ago'] }}</td>
-        <!-- Block Hash -->
-        <td class="px-4 py-2 whitespace-nowrap text-sm">
-          <a href="{{ request.url_root }}block/{{ entry['hash'] }}">
-            <b>{{ entry['hash_formatted'] }}</b>
-            <!-- Showing only first 10 characters for brevity -->
-          </a>
-        </td>
-        <!-- Voters & Duration -->
-        <td class="px-4 py-2 whitespace-nowrap text-sm">
-          {{ entry['conf_duration'] }}
-          <br />
-          {{ entry['voters'] }}
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+<table class="mt-6">
+  <thead class="text-gray-400">
+    <td></td>
+    <td class="px-2">Recent Confirmations</td>
+    <td class="px-2">Stats</td>
+  </thead>
+  <tbody>
+    {% for entry in recent_blocks %}
+    <tr class="divide-y divide-gray-600">
+      <!-- Time Ago -->
+      <td class="px-2 py-2 whitespace-nowrap text-sm">
+        {{ entry['time_ago'] }}
+      </td>
+      <!-- Block Hash -->
+      <td class="px-2 py-2 whitespace-nowrap text-sm">
+        <a href="{{ request.url_root }}block/{{ entry['hash'] }}">
+          <b>{{ entry['hash_formatted'] }}</b>
+          <!-- Showing only first 10 characters for brevity -->
+        </a>
+      </td>
+      <!-- Voters & Duration -->
+      <td class="px-2 py-2 whitespace-nowrap text-sm">
+        {{ entry['conf_duration'] }}
+        <br />
+        {{ entry['voters'] }}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>

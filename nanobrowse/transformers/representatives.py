@@ -1,6 +1,6 @@
 from quart import Blueprint, jsonify, request, abort
 from deps.rpc_client import nanorpc
-from utils.formatting import format_weight, format_account, safe_get
+from utils.formatting import format_weight, format_account, format_uptime, get_time_ago, format_version
 from utils.known import AccountLookup
 import logging
 
@@ -24,18 +24,55 @@ async def get_representatives_online():
 
 async def fetch_reps_online():
     try:
-        response = await nanorpc.representatives_online(weight=True)
+        online_reps = await nanorpc.representatives_online(weight=True)
+        telemetry = await nanorpc.telemetry(raw=True)
+        confirmation_qorum = await nanorpc.confirmation_quorum(peer_details=True)
 
-        if "error" in response:
+        if "error" in online_reps or "error" in telemetry or "error" in confirmation_qorum:
             raise ValueError("Unexpected error ")
     except Exception as exc:
         raise ValueError("Timeout...\nPlease try again later.")
 
+    response = {
+        "online_reps": online_reps,
+        "telemetry": telemetry,
+        "confirmation_qorum": confirmation_qorum
+    }
+
     return response
 
 
+def extend_telemetry_with_account(telemetry_peers, confirmation_qorum_peers):
+    # Prepare IP and port from telemetry data for matching
+    telemetry_dict = {
+        f"[{peer['address']}]:{peer['port']}": peer for peer in telemetry_peers
+    }
+
+    # Prepare IP from confirmation quorum peers for matching
+    formatted_peers = {
+        f"{peer['ip']}": peer["account"]
+        for peer in confirmation_qorum_peers
+    }
+
+    # Create a dictionary with the account as key, merging data from both sources
+    merged_data = {}
+    for ip_port, account in formatted_peers.items():
+        if ip_port in telemetry_dict:
+            telemetry_info = telemetry_dict[ip_port]
+            # Assign the telemetry info directly to the account in the merged_data dictionary
+            merged_data[account] = telemetry_info
+
+    return merged_data
+
+
 async def transform_reps_online_data(data):
-    representatives = data.get("representatives", {})
+    representatives = data["online_reps"].get("representatives", {})
+    confirmation_qorum = data["confirmation_qorum"]
+    confirmation_qorum_peers = confirmation_qorum.get("peers")
+    telemetry_peers = data["telemetry"].get("metrics")
+
+    extended_telemetry = extend_telemetry_with_account(
+        telemetry_peers, confirmation_qorum_peers)
 
     # Ensure representatives is a dictionary
     if not isinstance(representatives, dict):
@@ -53,6 +90,13 @@ async def transform_reps_online_data(data):
     for account, info in sorted_reps:
         account_weight = int(info.get("weight", 0))
         address_formatted = format_account(account)
+        tac = extended_telemetry.get(account, {})  # elemetry_account_data
+        node_version_telemetry = format_version(tac.get("major_version"), tac.get(
+            "minor_version"), tac.get("patch_version"), tac.get("pre_release_version"))
+        node_maker_telemetry = tac.get("maker")
+        node_uptime = format_uptime(tac.get("uptime", 0))
+        telemetry_timestamp = round(int(tac.get("timestamp", "0")) / 1000)
+        last_telemetry_report = get_time_ago(telemetry_timestamp)
 
         # Perform account lookup
         is_known_account, known_account = await account_lookup.lookup_account(account)
@@ -71,7 +115,11 @@ async def transform_reps_online_data(data):
             "votingweight": account_weight,  # assure compatibility with numsu vote visualizer
             "weight_formatted": formatted_weight,
             "weight_percent": weight_percent,
-            "show_weight": show_weight
+            "show_weight": show_weight,
+            "node_version": node_version_telemetry,
+            "node_uptime": node_uptime,
+            "node_maker": node_maker_telemetry,
+            "last_telemetry_report": last_telemetry_report
         })
 
     return transformed_data

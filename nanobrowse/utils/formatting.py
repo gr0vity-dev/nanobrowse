@@ -8,6 +8,9 @@ NANO_SUPPLY = NETWORK_PARAMS.available_supply
 
 def get_time_ago(timestamp):
     timestamp = 0 if timestamp == "" else int(timestamp)
+    if timestamp == 0:
+        return "Unknown"
+
     current_time = datetime.datetime.now().timestamp()
     diff = current_time - timestamp
 
@@ -31,6 +34,60 @@ def get_time_ago(timestamp):
     else:  # More than a year
         years = int(diff // 31557600)
         return f"{years} year(s) ago"
+
+
+def format_uptime(uptime_seconds):
+
+    uptime_seconds = 0 if uptime_seconds == "" else int(uptime_seconds)
+    if uptime_seconds == 0:
+        return "Unknown"
+    # Constants for time unit conversions
+    MINUTE = 60
+    HOUR = 60 * MINUTE
+    DAY = 24 * HOUR
+    WEEK = 7 * DAY
+    MONTH = 30 * DAY  # Approximation
+    YEAR = 365 * DAY  # Approximation
+
+    # Calculate the time units
+    years = uptime_seconds // YEAR
+    months = (uptime_seconds % YEAR) // MONTH
+    weeks = (uptime_seconds % YEAR % MONTH) // WEEK
+    days = (uptime_seconds % WEEK) // DAY
+    hours = (uptime_seconds % DAY) // HOUR
+    minutes = (uptime_seconds % HOUR) // MINUTE
+
+    if years > 0:
+        # Format as years, months, weeks
+        return f"{years} years, {months} months"
+    elif months > 0:
+        # Format as years, months, weeks
+        return f"{months} months, {weeks} weeks"
+    elif weeks > 0:
+        # Format as weeks, days, hours, minutes
+        return f"{weeks} weeks, {days} days"
+    elif days > 0:
+        # If uptime is less than a week but more than a day
+        return f"{days} days, {hours} hours"
+    elif hours > 0:
+        # If uptime is less than a day but more than an hour
+        return f"{hours} hours, {minutes} minutes"
+    elif minutes > 0:
+        # If uptime is less than an hour but more than a minute
+        return f"{minutes} minutes"
+    else:
+        # If uptime is less than a minute
+        return "Less than a minute"
+
+
+def format_version(major, minor, patch, pre_release):
+    # List of version parts
+    version_numbers = [major, minor, pre_release]
+    # Filter out any None values
+    valid_versions = [str(v) for v in version_numbers if v is not None]
+
+    # Join the remaining parts with dots, or return a default value if empty
+    return '.'.join(valid_versions) if valid_versions else "Unknown"
 
 
 def format_weight(value, base_weight=None, ignore_weight_below=0.01):
