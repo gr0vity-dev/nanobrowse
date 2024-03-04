@@ -128,7 +128,7 @@ async def transform_account_data(data):
     grouped_history = group_and_sort_history(transformed_history)
 
     response = {
-        "history": transformed_history[:50],
+        "history": transformed_history,
         "grouped_history": grouped_history,
         "cutoff_hash": history_cutoff_hash
     }
