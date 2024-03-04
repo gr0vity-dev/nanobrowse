@@ -1,6 +1,7 @@
-from quart import Blueprint, jsonify, abort, make_response, jsonify
+from quart import Blueprint, jsonify, abort, jsonify
 from deps.rpc_client import nanorpc
-from utils.formatting import get_time_ago, format_hash, format_account
+from utils.formatting import get_time_ago, format_hash
+from utils.rpc_execution import execute_and_handle_errors
 from utils.known import AccountLookup
 import logging
 
@@ -33,13 +34,16 @@ async def search_confirmation_history():
 
 async def fetch_confirmation_history():
 
-    response = await nanorpc.confirmation_history()
-    return response
+    tasks = {
+        "result": nanorpc.confirmation_history()
+    }
+    result = await execute_and_handle_errors(tasks)
+    return result["result"]
 
 
 def transform_confirmation_history(confirmations_data):
 
-    confirmations_data = confirmations_data.get("confirmations", [])[10:]
+    confirmations_data = confirmations_data.get("confirmations", [])[50:]
     show_block_count = min(10, len(confirmations_data))
 
     confirmations = []

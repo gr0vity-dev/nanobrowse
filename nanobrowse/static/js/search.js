@@ -74,8 +74,6 @@ async function loadKnownAccounts() {
 // Initializes the application
 document.addEventListener('DOMContentLoaded', () => {
     loadKnownAccounts();
-    // fetchRenderedData("/confirmation_history", "#confirmationHistoryTable");
-    // fetchRenderedData("/online_reps", "#online_reps");
 });
 
 document.addEventListener('DOMContentLoaded', function() {

@@ -19,7 +19,8 @@ def get_nanorpc_client(rpc_url=None, auth_username=None, auth_password=None, nod
     # Initialize and return the NanoRpc client
     return NanoRpcTyped(url=rpc_url,
                         username=auth_username,
-                        password=auth_password)
+                        password=auth_password,
+                        wrap_json=True)
 
 
 def get_nanoto_client():

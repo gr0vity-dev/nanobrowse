@@ -2,6 +2,7 @@ from quart import Quart, make_response, jsonify, request
 from transformers import block, search, account, receivables, delegators, representatives as reps, account_history as acc_hist
 from utils.known import KnownAccountManager
 from utils.network_params import NetworkParamManager
+from utils.formatting import format_error
 from frontend.views import frontend
 import logging
 
@@ -20,14 +21,8 @@ async def startup():
 
 @app.errorhandler(ValueError)
 async def handle_value_error(error):
-    logging.error("Handling ValueError")
-    error_split = str(error).split("\n")
-
-    error_dict = {
-        "header": "Error: " + error_split.pop(0) if error_split else "Error!",
-        "body": "\n" + "\n".join(error_split)
-    }
-    logging.info(error_dict["header"])
+    logging.error(str(error))
+    error_dict = format_error(error)
     return await make_response(jsonify(error=error_dict), 400)
 
 

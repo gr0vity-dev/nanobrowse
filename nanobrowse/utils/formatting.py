@@ -6,6 +6,17 @@ NETWORK_PARAMS = NetworkParamManager().get_params()
 NANO_SUPPLY = NETWORK_PARAMS.available_supply
 
 
+def format_error(error):
+    if not error:
+        return None
+    error_split = str(error).split("\n")
+    error_dict = {
+        "header": "Error: " + error_split.pop(0) if error_split else "Error!",
+        "body": "\n" + "\n".join(error_split)
+    }
+    return error_dict
+
+
 def get_time_ago(timestamp):
     timestamp = 0 if timestamp == "" else int(timestamp)
     if timestamp == 0:

@@ -2,6 +2,7 @@ from quart import Blueprint, jsonify, request, abort
 from deps.rpc_client import nanorpc
 from utils.formatting import get_time_ago, format_weight, format_balance, format_hash, format_account
 from utils.known import AccountLookup
+from utils.rpc_execution import execute_and_handle_errors
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -26,56 +27,46 @@ async def get_account_history(account):
 
 async def fetch_account_history(account):
 
-    try:
-        response = await nanorpc.account_history(account, count=HISTORY_COUNT, raw="true") or {}
+    tasks = {"result": nanorpc.account_history(
+        account, count=HISTORY_COUNT, raw="true")}
+    response = await execute_and_handle_errors(tasks)
+    return response["result"] or {}
 
-        if "error" in response:
-            raise ValueError("Invalid account")
-    except Exception as exc:
-        raise ValueError("Timeout...\nPlease try again later.")
 
-    return response
+def format_entry_amount(amount, block_type):
+    if block_type == "change":
+        return "new rep"
+    else:
+        return format_balance(amount, block_type)
 
 
 def group_and_sort_history(transformed_history):
     grouped_history = {}
     for entry in transformed_history:
         key = (entry['type'], entry['account'])
+        amount = int(entry.get('amount', '0') or '0')
         if key not in grouped_history:
-            # Create a new entry for the group
-            grouped_history[key] = entry.copy()
-            grouped_history[key]['total_amount'] = int(entry['amount'] or 0)
-            # Initialize transaction count
-            grouped_history[key]['transaction_count'] = 1
+            grouped_entry = entry.copy()
+            grouped_entry['total_amount'] = amount
+            grouped_entry['transaction_count'] = 1
         else:
-            grouped_history[key]['total_amount'] += int(entry['amount'] or 0)
-            # Increment transaction count
-            grouped_history[key]['transaction_count'] += 1
-            # Update 'time_ago' to the most recent time
-            if entry['timestamp'] > grouped_history[key]['timestamp']:
-                grouped_history[key]['time_ago'] = entry['time_ago']
-                grouped_history[key]['timestamp'] = entry['timestamp']
+            grouped_entry = grouped_history[key]
+            grouped_entry['total_amount'] += amount
+            grouped_entry['transaction_count'] += 1
+            if entry['timestamp'] > grouped_entry['timestamp']:
+                grouped_entry['time_ago'] = entry['time_ago']
+                grouped_entry['timestamp'] = entry['timestamp']
+        grouped_history[key] = grouped_entry
 
-    # Sort the grouped history by type and account in ascending order
     sorted_grouped_history = sorted(
         grouped_history.values(),
-        key=lambda x: (
-            x['total_amount'] if x['total_amount'] is not None else 0
-        ),
+        key=lambda x: x['total_amount'],
         reverse=True
     )
 
-    # Format the final output
     for entry in sorted_grouped_history:
-        block_type = entry['type']
-        if block_type == "change":
-            amount_formatted = "new rep"
-        else:
-            amount_formatted = format_balance(
-                str(entry['total_amount']), block_type)
-
-        entry['amount_formatted'] = amount_formatted
-        # Remove individual entry fields that are not needed in grouped view
+        entry['amount_formatted'] = format_entry_amount(
+            entry['total_amount'], entry['type'])
         entry.pop('amount', None)
         entry.pop('hash', None)
         entry.pop('height', None)
@@ -83,46 +74,45 @@ def group_and_sort_history(transformed_history):
     return sorted_grouped_history
 
 
-async def transform_history_data(history):
+async def transform_history_entry(entry):
+    time_ago = get_time_ago(entry.get("local_timestamp"))
+    account = entry.get("account") or entry.get("representative")
+    confirmed = entry.get("confirmed")
+    block_type = entry.get("subtype")
+    amount = entry.get("amount")
+    block_hash = entry.get("hash")
+    block_hash_formatted = format_hash(block_hash)
+    block_type_formatted = f"{block_type} ⌛" if confirmed == "false" else block_type
 
+    is_known_account, known_account = await account_lookup.lookup_account(account)
+    account_formatted = known_account["name"] if is_known_account else format_account(
+        account)
+
+    transformed_entry = {
+        "type": block_type,
+        "account": account,
+        "is_known_account": is_known_account,
+        "known_account": known_account,
+        "amount": amount,
+        "timestamp": entry.get("local_timestamp"),
+        "height": entry.get("height"),
+        "hash": block_hash,
+        "hash_formatted": block_hash_formatted,
+        "time_ago": time_ago,
+        "type_formatted": block_type_formatted,
+        "account_formatted": account_formatted,
+        "amount_formatted": format_entry_amount(amount, block_type),
+        "confirmed": confirmed
+    }
+
+    return transformed_entry
+
+
+async def transform_history_data(history):
     transformed_history = []
     for entry in history:
-        time_ago = get_time_ago(entry.get("local_timestamp"))
-        account = entry.get("account") or entry.get("representative")
-        confirmed = entry.get("confirmed")
-        block_type = entry.get("subtype")
-
-        block_type_formatted = block_type
-        if confirmed == "false":
-            block_type_formatted = block_type + " ⌛"
-
-        amount = entry.get("amount")
-        if block_type == "change":
-            amount_formatted = "new rep"
-        else:
-            amount_formatted = format_balance(amount, block_type)
-
-        is_known_account, known_account = await account_lookup.lookup_account(
-            account)
-        account_formatted = known_account["name"] if is_known_account else format_account(
-            account)
-
-        transformed_history.append({
-            "type": block_type,
-            "type_formatted": block_type_formatted,
-            "account": account,
-            "is_known_account": is_known_account,
-            "known_account": known_account,
-            "account_formatted": account_formatted,
-            "amount": amount,
-            "amount_formatted": amount_formatted,
-            "timestamp": entry.get("local_timestamp"),
-            "height": entry.get("height"),
-            "hash": entry.get("hash"),
-            "hash_formatted": format_hash(entry.get("hash")),
-            "confirmed": entry.get("confirmed"),
-            "time_ago": time_ago
-        })
+        transformed_entry = await transform_history_entry(entry)
+        transformed_history.append(transformed_entry)
     return transformed_history
 
 

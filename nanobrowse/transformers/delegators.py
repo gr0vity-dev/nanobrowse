@@ -2,6 +2,8 @@ from quart import Blueprint, jsonify, request, abort
 from deps.rpc_client import nanorpc
 from utils.formatting import get_time_ago, format_weight, format_balance, format_hash, format_account
 from utils.known import AccountLookup
+from utils.rpc_execution import execute_and_handle_errors
+from asyncio import gather
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -22,20 +24,12 @@ async def get_delegators(account):
 
 
 async def fetch_delegators(account):
+    tasks = {
+        "base_weight": nanorpc.account_weight(account),
+        "delegators": nanorpc.delegators(account, threshold=1000 * 10**30, count="1000")
+    }
 
-    try:
-        response = {}
-        response["base_weight"] = await nanorpc.account_weight(account)
-        # optimisation possible, return early if < 0.01% (outsource this show_weight_threshold to common module, as it's checkedin multiple places)
-        # response["delegators_count"] = await nanorpc.delegators_count(account)
-        response["delegators"] = await nanorpc.delegators(account, threshold=1000 * 10**30, count="1000")
-
-        if "error" in response:
-            raise ValueError("Invalid account")
-    except Exception as exc:
-        raise ValueError("Timeout...\nPlease try again later.")
-
-    return response
+    return await execute_and_handle_errors(tasks)
 
 
 async def transform_delegator_data(delegators, base_weight):

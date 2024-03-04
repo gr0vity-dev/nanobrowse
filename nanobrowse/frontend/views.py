@@ -1,5 +1,9 @@
-from quart import Blueprint, render_template
-import httpx  # Instead of 'requests'
+from quart import Blueprint, render_template, jsonify
+from utils.formatting import format_error
+from asyncio import gather
+from httpx import AsyncClient
+import logging
+logging.basicConfig(level=logging.INFO)
 
 frontend = Blueprint('frontend', __name__,
                      template_folder='../templates', static_folder='../static')
@@ -7,19 +11,30 @@ frontend = Blueprint('frontend', __name__,
 
 @frontend.route('/')
 async def index(error=None):
-    async with httpx.AsyncClient() as client:
-        recent_blocks_resp = await client.get(f'http://127.0.0.1:5000/api/search/confirmation_history')
-        reps_online_resp = await client.get('http://127.0.0.1:5000/api/reps_online/')
+    async with AsyncClient() as client:
+        recent_blocks_resp, reps_online_resp = await gather(
+            client.get('http://127.0.0.1:5000/api/search/confirmation_history'),
+            client.get('http://127.0.0.1:5000/api/reps_online/')
+        )
 
     recent_blocks = recent_blocks_resp.json()
     reps_online = reps_online_resp.json()
+
+    # Use the first non-None error message if available
+    if "error" in recent_blocks:
+        error = recent_blocks["error"]
+    if "error" in reps_online:
+        error = reps_online["error"]
+
+    logging.info(error)
+
     return await render_template("search.html", reps_online=reps_online, recent_blocks=recent_blocks, error=error)
 
 
 @frontend.route('/block/', defaults={'blockhash': None}, methods=["GET"])
 @frontend.route('/block/<blockhash>', methods=["GET"])
 async def block_viewer(blockhash):
-    async with httpx.AsyncClient() as client:
+    async with AsyncClient() as client:
         response = await client.get(f'http://127.0.0.1:5000/api/block/{blockhash}')
 
     if response.status_code != 200:
@@ -33,7 +48,7 @@ async def block_viewer(blockhash):
 @frontend.route('/account/', defaults={'account': None}, methods=["GET"])
 @frontend.route('/account/<account>', methods=["GET"])
 async def account_viewer(account):
-    async with httpx.AsyncClient(timeout=10.0) as client:
+    async with AsyncClient(timeout=10.0) as client:
         response = await client.get(f'http://127.0.0.1:5000/api/account/{account}')
 
     if response.status_code != 200:
@@ -47,7 +62,7 @@ async def account_viewer(account):
 @frontend.route('/account_history/', defaults={'account': None}, methods=["GET"])
 @frontend.route('/account_history/<account>', methods=["GET"])
 async def account_history_viewer(account):
-    async with httpx.AsyncClient(timeout=10.0) as client:
+    async with AsyncClient(timeout=10.0) as client:
         response = await client.get(f'http://127.0.0.1:5000/api/account_history/{account}')
 
     if response.status_code != 200:
@@ -61,7 +76,7 @@ async def account_history_viewer(account):
 @frontend.route('/delegators/', defaults={'account': None}, methods=["GET"])
 @frontend.route('/delegators/<account>', methods=["GET"])
 async def delegators(account):
-    async with httpx.AsyncClient(timeout=10.0) as client:
+    async with AsyncClient(timeout=10.0) as client:
         response = await client.get(f'http://127.0.0.1:5000/api/delegators/{account}')
 
     if response.status_code != 200:
@@ -75,7 +90,7 @@ async def delegators(account):
 @frontend.route('/receivables/', defaults={'account': None}, methods=["GET"])
 @frontend.route('/receivables/<account>', methods=["GET"])
 async def receivables(account):
-    async with httpx.AsyncClient(timeout=10.0) as client:
+    async with AsyncClient(timeout=10.0) as client:
         response = await client.get(f'http://127.0.0.1:5000/api/receivables/{account}')
 
     if response.status_code != 200:
@@ -88,7 +103,7 @@ async def receivables(account):
 
 @frontend.route('/confirmation_history/', methods=["GET"])
 async def confirmation_history():
-    async with httpx.AsyncClient() as client:
+    async with AsyncClient(timeout=10.0) as client:
         response = await client.get('http://127.0.0.1:5000/api/search/confirmation_history')
 
     if response.status_code != 200:

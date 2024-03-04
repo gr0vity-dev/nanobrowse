@@ -1,6 +1,7 @@
 from quart import Blueprint, jsonify, request, abort
 from deps.rpc_client import nanorpc
 from utils.formatting import get_time_ago, format_weight, format_balance, format_hash, format_account
+from utils.rpc_execution import execute_and_handle_errors
 from utils.known import AccountLookup
 import logging
 
@@ -23,14 +24,11 @@ async def get_account_info(account):
 
 async def fetch_account_info(account):
 
-    try:
-        response = {"account": account}
-        response["account_info"] = await nanorpc.account_info(account, include_confirmed="true", representative="true", receivable="true", weight="true")
-
-        if "error" in response:
-            raise ValueError("Invalid account")
-    except Exception as exc:
-        raise ValueError("Timeout...\nPlease try again later.")
+    tasks = {
+        "account_info": nanorpc.account_info(account, include_confirmed="true", representative="true", receivable="true", weight="true")
+    }
+    response = await execute_and_handle_errors(tasks)
+    response["account"] = account
 
     return response
 

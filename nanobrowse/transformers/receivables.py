@@ -1,10 +1,8 @@
 from quart import Blueprint, jsonify, abort
 from deps.rpc_client import nanorpc
 from utils.formatting import format_balance, format_hash, format_account
+from utils.rpc_execution import execute_and_handle_errors
 from utils.known import AccountLookup
-import logging
-
-logging.basicConfig(level=logging.INFO)
 
 receivables_transformer = Blueprint('receivables_transformer', __name__)
 account_lookup = AccountLookup()
@@ -23,17 +21,10 @@ async def get_receivables(account):
 
 async def fetch_receivables(account):
 
-    try:
-        response = {}
-        response["receivable"] = await nanorpc.receivable(account, source="true", include_only_confirmed="false", sorting="true")
-
-        if "error" in response:
-            raise ValueError("Invalid account")
-    except Exception as exc:
-        logging.error(str(exc))
-        raise ValueError("Timeout...\nPlease try again later.")
-
-    return response
+    tasks = {
+        "receivable": nanorpc.receivable(account, source="true", include_only_confirmed="false", sorting="true")
+    }
+    return await execute_and_handle_errors(tasks)
 
 
 async def transform_data(data):
