@@ -42,10 +42,11 @@ async def fetch_confirmation_history():
 
 
 def transform_confirmation_history(confirmations_data):
+    ELECTION_COUNT = 50
 
-    confirmations_data = confirmations_data.get("confirmations", [])[50:]
-    show_block_count = min(10, len(confirmations_data))
-
+    confirmations_data = confirmations_data.get(
+        "confirmations", [])
+    show_block_count = min(ELECTION_COUNT, len(confirmations_data))
     confirmations = []
 
     for i in range(0, show_block_count):
