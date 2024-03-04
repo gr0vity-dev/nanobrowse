@@ -54,7 +54,7 @@
       <!-- Type Label (Send/Receive) -->
       <td class="px-2 py-2 whitespace-nowrap text-sm">        
           <span
-            class="flex items-center justify-center w-20 h-6 text-xs rounded {% if entry['type'] == 'send' %} bg-blue-500 text-white {% elif entry['type'] == 'change' %} bg-gray-700 text-white {% elif entry['type'] == 'receive' %} bg-green-500 text-white {% else %} bg-gray-500 text-white {% endif %}"
+            class="flex items-center justify-center w-20 h-6 text-xs rounded {% if entry['type'] == 'send' %} bg-blue-500 text-white {% elif entry['type'] == 'change' %} bg-yellow-300 text-gray-700 {% elif entry['type'] == 'receive' %} bg-green-500 text-white {% else %} bg-gray-500 text-white {% endif %}"
           >
             {{ entry['type_formatted'] }}
           </span>

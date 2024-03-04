@@ -67,8 +67,14 @@ def group_and_sort_history(transformed_history):
 
     # Format the final output
     for entry in sorted_grouped_history:
-        entry['amount_formatted'] = format_balance(
-            str(entry['total_amount']), entry['type'])
+        block_type = entry['type']
+        if block_type == "change":
+            amount_formatted = "new rep"
+        else:
+            amount_formatted = format_balance(
+                str(entry['total_amount']), block_type)
+
+        entry['amount_formatted'] = amount_formatted
         # Remove individual entry fields that are not needed in grouped view
         entry.pop('amount', None)
         entry.pop('hash', None)
