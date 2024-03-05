@@ -24,7 +24,7 @@ docker-compose up -d
 
 ### Rpc commands in use
 The following rpc commands are required to run the block explorer :
-```json
+```
 account_info
 account_history
 account_weight
@@ -32,7 +32,9 @@ confirmation_history
 delegators
 receivable
 representatives_online
-``````
+telemetry
+confirmation_quorum
+```
 
 
 ## Features
