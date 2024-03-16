@@ -7,7 +7,13 @@
           <div class="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-64 w-64"></div>
       </td>
     </tr>
-    {% if account_history %} {% for entry in account_history['history'] %}
+    {% if account_history %} 
+    {% if account_history.warning %}
+      <tr class="divide-y divide-gray-400">
+        <td class="px-2 py-2 whitespace-nowrap text-sm">{{ account_history.warning }}</td></tr>
+    {% endif %}
+    
+    {% for entry in account_history['history'] %}
     <tr class="divide-y divide-gray-400">
       <!-- Type Label (Send/Receive) -->
       <td class="px-2 py-2 whitespace-nowrap text-sm">
@@ -49,6 +55,12 @@
 <table id="groupedTransactionTable" class="table mt-6 mx-auto">
   <tbody>
     {% if account_history %}
+
+    {% if account_history.warning %}
+      <tr class="divide-y divide-gray-400">
+        <td class="px-2 py-2 whitespace-nowrap text-sm">{{ account_history.warning }}</td></tr>
+    {% endif %}
+    
     {% for entry in account_history['grouped_history'] %}
     <tr class="divide-y divide-gray-400">
       <!-- Type Label (Send/Receive) -->

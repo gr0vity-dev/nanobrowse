@@ -128,5 +128,7 @@ async def transform_account_data(data):
         "grouped_history": grouped_history,
         "cutoff_hash": history_cutoff_hash
     }
+    if not transformed_history:
+        response["warning"] = "No transaction history is available for this account."
 
     return response
