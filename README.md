@@ -28,12 +28,13 @@ The following rpc commands are required to run the block explorer :
 account_info
 account_history
 account_weight
+blocks_info
 confirmation_history
+confirmation_quorum
 delegators
 receivable
 representatives_online
 telemetry
-confirmation_quorum
 ```
 
 
