@@ -1,10 +1,11 @@
-from quart import Quart, make_response, jsonify, request
+from quart import Quart, make_response, jsonify, request, send_from_directory
 from transformers import block, search, account, receivables, delegators, representatives as reps, account_history as acc_hist
 from utils.known import KnownAccountManager
 from utils.network_params import NetworkParamManager
 from utils.formatting import format_error
 from frontend.views import frontend
 import logging
+from os import path
 
 app = Quart(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -24,6 +25,12 @@ async def handle_value_error(error):
     logging.error(str(error))
     error_dict = format_error(error)
     return await make_response(jsonify(error=error_dict), 400)
+
+
+@app.route('/favicon.ico')
+async def favicon():
+    return await send_from_directory(path.join(app.root_path, 'static'),
+                                     'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 
 @app.route('/test-error')
