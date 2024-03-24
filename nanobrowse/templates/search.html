@@ -16,7 +16,8 @@
       defer
       data-domain="nanobrowse.com"
       src="https://plausible.bnano.info/js/script.js"
-    ></script>    
+    ></script>
+    <script src="https://pay.nano.to/latest.js"></script>
   </head>
   <body class="bg-gray-100">
     {% include 'header/nanobrowse.html' %}
@@ -55,38 +56,79 @@
           <div id="suggestions" class="suggestions-container"></div>
         </form>
 
-        <!-- Toggle Buttons -->
-        <div class="mt-4 mb-4">
+        <!-- Toggle Buttons Container -->
+        <div
+          class="flex flex-col sm:flex-row items-center justify-center mt-4 mb-2 space-y-2 sm:space-y-0 sm:space-x-2 w-full px-4 sm:w-auto"
+        >
           <button
             onclick="showSection('confirmationHistory')"
-            class="bg-blue-300 text-gray-700 text-xs px-2 py-1 rounded"
+            class="btn bg-blue-300 text-gray-700 text-xs px-2 py-1 rounded w-full sm:w-auto"
           >
-            Latest Transactions
+            Recent Transactions
           </button>
           <button
             onclick="showSection('representatives')"
-            class="bg-yellow-300 text-gray-700 text-xs px-2 py-1 rounded ml-2"
+            class="btn bg-yellow-300 text-gray-700 text-xs px-2 py-1 rounded w-full sm:w-auto"
           >
             Online Representatives
           </button>
+          <!-- Register Nano Alias Button -->
+          <button
+            onclick="registerNanoAlias()"
+            class="btn bg-green-300 text-gray-700 text-xs px-2 py-1 rounded w-full sm:w-auto"
+          >
+            Register Nano Alias
+          </button>
         </div>
-        
       </div>
     </div>
 
     <div class="mt-4 flex justify-start mx-6 sm:justify-center">
-          <div id="confirmationHistory">
-            {% include 'search/confirmation_history.html' %}
-          </div>
-          <div id="representatives" class="hidden">
-            {% include 'search/reps_online.html' %}
-          </div>
+      <div id="confirmationHistory">
+        {% include 'search/confirmation_history.html' %}
+      </div>
+      <div id="representatives" class="hidden">
+        {% include 'search/reps_online.html' %}
+      </div>
     </div>
 
     <script>
       var knownAccounts = {{ known_accounts | default([]) | tojson | safe }};
     </script>
     <script src="{{ url_for('static', filename='js/common.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/search.js') }}"></script>    
+    <script src="{{ url_for('static', filename='js/search.js') }}"></script>
   </body>
 </html>
+
+<script>
+  function registerNanoAlias() {
+    NanoPay.open({
+      alias: true,
+      address:
+        "nano_1browse8yrj5jhwkpsckt3qt1atbn8bo1sne965rawzx7d7gmhrqn89zob6n",
+      amount: 1,
+      success: (block) => {
+        fetch("/api/update_aliases")
+          .then((response) => {
+            if (response.ok) {
+              return response.json();
+            }
+            throw new Error("Network response was not ok.");
+          })
+          .then((data) => {
+            console.log(data);
+            window.location.href = `/account/${block.address}`;
+          })
+          .catch((error) => {
+            console.error(
+              "There has been a problem with your fetch operation:",
+              error
+            );
+            window.alert(
+              "Your registered alias is available within 10 minutes."
+            );
+          });
+      },
+    });
+  }
+</script>
