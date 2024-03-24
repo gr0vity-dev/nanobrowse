@@ -2,7 +2,7 @@ import asyncio
 import logging
 import json
 from utils.formatting import format_account
-from utils.constants import KNOWN_ACCOUNTS_FILE, UPDATE_KNOW_INTERVAL
+from utils.constants import KNOWN_ACCOUNTS_FILE, KNOWN_REFRESH_INTERVAL
 from deps.rpc_client import nanoto
 
 
@@ -19,7 +19,7 @@ class KnownAccountManager:
     async def background_update_task(self):
         while True:
             await self.update_known_accounts()
-            await asyncio.sleep(UPDATE_KNOW_INTERVAL)
+            await asyncio.sleep(KNOWN_REFRESH_INTERVAL)
 
     async def update_known_accounts(self):
         new_accounts = []
