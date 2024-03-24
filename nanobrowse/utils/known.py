@@ -19,6 +19,7 @@ class KnownAccountManager:
     async def background_update_task(self):
         while True:
             await self.update_known_accounts()
+            await self.update_known_aliases()
             await asyncio.sleep(KNOWN_REFRESH_INTERVAL)
 
     async def update_known_accounts(self):
@@ -31,29 +32,83 @@ class KnownAccountManager:
         with open(KNOWN_ACCOUNTS_FILE, 'r', encoding='utf-8') as file:
             known_accounts = json.load(file)
 
-        if self._update_accounts(new_accounts, known_accounts):
-            logging.info("Updated known.json")
+        known_key = "nano_to"
+        known_aliases = known_accounts.get(known_key, {})
+
+        updated, update_count = self._updated_known(
+            new_accounts, known_aliases)
+        if updated:
+            known_accounts[known_key] = known_aliases
             with open(KNOWN_ACCOUNTS_FILE, 'w', encoding='utf-8') as file:
                 json.dump(known_accounts, file, indent=4)
+            logging.info(
+                "%s accounts updated in known.json [%s] ", update_count, known_key)
 
         self.data_sources = known_accounts
 
-    def _update_accounts(self, new_accounts, known_accounts):
-        nano_to_key = "nano_to"
-        nano_to_section = known_accounts.get(nano_to_key, {})
+    def _updated_known(self, new_accounts, known_accounts):
         updated = False
+        update_count = 0
+        address_key = "address"
+        name_key = "name"
+        url_template = "https://nano.to/{name}"
 
         for account in new_accounts:
-            address = account["address"]
-            if address not in nano_to_section:
-                nano_to_section[address] = {
-                    "name": account["name"],
-                    "url": f"https://nano.to/{account['name']}"
+            address = account[address_key]
+            name = account[name_key]
+            if address not in known_accounts or (known_accounts[address].get("name") != name):
+                # Dynamically construct the URL based on the template and available account keys
+                account_info = {
+                    "name": name,
+                    "url":  url_template.format(**account) if url_template else None
                 }
+                known_accounts[address] = account_info
                 updated = True
+                update_count += 1
 
-        known_accounts[nano_to_key] = nano_to_section
-        return updated
+        return updated, update_count
+
+    def _updated_aliases(self, new_accounts, known_accounts):
+        updated = False
+        update_count = 0
+
+        for account in new_accounts:
+            address = account["account"]
+            if address not in known_accounts:
+                account_info = {
+                    "name": account["alias"],
+                    "url": None
+                }
+                known_accounts[address] = account_info
+                updated = True
+                update_count += 1
+
+        return updated, update_count
+
+    async def update_known_aliases(self):
+        new_accounts = []
+        try:
+            new_accounts = await nanoto.aliases()
+        except Exception as e:
+            logging.warn(f"nano.to known() unavailable: {e}")
+
+        with open(KNOWN_ACCOUNTS_FILE, 'r', encoding='utf-8') as file:
+            known_accounts = json.load(file)
+
+        aliases_key = "aliases"
+        known_aliases = known_accounts.get(aliases_key, {})
+
+        updated, update_count = self._updated_aliases(
+            new_accounts, known_aliases)
+        if updated:
+            known_accounts[aliases_key] = known_aliases
+            with open(KNOWN_ACCOUNTS_FILE, 'w', encoding='utf-8') as file:
+                json.dump(known_accounts, file, indent=4)
+            logging.info(
+                "%s accounts updated in known.json [%s] ", update_count, aliases_key)
+
+        self.data_sources = known_accounts
+        return update_count
 
 
 class AccountLookup:
