@@ -98,3 +98,31 @@ document.addEventListener('DOMContentLoaded', function() {
       if (representativesDiv) representativesDiv.style.display = 'none'; // Ensure representatives is hidden
     }
   });
+
+
+function registerNanoAlias() {
+    NanoPay.open({
+        alias: true,
+        address: 'nano_1browse8yrj5jhwkpsckt3qt1atbn8bo1sne965rawzx7d7gmhrqn89zob6n', 
+        amount: 0.1, // Adjust the amount as necessary
+        success: (block) => {
+            console.log(block);           
+            // Call the /api/update_aliases endpoint
+            fetch('/api/update_aliases')
+                .then(response => {
+                    if (response.ok) {
+                        return response.json(); // or .text() if the response is plain text
+                    }
+                    throw new Error('Network response was not ok.');
+                })
+                .then(data => {
+                    console.log(data);   
+                    window.alert('Alias has been registered successfully.');
+                })
+                .catch(error => {
+                    console.error('There has been a problem with your fetch operation:', error);
+                    window.alert('Alias will appear within 10 minutes.');
+                });
+        }
+    });
+}

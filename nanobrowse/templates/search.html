@@ -4,19 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>nanoBrowse</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/custom.css') }}"
-    />
-    <script
-      defer
-      data-domain="nanobrowse.com"
-      src="https://plausible.bnano.info/js/script.js"
-    ></script>    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}" />
+    <script defer data-domain="nanobrowse.com" src="https://plausible.bnano.info/js/script.js" ></script>
+    <script src="https://pay.nano.to/latest.js"></script>
   </head>
   <body class="bg-gray-100">
     {% include 'header/nanobrowse.html' %}
@@ -68,6 +59,14 @@
             class="bg-yellow-300 text-gray-700 text-xs px-2 py-1 rounded ml-2"
           >
             Online Representatives
+          </button>
+          </button>
+          <!-- Register Nano Alias Button -->
+          <button
+            onclick="registerNanoAlias()"
+            class="bg-green-300 text-gray-700 text-xs px-2 py-1 rounded ml-2"
+          >
+            Register Nano Alias
           </button>
         </div>
         
