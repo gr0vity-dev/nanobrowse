@@ -8,3 +8,7 @@ services:
       RPC_URL : ${RPC_URL}
       AUTH_USERNAME : ${AUTH_USERNAME}
       AUTH_PASSWORD : ${AUTH_PASSWORD}
+      # NANO_TO_AUTH_KEY: "NANO-POW-KEY-..."  # optional
+      FEATURE_ALIAS_REG: False
+      FEATURE_REFRESH_KNOWN: True
+      FEATURE_BETA_EXPLORER: False
