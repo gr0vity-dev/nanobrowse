@@ -1,9 +1,6 @@
 
 import datetime
-from utils.network_params import NetworkParamManager
-
-NETWORK_PARAMS = NetworkParamManager().get_params()
-NANO_SUPPLY = NETWORK_PARAMS.available_supply
+from utils.network_params import NetworkParams
 
 
 def format_error(error):
@@ -103,7 +100,7 @@ def format_version(major, minor, patch, pre_release):
 
 def format_weight(value, base_weight=None, ignore_weight_below=0.01):
     show_weight = False
-    base_weight = base_weight or NANO_SUPPLY
+    base_weight = base_weight or NetworkParams.get_supply()
     try:
         weight = int(value) / 10 ** 30
         weight_formatted = "Ӿ {:,.2f}".format(weight)
