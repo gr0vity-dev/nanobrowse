@@ -1,7 +1,13 @@
 <div class="flex items-center justify-center mt-4">
-      <img src="/static/nanobrowse_logo_128.png" class="h-10 mr-4" alt="nanoBrowse Logo"> <!-- Adjust the height as needed -->
-      <h1 class="text-4xl">
-          <a href="{{ request.url_root }}">nanoBrowse</a>
-      </h1>
-  </div>
-  
+    <img src="/static/nanobrowse_logo_128.png" class="h-10 mr-4" alt="nanoBrowse Logo">
+    <div class="flex items-baseline">
+        <h1 class="text-4xl">
+            <a href="{{ request.url_root }}" class="flex items-baseline">
+                nanoBrowse
+                {% if ft.is_enabled('BETA_EXPLORER') %}
+                <span class="text-sm text-red-600 ml-2">beta</span>
+                {% endif %}
+            </a>
+        </h1>
+    </div>
+</div>
