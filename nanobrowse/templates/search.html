@@ -71,14 +71,16 @@
             class="btn bg-yellow-300 text-gray-700 text-xs px-2 py-1 rounded w-full sm:w-auto"
           >
             Online Representatives
-          </button>
-          <!-- Register Nano Alias Button -->
+          </button>          
+          {% if ft.is_enabled('ALIAS_REG') %}
+          <!-- feature_toggle: Register Nano Alias Button -->
           <button
             onclick="registerNanoAlias()"
             class="btn bg-green-300 text-gray-700 text-xs px-2 py-1 rounded w-full sm:w-auto"
           >
             Register Nano Alias
           </button>
+          {% endif %}
         </div>
       </div>
     </div>
