@@ -2,19 +2,33 @@ import asyncio
 import logging
 import json
 from utils.formatting import format_account
+from protocols.observer import ObserverProtocol
 from utils.constants import KNOWN_ACCOUNTS_FILE, KNOWN_REFRESH_INTERVAL
 from deps.rpc_client import nanoto
 
 
 class KnownAccountManager:
+
+    observers = []  # Observers shared by all instances
+
     def __init__(self):
         self.data_sources = None
 
-    async def get_known_accounts(self):
-        return self.data_sources
-
     async def run(self):
         asyncio.create_task(self.background_update_task())
+
+    def register_observer(self, observer):
+        if observer not in self.observers and hasattr(observer, 'update_observer'):
+            self.observers.append(observer)
+
+    def remove_observer(self, observer):
+        if observer in self.observers:
+            self.observers.remove(observer)
+
+    async def notify_observers(self, message):
+        for observer in self.observers:
+            if hasattr(observer, 'update_observer'):
+                await observer.update_observer(message)
 
     async def background_update_task(self):
         while True:
@@ -108,27 +122,36 @@ class KnownAccountManager:
                 "%s accounts updated in known.json [%s] ", update_count, aliases_key)
 
         self.data_sources = known_accounts
+        await self.notify_observers({})
         return update_count
 
 
-class AccountLookup:
+class AccountLookup(ObserverProtocol):
+    known_accounts = None  # Shared by all instances
+
     def __init__(self):
-        self.known_accounts = None
+        pass
 
-    def get_known_accounts(self):
-        with open(KNOWN_ACCOUNTS_FILE, 'r', encoding='utf-8') as file:
-            return json.load(file)
+    async def update_observer(self, _):
+        await self._set_known_from_file()
 
-    async def get_all_known(self):
-        known_accounts = self.get_known_accounts()
-        self.known_accounts = self._aggregate_accounts(known_accounts)
+    async def get_all_known_formatted(self):
+        return await self._format_known_accounts()
 
-        return self.known_accounts
+    async def lookup_account(self, account):
+        known_accounts_l = await self._get_all_known()
+        matches = [{"account": account, "name": data[account].get("name"), "url": data[account].get("url")}
+                   for _, data in known_accounts_l.items() if account in data]
 
-    def _aggregate_accounts(self, known_accounts: dict):
+        is_known = bool(matches)
+        first_known = matches[0] if is_known else {}
+        return is_known, first_known
+
+    async def _format_known_accounts(self):
+        known_accounts_l = await self._get_all_known()
         aggregated_accounts = []
-        for key in known_accounts.keys():
-            for account, details in known_accounts[key].items():
+        for key in known_accounts_l.keys():
+            for account, details in known_accounts_l[key].items():
                 entry = {
                     "source": key,
                     "account": account,
@@ -140,12 +163,11 @@ class AccountLookup:
                 aggregated_accounts.append(entry)
         return aggregated_accounts
 
-    async def lookup_account(self, account):
-        known_accounts = self.get_known_accounts()
+    async def _get_all_known(self):
+        if AccountLookup.known_accounts is None:
+            await self._set_known_from_file()
+        return AccountLookup.known_accounts
 
-        matches = [{"account": account, "name": data[account].get("name"), "url": data[account].get("url")}
-                   for source, data in known_accounts.items() if account in data]
-
-        is_known = bool(matches)
-        first_known = matches[0] if is_known else {}
-        return is_known, first_known
+    async def _set_known_from_file(self):
+        with open(KNOWN_ACCOUNTS_FILE, 'r', encoding='utf-8') as file:
+            AccountLookup.known_accounts = json.load(file)

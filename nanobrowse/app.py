@@ -1,7 +1,7 @@
 from quart import Quart, make_response, jsonify, request, send_from_directory
 from transformers import block, search, account, receivables, delegators, known
 from transformers import representatives as reps, account_history as acc_hist
-from utils.known import KnownAccountManager
+from utils.known import KnownAccountManager, AccountLookup
 from utils.network_params import NetworkParamManager
 from utils.formatting import format_error
 from utils.feature_toggle import FeatureToggle
@@ -14,12 +14,16 @@ logging.basicConfig(level=logging.INFO)
 
 feature_toggle = FeatureToggle()
 account_manager = KnownAccountManager()
+account_lookup = AccountLookup()
 network_params = NetworkParamManager()
 
 
 @app.before_serving
 async def startup():
-    await account_manager.run()
+    feature_toggle.log_feature_statuses()
+    account_manager.register_observer(account_lookup)
+    if feature_toggle.is_enabled("REFRESH_KNOWN"):
+        await account_manager.run()
     await network_params.run()
 
 

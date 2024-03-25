@@ -13,7 +13,7 @@ account_lookup = AccountLookup()
 
 @search_transformer.route('/search/known_accounts', methods=['GET'])
 async def search_known_accounts():
-    data = await account_lookup.get_all_known()
+    data = await account_lookup.get_all_known_formatted()
 
     if not data:
         abort(500, description="Error communicating with RPC server")
