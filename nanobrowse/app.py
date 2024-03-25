@@ -4,6 +4,7 @@ from transformers import representatives as reps, account_history as acc_hist
 from utils.known import KnownAccountManager
 from utils.network_params import NetworkParamManager
 from utils.formatting import format_error
+from utils.feature_toggle import FeatureToggle
 from frontend.views import frontend
 import logging
 from os import path
@@ -11,6 +12,7 @@ from os import path
 app = Quart(__name__)
 logging.basicConfig(level=logging.INFO)
 
+feature_toggle = FeatureToggle()
 account_manager = KnownAccountManager()
 network_params = NetworkParamManager()
 
@@ -19,6 +21,11 @@ network_params = NetworkParamManager()
 async def startup():
     await account_manager.run()
     await network_params.run()
+
+
+@app.context_processor
+def inject_feature_toggles():
+    return {'ft': feature_toggle}
 
 
 @app.errorhandler(ValueError)
