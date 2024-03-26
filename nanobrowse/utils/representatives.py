@@ -16,8 +16,12 @@ class RepsManager:
         self.account_lookup = AccountLookup()
         self.nanorpc = get_nanorpc_client()
 
-    def get_online_reps(self):
-        return [rep for rep in RepsManager.online_reps.values()]
+    def get_online_reps(self, sorting_key="votingweight"):
+        online_reps = list(RepsManager.online_reps.values())
+        sorted_reps = sorted(
+            online_reps, key=lambda rep: rep.get(sorting_key, 0), reverse=True)
+
+        return sorted_reps
 
     async def run(self):
         asyncio.create_task(self.background_update_task())
@@ -96,12 +100,8 @@ class RepsManager:
         total_weight = sum(int(rep.get("weight", 0))
                            for rep in representatives.values())
 
-        # Sort representatives by weight in descending order
-        sorted_reps = sorted(representatives.items(),
-                             key=lambda x: int(x[1].get("weight", 0)), reverse=True)
-
         transformed_data = []
-        for account, info in sorted_reps:
+        for account, info in representatives.items():
             account_weight = int(info.get("weight", 0))
             address_formatted = format_account(account)
             tac = extended_telemetry.get(account, {})  # elemetry_account_data
