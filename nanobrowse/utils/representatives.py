@@ -2,9 +2,10 @@ from deps.rpc_client import get_nanorpc_client
 from utils.formatting import format_weight, format_account, format_uptime, get_time_ago, format_version
 from utils.rpc_execution import execute_and_handle_errors
 from utils.known import AccountLookup
-from utils.constants import REP_REFRESH_INTERVAL
-import asyncio
+from utils.constants import REP_REFRESH_INTERVAL, REP_RESET_MULTIPLIER
 from utils.logger import logger
+from utils.helpers import toggle_every_n
+import asyncio
 
 
 class RepsManager:
@@ -21,20 +22,25 @@ class RepsManager:
         self._extend_weight_information(online_reps)
         sorted_reps = sorted(
             online_reps, key=lambda rep: rep.get(sorting_key, 0), reverse=True)
-        logger.info(sorted_reps)
         return sorted_reps
 
     async def run(self):
         asyncio.create_task(self.background_update_task())
 
     async def background_update_task(self):
+        # Avoid offline reps to accumulate by clearing online reps occasionally
+        reset_generator = toggle_every_n(REP_RESET_MULTIPLIER)
         while True:
-            await self.refresh_representatives_online()
+            reset_current = await reset_generator.__anext__()
+            await self.refresh_representatives_online(reset_current=reset_current)
             await asyncio.sleep(REP_REFRESH_INTERVAL)
 
-    async def refresh_representatives_online(self):
+    async def refresh_representatives_online(self, reset_current=False):
         data = await self._fetch_reps_online()
         transformed_data = await self._transform_reps_online_data(data)
+        if reset_current:
+            logger.info("Online reps have been reset")
+            RepsManager.online_reps = {}
         self._merge_with_online_reps(transformed_data)
 
     async def _fetch_reps_online(self):

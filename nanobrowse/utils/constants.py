@@ -4,6 +4,7 @@ from os import getenv
 KNOWN_ACCOUNTS_FILE = "/app/utils/known.json"
 KNOWN_REFRESH_INTERVAL = getenv("KNOWN_REFRESH_INTERVAL") or 600  # 10 minutes
 REP_REFRESH_INTERVAL = getenv("REP_REFRESH_INTERVAL") or 600  # 10 minutes
+REP_RESET_MULTIPLIER = getenv("REP_RESET_MULTIPLIER") or 100  # 100 * 10 mins
 RPC_URL = getenv("RPC_URL")
 AUTH_USERNAME = getenv("AUTH_USERNAME")
 AUTH_PASSWORD = getenv("AUTH_PASSWORD")
