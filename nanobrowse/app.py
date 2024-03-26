@@ -3,6 +3,7 @@ from transformers import block, search, account, receivables, delegators, known
 from transformers import representatives as reps, account_history as acc_hist
 from utils.known import KnownAccountManager, AccountLookup
 from utils.network_params import NetworkParamManager
+from utils.representatives import RepsManager
 from utils.formatting import format_error
 from utils.feature_toggle import FeatureToggle
 from frontend.views import frontend
@@ -16,6 +17,7 @@ feature_toggle = FeatureToggle()
 account_manager = KnownAccountManager()
 account_lookup = AccountLookup()
 network_params = NetworkParamManager()
+reps_manager = RepsManager()  # periodic update of online reps
 
 
 @app.before_serving
@@ -25,6 +27,7 @@ async def startup():
     if feature_toggle.is_enabled("REFRESH_KNOWN"):
         await account_manager.run()
     await network_params.run()
+    await reps_manager.run()
 
 
 @app.context_processor
