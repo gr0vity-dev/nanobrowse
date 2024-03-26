@@ -18,9 +18,10 @@ class RepsManager:
 
     def get_online_reps(self, sorting_key="votingweight"):
         online_reps = list(RepsManager.online_reps.values())
+        self._extend_weight_information(online_reps)
         sorted_reps = sorted(
             online_reps, key=lambda rep: rep.get(sorting_key, 0), reverse=True)
-
+        logger.info(sorted_reps)
         return sorted_reps
 
     async def run(self):
@@ -32,24 +33,11 @@ class RepsManager:
             await asyncio.sleep(REP_REFRESH_INTERVAL)
 
     async def refresh_representatives_online(self):
-        data = await self.fetch_reps_online()
-        transformed_data = await self.transform_reps_online_data(data)
-        keys_to_ignore = ['last_telemetry_report',
-                          'weight_formatted', 'weight_percent', 'node_uptime']
+        data = await self._fetch_reps_online()
+        transformed_data = await self._transform_reps_online_data(data)
+        self._merge_with_online_reps(transformed_data)
 
-        for rep in transformed_data:
-            existing_rep = RepsManager.online_reps.get(rep["account"], {})
-            # Directly use the utility function to compare and get changed keys
-            changed_keys = self._get_changed_keys(
-                rep, existing_rep, keys_to_ignore)
-
-            if changed_keys:
-                if existing_rep:  # avoid logging initial rep population
-                    logger.info(
-                        f"Rep {rep['account']} changed {', '.join(changed_keys)}")
-                RepsManager.online_reps[rep["account"]] = rep
-
-    async def fetch_reps_online(self):
+    async def _fetch_reps_online(self):
         tasks = {
             "online_reps": self.nanorpc.representatives_online(weight=True),
             "telemetry": self.nanorpc.telemetry(raw=True),
@@ -58,7 +46,7 @@ class RepsManager:
 
         return await execute_and_handle_errors(tasks)
 
-    def extend_telemetry_with_account(self, telemetry_peers, confirmation_quorum_peers):
+    def _extend_telemetry_with_account(self, telemetry_peers, confirmation_quorum_peers):
         # Prepare IP and port from telemetry data for matching
         telemetry_dict = {
             f"[{peer['address']}]:{peer['port']}": peer for peer in telemetry_peers
@@ -83,22 +71,45 @@ class RepsManager:
 
         return merged_data
 
-    async def transform_reps_online_data(self, data):
+    def _extend_weight_information(self, online_reps):
+        # Update total weight on all online weights
+        total_weight = sum(int(rep.get("votingweight", 0))
+                           for rep in online_reps)
+        for account in online_reps:
+            account_weight = int(account.get("votingweight", 0))
+            formatted_weight, weight_percent, show_weight = format_weight(
+                account_weight, total_weight, 0.0005)
+            account["weight_formatted"] = formatted_weight
+            account["weight_percent"] = weight_percent
+            account["show_weight"] = show_weight
+
+    def _merge_with_online_reps(self, transformed_data):
+        ignore_keys_when_comparing = ['last_telemetry_report', 'node_uptime']
+
+        for rep in transformed_data:
+            existing_rep = RepsManager.online_reps.get(rep["account"], {})
+            # Directly use the utility function to compare and get changed keys
+            changed_keys = self._get_changed_keys(
+                rep, existing_rep, ignore_keys_when_comparing)
+
+            if changed_keys:
+                if existing_rep:  # avoid logging initial rep population
+                    logger.info(
+                        f"Rep {rep['account']} changed {', '.join(changed_keys)}")
+                RepsManager.online_reps[rep["account"]] = rep
+
+    async def _transform_reps_online_data(self, data):
         representatives = data["online_reps"].get("representatives", {})
         confirmation_quorum = data["confirmation_quorum"]
         confirmation_quorum_peers = confirmation_quorum.get("peers")
         telemetry_peers = data["telemetry"].get("metrics")
 
-        extended_telemetry = self.extend_telemetry_with_account(
+        extended_telemetry = self._extend_telemetry_with_account(
             telemetry_peers, confirmation_quorum_peers)
 
         # Ensure representatives is a dictionary
         if not isinstance(representatives, dict):
             return []  # or handle the error as appropriate for your application
-
-        # Calculate the total weight
-        total_weight = sum(int(rep.get("weight", 0))
-                           for rep in representatives.values())
 
         transformed_data = []
         for account, info in representatives.items():
@@ -116,10 +127,6 @@ class RepsManager:
             # Perform account lookup
             is_known_account, known_account = await self.account_lookup.lookup_account(account)
 
-            # Format the weight
-            formatted_weight, weight_percent, show_weight = format_weight(
-                account_weight, total_weight, 0.0005)
-
             alias = known_account["name"] if is_known_account else address_formatted
             # Add the transformed data
             transformed_data.append({
@@ -128,9 +135,6 @@ class RepsManager:
                 "account_formatted": alias,
                 "alias": alias,  # assure compatibility with numsu vote visualizer
                 "votingweight": account_weight,  # assure compatibility with numsu vote visualizer
-                "weight_formatted": formatted_weight,
-                "weight_percent": weight_percent,
-                "show_weight": show_weight,
                 "node_version": node_version_telemetry,
                 "node_uptime": node_uptime,
                 "node_maker": node_maker_telemetry,
