@@ -8,7 +8,7 @@ from utils.formatting import format_error
 from utils.feature_toggle import FeatureToggle
 from frontend.views import frontend
 import logging
-from os import path
+from os import path as os_path
 
 app = Quart(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -44,7 +44,7 @@ async def handle_value_error(error):
 
 @app.route('/favicon.ico')
 async def favicon():
-    return await send_from_directory(path.join(app.root_path, 'static'),
+    return await send_from_directory(os_path.join(app.root_path, 'static'),
                                      'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 
