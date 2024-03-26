@@ -1,13 +1,7 @@
 from nanorpc.client import NanoRpcTyped, NodeVersion
 from nanorpc.client_nanoto import NanoToRpcTyped
-from os import getenv
-
-RPC_URL = getenv("RPC_URL")
-AUTH_USERNAME = getenv("AUTH_USERNAME")
-AUTH_PASSWORD = getenv("AUTH_PASSWORD")
-NANO_TO_AUTH_KEY = getenv("NANO_TO_AUTH_KEY")  # optinal
-APP_NAME = getenv("APP_NAME") or "nanobrowse.com"
-APP_EMAIL = getenv("APP_EMAIL") or "iq.cc@pm.me"
+from utils.constants import RPC_URL, AUTH_USERNAME, AUTH_PASSWORD
+from utils.constants import NANO_TO_AUTH_KEY, APP_NAME, APP_EMAIL
 
 
 def get_nanorpc_client(rpc_url=None, auth_username=None, auth_password=None):
