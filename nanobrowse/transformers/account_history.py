@@ -27,10 +27,10 @@ async def get_account_history(account):
 
 async def fetch_account_history(account):
 
-    tasks = {"result": nanorpc.account_history(
+    tasks = {"response": nanorpc.account_history(
         account, count=HISTORY_COUNT, raw="true")}
     response = await execute_and_handle_errors(tasks)
-    return response["result"] or {}
+    return response["response"] or {}
 
 
 def format_entry_amount(amount, block_type):

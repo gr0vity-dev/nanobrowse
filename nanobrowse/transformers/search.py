@@ -35,10 +35,10 @@ async def search_confirmation_history():
 async def fetch_confirmation_history():
 
     tasks = {
-        "result": nanorpc.confirmation_history()
+        "response": nanorpc.confirmation_history()
     }
-    result = await execute_and_handle_errors(tasks)
-    return result["result"]
+    response = await execute_and_handle_errors(tasks)
+    return response["response"]
 
 
 def transform_confirmation_history(confirmations_data):
