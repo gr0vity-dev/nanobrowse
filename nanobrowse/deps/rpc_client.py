@@ -6,6 +6,8 @@ RPC_URL = getenv("RPC_URL")
 AUTH_USERNAME = getenv("AUTH_USERNAME")
 AUTH_PASSWORD = getenv("AUTH_PASSWORD")
 NANO_TO_AUTH_KEY = getenv("NANO_TO_AUTH_KEY")  # optinal
+APP_NAME = getenv("APP_NAME") or "nanobrowse.com"
+APP_EMAIL = getenv("APP_EMAIL") or "iq.cc@pm.me"
 
 
 def get_nanorpc_client(rpc_url=None, auth_username=None, auth_password=None):
@@ -21,8 +23,9 @@ def get_nanorpc_client(rpc_url=None, auth_username=None, auth_password=None):
                         wrap_json=True)
 
 
-def get_nanoto_client():
-    return NanoToRpcTyped(NANO_TO_AUTH_KEY, app_name="nanobrowse.com", app_email="iq.cc@pm.me")
+def get_nanoto_client(auth_key=None):
+    auth_key = auth_key or NANO_TO_AUTH_KEY
+    return NanoToRpcTyped(auth_key, app_name=APP_NAME, app_email=APP_EMAIL)
 
 
 # Create a single instance of NanoRpc client
