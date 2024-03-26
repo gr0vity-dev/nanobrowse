@@ -17,6 +17,13 @@ AUTH_PASSWORD=your_rpc_password_here
 NANO_TO_AUTH_KEY=optional access key for rpc.nano.to
 ```
 
+You can modify the feature flags inside `docker-compose.yml`
+```
+FEATURE_ALIAS_REG: False #enable nano.to alias registration button
+FEATURE_REFRESH_KNOWN: True #refresh aliases and known from nano.to
+FEATURE_BETA_EXPLORER: False #add 'beta' to nanobrowse logo
+```
+
 Fire it up
 ```
 docker-compose up -d
@@ -24,17 +31,20 @@ docker-compose up -d
 
 ### Rpc commands in use
 The following rpc commands are required to run the block explorer :
-```
-account_info
-account_history
-account_weight
-blocks_info
-confirmation_history
-confirmation_quorum
-delegators
-receivable
-representatives_online
-telemetry
+```json
+[  
+  "account_info",
+  "account_history",
+  "account_weight",
+  "available_supply",
+  "blocks_info",
+  "confirmation_history",
+  "confirmation_quorum",
+  "delegators",
+  "receivable",
+  "representatives_online",
+  "telemetry"
+]
 ```
 
 
