@@ -3,9 +3,7 @@ from deps.rpc_client import nanorpc
 from utils.formatting import format_balance, get_time_ago, format_hash, format_account, safe_get
 from utils.known import AccountLookup
 import json
-import logging
-
-logging.basicConfig(level=logging.INFO)
+from utils.logger import logger
 
 block_transformer = Blueprint('block_transformer', __name__)
 account_lookup = AccountLookup()

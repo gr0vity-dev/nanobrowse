@@ -1,8 +1,9 @@
 from os import environ as os_environ
-import logging
+from utils.logger import logger
 
 
 class FeatureToggle:
+
     def __init__(self, prefix="FEATURE_"):
         self.prefix = prefix
         self.toggles = self._load_feature_toggles()
@@ -24,5 +25,5 @@ class FeatureToggle:
     def log_feature_statuses(self):
         """Log the status of all feature toggles."""
         for feature, is_enabled in self.toggles.items():
-            logging.info(
+            logger.info(
                 f"Feature '%s': {'Enabled' if is_enabled else 'Disabled'}", feature)

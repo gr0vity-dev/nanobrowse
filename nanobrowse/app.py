@@ -7,16 +7,15 @@ from utils.representatives import RepsManager
 from utils.formatting import format_error
 from utils.feature_toggle import FeatureToggle
 from frontend.views import frontend
-import logging
+from utils.logger import logger
 from os import path as os_path
 
 app = Quart(__name__)
-logging.basicConfig(level=logging.INFO)
 
 feature_toggle = FeatureToggle()
-account_manager = KnownAccountManager()
+account_manager = KnownAccountManager()  # periodic update of known addresses
 account_lookup = AccountLookup()
-network_params = NetworkParamManager()
+network_params = NetworkParamManager()  # initialise netwok params
 reps_manager = RepsManager()  # periodic update of online reps
 
 
@@ -37,7 +36,7 @@ def inject_feature_toggles():
 
 @app.errorhandler(ValueError)
 async def handle_value_error(error):
-    logging.error(str(error))
+    logger.error(str(error))
     error_dict = format_error(error)
     return await make_response(jsonify(error=error_dict), 400)
 

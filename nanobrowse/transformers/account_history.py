@@ -3,9 +3,7 @@ from deps.rpc_client import nanorpc
 from utils.formatting import get_time_ago, format_weight, format_balance, format_hash, format_account
 from utils.known import AccountLookup
 from utils.rpc_execution import execute_and_handle_errors
-import logging
-
-logging.basicConfig(level=logging.INFO)
+from utils.logger import logger
 
 HISTORY_COUNT = 2500  # if you use a proxy, make sure it allows this many
 

@@ -1,10 +1,10 @@
 import asyncio
-import logging
 import json
 from utils.formatting import format_account
 from protocols.observer import ObserverProtocol
 from utils.constants import KNOWN_ACCOUNTS_FILE, KNOWN_REFRESH_INTERVAL
 from deps.rpc_client import nanoto
+from utils.logger import logger
 
 
 class KnownAccountManager:
@@ -41,7 +41,7 @@ class KnownAccountManager:
         try:
             new_accounts = await nanoto.known()
         except Exception as e:
-            logging.warn(f"nano.to known() unavailable: {e}")
+            logger.warn(f"nano.to known() unavailable: {e}")
 
         with open(KNOWN_ACCOUNTS_FILE, 'r', encoding='utf-8') as file:
             known_accounts = json.load(file)
@@ -55,7 +55,7 @@ class KnownAccountManager:
             known_accounts[known_key] = known_aliases
             with open(KNOWN_ACCOUNTS_FILE, 'w', encoding='utf-8') as file:
                 json.dump(known_accounts, file, indent=4)
-            logging.info(
+            logger.info(
                 "%s accounts updated in known.json [%s] ", update_count, known_key)
 
         self.data_sources = known_accounts
@@ -104,7 +104,7 @@ class KnownAccountManager:
         try:
             new_accounts = await nanoto.aliases()
         except Exception as e:
-            logging.warn(f"nano.to known() unavailable: {e}")
+            logger.warn(f"nano.to known() unavailable: {e}")
 
         with open(KNOWN_ACCOUNTS_FILE, 'r', encoding='utf-8') as file:
             known_accounts = json.load(file)
@@ -118,7 +118,7 @@ class KnownAccountManager:
             known_accounts[aliases_key] = known_aliases
             with open(KNOWN_ACCOUNTS_FILE, 'w', encoding='utf-8') as file:
                 json.dump(known_accounts, file, indent=4)
-            logging.info(
+            logger.info(
                 "%s accounts updated in known.json [%s] ", update_count, aliases_key)
 
         self.data_sources = known_accounts

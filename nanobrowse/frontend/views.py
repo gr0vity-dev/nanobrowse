@@ -2,8 +2,7 @@ from quart import Blueprint, render_template, jsonify
 from utils.formatting import format_error
 from asyncio import gather
 from httpx import AsyncClient
-import logging
-logging.basicConfig(level=logging.INFO)
+from utils.logger import logger
 
 frontend = Blueprint('frontend', __name__,
                      template_folder='../templates', static_folder='../static')
@@ -26,7 +25,7 @@ async def index(error=None):
     if "error" in reps_online:
         error = reps_online["error"]
 
-    logging.info(error)
+    logger.info(error)
 
     return await render_template("search.html", reps_online=reps_online, recent_blocks=recent_blocks, error=error)
 

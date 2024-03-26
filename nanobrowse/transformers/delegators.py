@@ -4,9 +4,7 @@ from utils.formatting import get_time_ago, format_weight, format_balance, format
 from utils.known import AccountLookup
 from utils.rpc_execution import execute_and_handle_errors
 from asyncio import gather
-import logging
-
-logging.basicConfig(level=logging.INFO)
+from utils.logger import logger
 
 delegators_transformer = Blueprint('delegators_transformer', __name__)
 account_lookup = AccountLookup()

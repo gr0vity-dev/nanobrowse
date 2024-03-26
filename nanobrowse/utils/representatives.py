@@ -4,6 +4,7 @@ from utils.rpc_execution import execute_and_handle_errors
 from utils.known import AccountLookup
 from utils.constants import REP_REFRESH_INTERVAL
 import asyncio
+from utils.logger import logger
 
 
 class RepsManager:
@@ -39,6 +40,9 @@ class RepsManager:
                 rep, existing_rep, keys_to_ignore)
 
             if changed_keys:
+                if existing_rep:  # avoid logging initial rep population
+                    logger.info(
+                        f"Rep {rep['account']} changed {', '.join(changed_keys)}")
                 RepsManager.online_reps[rep["account"]] = rep
 
     async def fetch_reps_online(self):

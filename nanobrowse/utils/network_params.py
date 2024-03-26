@@ -1,6 +1,6 @@
 import asyncio
 from deps.rpc_client import nanorpc
-import logging
+from utils.logger import logger
 
 
 class NetworkParams:
@@ -14,7 +14,7 @@ class NetworkParams:
     @staticmethod
     def set_supply(available_supply):
         if available_supply:
-            logging.info("Set available_supply : %s", available_supply)
+            logger.info("Set available_supply : %s", available_supply)
             NetworkParams.available_supply = available_supply
 
 

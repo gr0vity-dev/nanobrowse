@@ -3,9 +3,7 @@ from deps.rpc_client import nanorpc
 from utils.formatting import get_time_ago, format_weight, format_balance, format_hash, format_account
 from utils.rpc_execution import execute_and_handle_errors
 from utils.known import AccountLookup
-import logging
-
-logging.basicConfig(level=logging.INFO)
+from utils.logger import logger
 
 account_transformer = Blueprint('account_transformer', __name__)
 account_lookup = AccountLookup()
