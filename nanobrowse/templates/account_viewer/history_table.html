@@ -35,8 +35,8 @@
       </td>
 
       <!-- Account & Hash -->
-      <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500">
-        <a href="{{ request.url_root }}account/{{ entry['account'] }}">
+      <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500 truncate" style="max-width: 250px;">
+        <a href="{{ request.url_root }}account/{{ entry['account'] }}" >
           <i class="copy_btn" data-value="{{ entry['account'] }}"></i>
           {{ entry['account_formatted'] }}
         </a>
@@ -81,7 +81,7 @@
       </td>
 
       <!-- Account & Hash -->
-      <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500">
+      <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500 truncate" style="max-width: 250px;">
         <a href="{{ request.url_root }}account/{{ entry['account'] }}">
           <i class="copy_btn" data-value="{{ entry['account'] }}"></i>
           {{ entry['account_formatted'] }}
