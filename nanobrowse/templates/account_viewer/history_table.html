@@ -23,6 +23,11 @@
             href="{{ request.url_root }}block/{{ entry['hash'] }}"
             class="relative group"
           >
+          <div
+          class="absolute z-10 bg-gray-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity duration-100 transform -translate-x-2 -translate-y-2"
+        >
+          Block Height: {{ entry['height'] }}
+        </div>
             <span
               data-tooltip="{{ entry['height'] }}"
               class="flex items-center justify-center w-20 h-6 text-xs rounded {% if entry['type'] == 'send' %} bg-blue-500 text-white {% elif entry['type'] == 'change' %} bg-yellow-300 text-gray-700 {% elif entry['type'] == 'receive' %} bg-green-500 text-white {% else %} bg-gray-500 text-white {% endif %}"
@@ -30,11 +35,7 @@
               {{ entry['type_formatted'] }}
             </span>
             <p class="text-xs">{{ entry['time_ago'] }}</p>
-            <div
-              class="absolute bg-gray-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity duration-100 transform -translate-x-2 -translate-y-2"
-            >
-              Block Height: {{ entry['height'] }}
-            </div>
+           
           </a>
         </td>
         <!-- Amount -->
