@@ -39,30 +39,30 @@
           >
         </span>
         {% if account_data.is_known_account %}
-          <div class="text-center mb-2 relative group">
-            <span class="bg-{% if account_data['show_weight'] %}yellow-300 text-gray-700{% else %}blue-500 text-white{% endif %} text-sm px-2 py-1 rounded overflow-hidden whitespace-nowrap">
-              {% if account_data.known_account.url %}
-              <a href="{{ account_data.known_account.url }}">
-                {{ account_data.known_account.name }}</a>
-              {% else %} 
-              {{ account_data.known_account.name }}
-              {% endif %}
+        <div class="text-center mb-2 relative group">
+          <span
+            class="bg-{% if account_data['show_weight'] %}yellow-300 text-gray-700{% else %}blue-500 text-white{% endif %} text-sm px-2 py-1 rounded overflow-hidden whitespace-nowrap"
+          >
+            {% if account_data.known_account.url %}
+            <a href="{{ account_data.known_account.url }}">
+              {{ account_data.known_account.name }}</a
+            >
+            {% else %} {{ account_data.known_account.name }} {% endif %}
+          </span>
+          {% if account_data.known_account.paid %}
+          <!-- Tooltip for paid aliases -->
+          <span class="ml-2 cursor-pointer relative group">
+            <i class="fa fa-info-circle"></i>
+            <span
+              class="absolute left-full ml-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 w-64 text-sm bg-gray-900 text-white p-2 rounded-lg shadow-md z-10"
+            >
+              '{{ account_data.known_account.name }}' is a paid alias,<br />registered
+              on {{ account_data.known_account.reg_date }}
             </span>
-            {% if account_data.known_account.paid %}
-            <!-- Tooltip for paid aliases -->
-            <span class="ml-2 cursor-pointer relative group">
-              <i class="fa fa-info-circle"></i>             
-              <span class="absolute left-full ml-2 hidden group-hover:block w-64 text-sm bg-gray-900 text-white p-2 rounded-lg shadow-md z-10">
-                '{{ account_data.known_account.name }}' is a paid alias,<br>registered on {{ account_data.known_account.reg_date }}
-              </span>
-            </span>
-            {% endif %}
-          </div>
+          </span>
           {% endif %}
-
-
-        
-        {% if account_data['is_pr'] %}
+        </div>
+        {% endif %} {% if account_data['is_pr'] %}
         <span
           class="text-left bg-yellow-400 text-gray-700 text-xs ml-4 px-2 py-1 rounded"
           >Principal Representative</span
@@ -99,17 +99,3 @@
     </div>
   </body>
 </html>
-
-<script>  
-  document.addEventListener("DOMContentLoaded", function() {   
-    document.querySelectorAll('.fa-info-circle').forEach(item => {
-      item.addEventListener('mouseover', function(event) {     
-        this.nextElementSibling.style.display = 'block';
-      });
-      item.addEventListener('mouseout', function(event) {       
-        this.nextElementSibling.style.display = 'none';
-      });
-    });
-  });
-</script>
-  
