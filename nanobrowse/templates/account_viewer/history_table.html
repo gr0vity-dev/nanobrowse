@@ -1,97 +1,111 @@
-<div id="account_history_table"> 
-<!-- Transactions Table -->
-<table id="transactionTable" class="table mt-6 mx-auto">  
-  <tbody>
-    <tr id="accountHistorySpinner">
-      <td colspan="3" class="text-center">
-          <div class="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-64 w-64"></div>
-      </td>
-    </tr>
-    {% if account_history %} 
-    {% if account_history.warning %}
+<div id="account_history_table">
+  <!-- Transactions Table -->
+  <table id="transactionTable" class="table mt-6 mx-auto">
+    <tbody>
+      <tr id="accountHistorySpinner">
+        <td colspan="3" class="text-center">
+          <div
+            class="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-64 w-64"
+          ></div>
+        </td>
+      </tr>
+      {% if account_history %} {% if account_history.warning %}
       <tr class="divide-y divide-gray-400">
-        <td class="px-2 py-2 whitespace-nowrap text-sm">{{ account_history.warning }}</td></tr>
-    {% endif %}
-    
-    {% for entry in account_history['history'] %}
-    <tr class="divide-y divide-gray-400">
-      <!-- Type Label (Send/Receive) -->
-      <td class="px-2 py-2 whitespace-nowrap text-sm">
-        <a href="{{ request.url_root }}block/{{ entry['hash'] }}">
+        <td class="px-2 py-2 whitespace-nowrap text-sm">
+          {{ account_history.warning }}
+        </td>
+      </tr>
+      {% endif %} {% for entry in account_history['history'] %}
+      <tr class="divide-y divide-gray-400">
+        <!-- Type Label (Send/Receive) -->
+        <td class="px-2 py-2 whitespace-nowrap text-sm">
+          <a
+            href="{{ request.url_root }}block/{{ entry['hash'] }}"
+            class="relative group"
+          >
+            <span
+              data-tooltip="{{ entry['height'] }}"
+              class="flex items-center justify-center w-20 h-6 text-xs rounded {% if entry['type'] == 'send' %} bg-blue-500 text-white {% elif entry['type'] == 'change' %} bg-yellow-300 text-gray-700 {% elif entry['type'] == 'receive' %} bg-green-500 text-white {% else %} bg-gray-500 text-white {% endif %}"
+            >
+              {{ entry['type_formatted'] }}
+            </span>
+            <p class="text-xs">{{ entry['time_ago'] }}</p>
+            <div
+              class="absolute bg-gray-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity duration-100 transform -translate-x-2 -translate-y-2"
+            >
+              Block Height: {{ entry['height'] }}
+            </div>
+          </a>
+        </td>
+        <!-- Amount -->
+        <td
+          class="px-4 py-4 whitespace-nowrap text-sm {% if entry['type'] == 'send' %} text-blue-500 {% elif entry['type'] == 'receive' %} text-green-500 {% elif entry['type'] == 'change' %} text-yellow-300 {% else %} text-gray-500{% endif %}"
+        >
+          <b>{{ entry['amount_formatted'] }}</b>
+        </td>
+
+        <!-- Account & Hash -->
+        <td
+          class="px-2 py-2 whitespace-nowrap text-sm text-gray-500 truncate"
+          style="max-width: 250px"
+        >
+          <a href="{{ request.url_root }}account/{{ entry['account'] }}">
+            <i class="copy_btn" data-value="{{ entry['account'] }}"></i>
+            {{ entry['account_formatted'] }}
+          </a>
+          <br />
+          <a href="{{ request.url_root }}block/{{ entry['hash'] }}">
+            <i class="copy_btn" data-value="{{ entry['hash'] }}"></i>
+            <b>{{ entry['hash_formatted'] }}</b>
+          </a>
+        </td>
+      </tr>
+      {% endfor %} {% endif %}
+    </tbody>
+  </table>
+
+  <!-- Grouped Transactions Table -->
+  <table id="groupedTransactionTable" class="table mt-6 mx-auto">
+    <tbody>
+      {% if account_history %} {% if account_history.warning %}
+      <tr class="divide-y divide-gray-400">
+        <td class="px-2 py-2 whitespace-nowrap text-sm">
+          {{ account_history.warning }}
+        </td>
+      </tr>
+      {% endif %} {% for entry in account_history['grouped_history'] %}
+      <tr class="divide-y divide-gray-400">
+        <!-- Type Label (Send/Receive) -->
+        <td class="px-2 py-2 whitespace-nowrap text-sm">
           <span
             class="flex items-center justify-center w-20 h-6 text-xs rounded {% if entry['type'] == 'send' %} bg-blue-500 text-white {% elif entry['type'] == 'change' %} bg-yellow-300 text-gray-700 {% elif entry['type'] == 'receive' %} bg-green-500 text-white {% else %} bg-gray-500 text-white {% endif %}"
           >
             {{ entry['type_formatted'] }}
           </span>
           <p class="text-xs">{{ entry['time_ago'] }}</p>
-        </a>
-      </td>
+        </td>
 
-      <!-- Amount -->
-      <td
-        class="px-4 py-4 whitespace-nowrap text-sm {% if entry['type'] == 'send' %} text-blue-500 {% elif entry['type'] == 'receive' %} text-green-500 {% elif entry['type'] == 'change' %} text-yellow-300 {% else %} text-gray-500{% endif %}"
-      >
-        <b>{{ entry['amount_formatted'] }}</b>
-      </td>
+        <!-- Amount -->
+        <td
+          class="px-4 py-4 whitespace-nowrap text-sm {% if entry['type'] == 'send' %} text-blue-500 {% elif entry['type'] == 'receive' %} text-green-500 {% elif entry['type'] == 'change' %} text-yellow-300 {% else %} text-gray-500{% endif %}"
+        >
+          <b>{{ entry['amount_formatted'] }}</b>
+        </td>
 
-      <!-- Account & Hash -->
-      <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500 truncate" style="max-width: 250px;">
-        <a href="{{ request.url_root }}account/{{ entry['account'] }}" >
-          <i class="copy_btn" data-value="{{ entry['account'] }}"></i>
-          {{ entry['account_formatted'] }}
-        </a>
-        <br />
-        <a href="{{ request.url_root }}block/{{ entry['hash'] }}">
-          <i class="copy_btn" data-value="{{ entry['hash'] }}"></i>
-          <b>{{ entry['hash_formatted'] }}</b>
-        </a>
-      </td>
-    </tr>
-    {% endfor %} {% endif %}
-  </tbody>
-</table>
-
-<!-- Grouped Transactions Table -->
-<table id="groupedTransactionTable" class="table mt-6 mx-auto">
-  <tbody>
-    {% if account_history %}
-
-    {% if account_history.warning %}
-      <tr class="divide-y divide-gray-400">
-        <td class="px-2 py-2 whitespace-nowrap text-sm">{{ account_history.warning }}</td></tr>
-    {% endif %}
-    
-    {% for entry in account_history['grouped_history'] %}
-    <tr class="divide-y divide-gray-400">
-      <!-- Type Label (Send/Receive) -->
-      <td class="px-2 py-2 whitespace-nowrap text-sm">        
-          <span
-            class="flex items-center justify-center w-20 h-6 text-xs rounded {% if entry['type'] == 'send' %} bg-blue-500 text-white {% elif entry['type'] == 'change' %} bg-yellow-300 text-gray-700 {% elif entry['type'] == 'receive' %} bg-green-500 text-white {% else %} bg-gray-500 text-white {% endif %}"
-          >
-            {{ entry['type_formatted'] }}
-          </span>
-          <p class="text-xs">{{ entry['time_ago'] }}</p>      
-      </td>
-
-      <!-- Amount -->
-      <td
-        class="px-4 py-4 whitespace-nowrap text-sm {% if entry['type'] == 'send' %} text-blue-500 {% elif entry['type'] == 'receive' %} text-green-500 {% elif entry['type'] == 'change' %} text-yellow-300 {% else %} text-gray-500{% endif %}"
-      >
-        <b>{{ entry['amount_formatted'] }}</b>
-      </td>
-
-      <!-- Account & Hash -->
-      <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500 truncate" style="max-width: 250px;">
-        <a href="{{ request.url_root }}account/{{ entry['account'] }}">
-          <i class="copy_btn" data-value="{{ entry['account'] }}"></i>
-          {{ entry['account_formatted'] }}
-        </a>
-        <br />
-        <span>{{ entry.transaction_count }} Transactions</span>
-      </td>
-    </tr>
-    {% endfor %}
-    {% endif %}
-  </tbody>
-</table>
+        <!-- Account & Hash -->
+        <td
+          class="px-2 py-2 whitespace-nowrap text-sm text-gray-500 truncate"
+          style="max-width: 250px"
+        >
+          <a href="{{ request.url_root }}account/{{ entry['account'] }}">
+            <i class="copy_btn" data-value="{{ entry['account'] }}"></i>
+            {{ entry['account_formatted'] }}
+          </a>
+          <br />
+          <span>{{ entry.transaction_count }} Transactions</span>
+        </td>
+      </tr>
+      {% endfor %} {% endif %}
+    </tbody>
+  </table>
 </div>
