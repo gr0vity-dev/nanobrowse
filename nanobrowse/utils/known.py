@@ -5,6 +5,7 @@ from protocols.observer import ObserverProtocol
 from utils.constants import KNOWN_ACCOUNTS_FILE, KNOWN_REFRESH_INTERVAL
 from deps.rpc_client import nanoto
 from utils.logger import logger
+from datetime import date
 
 
 class KnownAccountManager:
@@ -91,7 +92,8 @@ class KnownAccountManager:
             if address not in known_accounts:
                 account_info = {
                     "name": account["alias"],
-                    "url": None
+                    "paid": True,
+                    "date": str(date.today())
                 }
                 known_accounts[address] = account_info
                 updated = True
@@ -140,7 +142,11 @@ class AccountLookup(ObserverProtocol):
 
     async def lookup_account(self, account):
         known_accounts_l = await self._get_all_known()
-        matches = [{"account": account, "name": data[account].get("name"), "url": data[account].get("url")}
+        matches = [{"account": account,
+                    "name": data[account].get("name"),
+                    "url": data[account].get("url"),
+                    "reg_date": data[account].get("date"),
+                    "paid": data[account].get("paid")}
                    for _, data in known_accounts_l.items() if account in data]
 
         is_known = bool(matches)
@@ -157,6 +163,9 @@ class AccountLookup(ObserverProtocol):
                     "account": account,
                     "account_formatted": format_account(account),
                     "name": details["name"],
+                    "paid": details.get("paid"),
+                    "date": details.get("date"),
+                    "reg_date": details.get("reg_date"),
                     "url": details.get("url"),
                     "has_url": details.get("url") is not None
                 }

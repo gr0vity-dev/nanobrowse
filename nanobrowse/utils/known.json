@@ -1111,6 +1111,10 @@
         "nano_18ihoozekip41qtoo6chioxosegfbyi36h39s9hhqmsubtm76m6mswgwdwyr": {
             "name": "Armour",
             "url": "https://nano.to/Armour"
+        },
+        "nano_1e7wsata5c9xo5kbms3e5sa5q4hyoyoxt6rxpfs3k3asqpuy9fmz7x5388cg": {
+            "name": "Spencer",
+            "url": "https://nano.to/Spencer"
         }
     },
     "known_github": {
@@ -22585,6 +22589,31 @@
         "nano_1browse8yrj5jhwkpsckt3qt1atbn8bo1sne965rawzx7d7gmhrqn89zob6n": {
             "name": "nanobrowse_aliases",
             "url": null
+        },
+        "nano_1ss6mhii1zqhn8ei1ayxrkz7zno4nbx5i475834zpe5bqe9nnnmgxk9ruk9j": {
+            "name": "Taylor Swift",
+            "paid": true,
+            "date": "2024-03-26"
+        },
+        "nano_35by9k8udygdisksxahjb9j9wt89xqze58c736knuy3e59pcb5pg58unadyp": {
+            "name": "MuzTea",
+            "paid": true,
+            "date": "2024-03-26"
+        },
+        "nano_3uj4xerconsaiyw7poie7n9oq6ezfer31n55to88893hxwifp3dk88o9pgyf": {
+            "name": "NanoGamerApp: MercenarioZ Dayz-Server",
+            "paid": true,
+            "date": "2024-03-25"
+        },
+        "nano_1oqiq4pwx1yun94xg3zyzsnosep4ro7tzqud1wgc9w7osw9quuzuprnwkb4s": {
+            "name": "Corican",
+            "paid": true,
+            "date": "2024-03-25"
+        },
+        "nano_1e7wsata5c9xo5kbms3e5sa5q4hyoyoxt6rxpfs3k3asqpuy9fmz7x5388cg": {
+            "name": "Spencer",
+            "paid": true,
+            "date": "2024-03-26"
         }
     }
 }
