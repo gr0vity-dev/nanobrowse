@@ -1,4 +1,3 @@
-
 import datetime
 from utils.network_params import NetworkParams
 
@@ -9,7 +8,7 @@ def format_error(error):
     error_split = str(error).split("\n")
     error_dict = {
         "header": "Error: " + error_split.pop(0) if error_split else "Error!",
-        "body": "\n" + "\n".join(error_split)
+        "body": "\n" + "\n".join(error_split),
     }
     return error_dict
 
@@ -95,20 +94,24 @@ def format_version(major, minor, patch, pre_release):
     valid_versions = [str(v) for v in version_numbers if v is not None]
 
     # Join the remaining parts with dots, or return a default value if empty
-    return '.'.join(valid_versions) if valid_versions else "Unknown"
+    return ".".join(valid_versions) if valid_versions else "Unknown"
 
 
 def format_weight(value, base_weight=None, ignore_weight_below=0.01):
     show_weight = False
-    base_weight = base_weight or NetworkParams.get_supply()
+    base_weight = base_weight or NetworkParams.get_total_weight()
     try:
-        weight = int(value) / 10 ** 30
+        weight = int(value) / 10**30
         weight_formatted = "Ӿ {:,.2f}".format(weight)
         weight_percent = (int(value) / int(base_weight)) * 100
         weight_percent_formatted = "{:.2f}".format(weight_percent)
         if weight_percent > ignore_weight_below:
             show_weight = True
-            return f"{weight_percent_formatted}% ({weight_formatted})", weight_percent, show_weight
+            return (
+                f"{weight_percent_formatted}% ({weight_formatted})",
+                weight_percent,
+                show_weight,
+            )
         else:
             return "0", 0, show_weight
 
@@ -118,7 +121,7 @@ def format_weight(value, base_weight=None, ignore_weight_below=0.01):
 
 def format_balance(value, subtype="", default="0"):
     try:
-        balance = "{:,.8f}".format(int(value) / 10 ** 30)
+        balance = "{:,.8f}".format(int(value) / 10**30)
         if subtype == "send":
             return "-Ӿ " + balance
         elif subtype == "receive":
