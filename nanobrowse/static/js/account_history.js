@@ -50,8 +50,31 @@ document.addEventListener('click', function(event) {
   
     // Toggle table display if a valid target is found
     if (targetElement && targetElement.getAttribute('data-show-table')) {
-    manuallyToggled = targetElement.getAttribute('data-show-table');
-  
+      manuallyToggled = targetElement.getAttribute('data-show-table');
+
+      switch (targetElement.getAttribute('data-show-table')) {
+        case 'transactionTable':
+          document.getElementById('tableSubBtns').classList.remove('hidden');
+          document.getElementById('tableSubBtns').classList.add('flex');
+          highlight(['transactionTableBtn', 'transactionTableSubBtn']);
+          break;
+        case 'groupedTransactionTable':
+          document.getElementById('tableSubBtns').classList.remove('hidden');
+          document.getElementById('tableSubBtns').classList.add('flex');
+          highlight(['transactionTableBtn', 'groupedTransactionTableSubBtn']);
+          break;
+        case 'receivableTable':
+          document.getElementById('tableSubBtns').classList.add('hidden');
+          document.getElementById('tableSubBtns').classList.remove('flex');
+          highlight(['receivableTableBtn']);
+          break;
+        case 'delegatorTable':
+          document.getElementById('tableSubBtns').classList.add('hidden');
+          document.getElementById('tableSubBtns').classList.remove('flex');
+          highlight(['delegatorTableBtn']);
+          break;
+      }
+
       const targetTableID = targetElement.getAttribute('data-show-table');
       document.querySelectorAll('.table').forEach(table => table.style.display = 'none');
       const targetTable = document.getElementById(targetTableID);
@@ -62,4 +85,20 @@ document.addEventListener('click', function(event) {
       }
     }
   });
-  
+
+function highlight(ids) {
+  // Reset color of all table-selection buttons:
+  document.querySelectorAll(`[data-show-table]`).forEach(element => {
+    element.classList.add(element.getAttribute('data-default-color'));
+    element.classList.remove(element.getAttribute('data-active-color'));
+  });
+
+  // Highlight given elements:
+  ids.forEach(id => {
+    let element = document.getElementById(id);
+    if (element) {
+      element.classList.remove(element.getAttribute('data-default-color'));
+      element.classList.add(element.getAttribute('data-active-color'));
+    }
+  });
+}

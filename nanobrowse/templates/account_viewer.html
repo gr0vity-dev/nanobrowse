@@ -72,17 +72,26 @@
 
       {% include 'account_viewer/account_info.html' %}
 
-      <div class="mt-4 text-xs flex items-center justify-center space-x-2">
+      <div
+        id="tableSubBtns"
+        class="mt-4 text-xs flex items-center justify-center space-x-2">
         <button
+          id="groupedTransactionTableSubBtn"
+          data-default-color="bg-gray-800"
+          data-active-color="bg-blue-500"
           data-show-table="groupedTransactionTable"
           class="bg-gray-800 text-white px-3 py-1 rounded focus:outline-none"
+          title="Group transactions by type and account and sort by amount."
         >
           Grouped Flows
         </button>
 
         <button
+          id="transactionTableSubBtn"
+          data-default-color="bg-gray-800"
+          data-active-color="bg-blue-500"
           data-show-table="transactionTable"
-          class="bg-gray-800 text-white px-3 py-1 rounded focus:outline-none"
+          class="bg-blue-500 text-white px-3 py-1 rounded focus:outline-none"
         >
           Timeline
         </button>
