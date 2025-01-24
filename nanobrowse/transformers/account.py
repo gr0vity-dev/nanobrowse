@@ -37,15 +37,13 @@ async def fetch_account_info(account):
             weight="true",
         ),
         "account_balance": nanorpc.account_balance(account),
+        "account_weight": nanorpc.account_weight(account),
     }
-    response = await execute_and_handle_errors(
-        tasks, droppable_errors=["Account not found"]
-    )
-    response["account"] = account
-    response["account_info"]["receivable"] = response["account_balance"].get(
-        "receivable"
-    )
-    return response
+    res = await execute_and_handle_errors(tasks, droppable_errors=["Account not found"])
+    res["account"] = account
+    res["account_info"]["weight"] = res["account_weight"].get("weight")
+    res["account_info"]["receivable"] = res["account_balance"].get("receivable")
+    return res
 
 
 async def transform_account_data(data):
