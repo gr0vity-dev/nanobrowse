@@ -3,7 +3,13 @@
         <tbody>
           <!-- Balance -->
           <tr>
-            <td data-show-table="transactionTable" style="cursor:pointer" class="bg-blue-500 text-white text-xs px-3 rounded w-32 h-6 flex items-center justify-center">
+            <td
+              data-show-table="transactionTable"
+              style="cursor:pointer"
+              id="transactionTableBtn"
+              data-default-color="bg-gray-700"
+              data-active-color="bg-blue-500"
+              class="bg-blue-500 text-white text-xs px-3 rounded w-32 h-6 flex items-center justify-center">
               Available Balance
             </td>
             <td class="px-3 py-1 font-bold">{{account_data['confirmed_balance'] }}</td>
@@ -12,7 +18,13 @@
           {% if account_data['show_receivable'] %}
           <!-- Receivable balance -->
           <tr>
-            <td data-show-table="receivableTable" style="cursor:pointer" class="bg-gray-700 text-white text-xs px-3 rounded w-32 h-8 flex flex-col items-center justify-center">
+            <td
+              data-show-table="receivableTable"
+              style="cursor:pointer"
+              id="receivableTableBtn"
+              data-default-color="bg-gray-700"
+              data-active-color="bg-blue-500"
+              class="bg-gray-700 text-white text-xs px-3 rounded w-32 h-8 flex flex-col items-center justify-center">
               <div>Ready to receive</div>
               <!-- <div>({{account_data['receivable_count'] }} blocks)</div> -->
             </td>
@@ -23,7 +35,13 @@
           {% if account_data['show_weight'] %}
           <!-- Weight -->
           <tr>
-            <td data-show-table="delegatorTable" style="cursor:pointer" class="bg-gray-700 text-white text-xs px-3 rounded w-32 h-6 flex items-center justify-center">
+            <td
+              data-show-table="delegatorTable"
+              style="cursor:pointer"
+              id="delegatorTableBtn"
+              data-default-color="bg-gray-700"
+              data-active-color="bg-blue-500"
+              class="bg-gray-700 text-white text-xs px-3 rounded w-32 h-6 flex items-center justify-center">
               Weight
             </td>
             <td class="px-3 py-1 font-bold">{{account_data['weight_formatted'] }}</td>
