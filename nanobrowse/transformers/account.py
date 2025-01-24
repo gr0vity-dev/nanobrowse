@@ -24,10 +24,14 @@ async def fetch_account_info(account):
 
     tasks = {
         "account_info": nanorpc.account_info(account, include_confirmed="true", representative="true", receivable="true", weight="true")
+        "account_balance": nanorpc.account_balance(account),
     }
     response = await execute_and_handle_errors(tasks, droppable_errors=["Account not found"])
     response["account"] = account
 
+    response["account_info"]["receivable"] = response["account_balance"].get(
+        "receivable"
+    )
     return response
 
 

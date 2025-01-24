@@ -34,6 +34,7 @@ The following rpc commands are required to run the block explorer :
 ```json
 [  
   "account_info",
+  "account_balance",
   "account_history",
   "account_weight",
   "available_supply",
